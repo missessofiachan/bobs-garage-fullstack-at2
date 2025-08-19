@@ -11,15 +11,3 @@ export async function seedUsers() {
   // Add more users as needed
 }
 
-// Optionally, call this function directly if running as a script
-if (require.main === module) {
-  seedUsers()
-    .then(() => {
-      console.log('User seed complete');
-      process.exit(0);
-    })
-    .catch((err) => {
-      console.error('User seed failed:', err);
-      process.exit(1);
-    });
-}

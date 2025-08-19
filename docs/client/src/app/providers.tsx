@@ -1,2 +1,0 @@
-//wrappers (AuthProvider, ThemeProvider, QueryClientProvider)
-

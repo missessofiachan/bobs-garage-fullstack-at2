@@ -1,1 +1,0 @@
-//list/create/update/delete
