@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Button, Form, Table } from 'react-bootstrap';
 import { useAdminUsers, useCreateAdminUser, useDeleteAdminUser } from '../../api/hooks/useAdminUsers';
+import Loading from '../../components/ui/Loading';
+import usePageTitle from '../../a/usePageTitle';
 
 export default function UsersAdmin() {
 	const { data, isLoading, error } = useAdminUsers();
@@ -15,7 +17,8 @@ export default function UsersAdmin() {
 		setEmail(''); setPassword('');
 	};
 
-	if (isLoading) return <p>Loading…</p>;
+	usePageTitle('Admin — Users');
+	if (isLoading) return <Loading message="Loading users…" />;
 	if (error) return <p>Failed to load users.</p>;
 	return (
 		<div>

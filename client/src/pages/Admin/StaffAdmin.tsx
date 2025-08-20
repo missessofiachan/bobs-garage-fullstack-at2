@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Button, Form, Image, Table } from 'react-bootstrap';
 import { useStaffList, useCreateStaff, useDeleteStaff, useUploadStaffPhoto } from '../../api/hooks/useStaff';
+import Loading from '../../components/ui/Loading';
 
 export default function StaffAdmin() {
 	const { data, isLoading, error } = useStaffList();
@@ -17,7 +18,7 @@ export default function StaffAdmin() {
 		setName(''); setRole('Staff');
 	};
 
-	if (isLoading) return <p>Loading…</p>;
+	if (isLoading) return <Loading message="Loading staff…" />;
 	if (error) return <p>Failed to load staff.</p>;
 	return (
 		<div>
@@ -45,8 +46,8 @@ export default function StaffAdmin() {
 										if (file) {
 											try {
 												await uploadPhoto.mutateAsync({ id: m.id, file });
-											} catch (err: any) {
-												setUploadError('Failed to upload photo. Please try again.');
+											} catch {
+											setUploadError('Failed to upload photo. Please try again.');
 											}
 										}
 										(e.currentTarget as HTMLInputElement).value = '';

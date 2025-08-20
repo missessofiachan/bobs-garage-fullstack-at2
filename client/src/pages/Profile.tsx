@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { Button, Form } from 'react-bootstrap';
 import api from '../api/axios';
 import type { UserMeDTO } from '../api/types';
+import Loading from '../components/ui/Loading';
+import usePageTitle from '../a/usePageTitle';
 
 export default function Profile() {
   const [me, setMe] = useState<UserMeDTO | null>(null);
@@ -34,7 +36,8 @@ export default function Profile() {
     }
   };
 
-  if (!me) return <p>Loading…</p>;
+  usePageTitle('My profile');
+  if (!me) return <Loading message="Loading profile…" />;
 
   return (
     <div>

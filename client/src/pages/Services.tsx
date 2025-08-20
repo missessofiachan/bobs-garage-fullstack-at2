@@ -1,14 +1,17 @@
 import { Button, Table } from 'react-bootstrap';
 import { useServices } from '../api/hooks/useServices';
 import { useDispatch, useSelector } from 'react-redux';
-import type { RootState } from '../store';
+import type { RootState } from '../a/store';
 import { addFavorite, removeFavorite } from '../slices/favorites.slice';
+import Loading from '../components/ui/Loading';
+import usePageTitle from '../a/usePageTitle';
 
 export default function Services() {
 	const { data, isLoading, error } = useServices();
 	const favorites = useSelector((s: RootState) => s.favorites.items);
 	const dispatch = useDispatch();
-	if (isLoading) return <p>Loading…</p>;
+	usePageTitle('Services');
+	if (isLoading) return <Loading message="Loading services…" />;
 	if (error) return <p>Failed to load services.</p>;
 	return (
 		<div>

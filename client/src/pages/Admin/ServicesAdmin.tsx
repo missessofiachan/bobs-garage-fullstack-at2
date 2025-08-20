@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Button, Form, Table } from 'react-bootstrap';
 import { useServices, useCreateService, useDeleteService } from '../../api/hooks/useServices';
+import Loading from '../../components/ui/Loading';
 
 export default function ServicesAdmin() {
 	const { data, isLoading, error } = useServices();
@@ -16,7 +17,7 @@ export default function ServicesAdmin() {
 		setName(''); setPrice(0); setDescription('');
 	};
 
-	if (isLoading) return <p>Loading…</p>;
+	if (isLoading) return <Loading message="Loading services…" />;
 	if (error) return <p>Failed to load services.</p>;
 	return (
 		<div>

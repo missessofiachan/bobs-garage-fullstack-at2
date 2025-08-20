@@ -1,5 +1,7 @@
 import { Card, Col, Row } from 'react-bootstrap';
 import { useStaffList } from '../api/hooks/useStaff';
+import Loading from '../components/ui/Loading';
+import usePageTitle from '../a/usePageTitle';
 
 const API_BASE = (import.meta as ImportMeta).env?.VITE_API_BASE_URL ?? 'http://localhost:4000';
 
@@ -16,7 +18,8 @@ const SVG_PLACEHOLDER =
 
 export default function Staff() {
 	const { data, isLoading, error } = useStaffList();
-	if (isLoading) return <p>Loading…</p>;
+	usePageTitle('Staff');
+	if (isLoading) return <Loading message="Loading staff…" />;
 	if (error) return <p>Failed to load staff.</p>;
 
 	const staff = (data ?? []).filter(m => m.active !== false);

@@ -1,6 +1,6 @@
 import { Navigate } from 'react-router-dom';
 import type { ReactElement } from 'react';
-import { useAppSelector } from '../app/hooks';
+import { useAppSelector } from '../a/hooks';
 
 export function ProtectedRoute({ children }: { children: ReactElement }) {
   const token = useAppSelector(s => s.auth.accessToken);
