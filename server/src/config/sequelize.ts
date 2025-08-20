@@ -1,3 +1,4 @@
+
 // Sequelize initialization with error handling and dynamic model loading
 import { Sequelize } from 'sequelize-typescript';
 import { env } from './env.js';

@@ -1,26 +1,24 @@
 import { Router } from 'express';
 import * as Auth from '../controllers/auth.controller.js';
-import * as Svc from '../controllers/service.controller.js';
+import { validateBody } from '../middleware/validate.js';
+import authSchemas from '../validation/auth.schemas.js';
 import * as Staff from '../controllers/staff.controller.js';
-import * as User from '../controllers/user.controller.js';
 import * as Admin from '../controllers/admin.controller.js';
 import * as AdminUsers from '../controllers/users.admin.controller.js';
 import { requireAuth, requireAdmin } from '../middleware/auth.js';
 import { staffPhotoUpload } from '../middleware/upload.js';
+import servicesRouter from './services.routes.js';
+import meRouter from './me.routes.js';
 
 const r: Router = Router();
 
 // Auth
-r.post('/auth/register', Auth.register);
-r.post('/auth/login', Auth.login);
+r.post('/auth/register', validateBody(authSchemas.registerSchema), Auth.register);
+r.post('/auth/login', validateBody(authSchemas.loginSchema), Auth.login);
 r.post('/auth/refresh', Auth.refresh);
 
-// Services
-r.get('/services', Svc.listServices);
-r.get('/services/:id', Svc.getServiceById);
-r.post('/services', requireAuth, requireAdmin, Svc.createService);
-r.put('/services/:id', requireAuth, requireAdmin, Svc.updateService);
-r.delete('/services/:id', requireAuth, requireAdmin, Svc.deleteService);
+// Services mounted router
+r.use('/services', servicesRouter);
 
 // Staff
 r.get('/staff', Staff.listStaff);
@@ -31,9 +29,8 @@ r.delete('/staff/:id', requireAuth, requireAdmin, Staff.deleteStaff);
 // Upload staff photo
 r.post('/staff/:id/photo', requireAuth, requireAdmin, staffPhotoUpload.single('photo'), Staff.uploadStaffPhoto);
 
-// Users
-r.get('/users/me', requireAuth, User.getMyProfile);
-r.put('/users/me', requireAuth, User.updateProfile);
+// Users (me)
+r.use('/users/me', meRouter);
 
 // Admin
 r.get('/admin/metrics', requireAuth, requireAdmin, Admin.getMetrics);
@@ -44,7 +41,7 @@ r.put('/admin/users/:id', requireAuth, requireAdmin, AdminUsers.updateUser);
 r.delete('/admin/users/:id', requireAuth, requireAdmin, AdminUsers.deleteUser);
 
 // Health
-r.get('/health', (req, res) => res.status(200).json({ status: 'ok' }));
+r.get('/health', (_req, res) => res.status(200).json({ status: 'ok' }));
 
 export default r;
 

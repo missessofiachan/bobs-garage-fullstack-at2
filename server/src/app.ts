@@ -1,6 +1,8 @@
+// // express app, middleware, routes wiring
 import express, { type Application } from 'express';
 import path from 'node:path';
 import pino from 'pino';
+import type { Logger } from 'pino';
 import pinoHttp from 'pino-http';
 import { applySecurity } from './middleware/security.js';
 import routes from './routes/index.js';
@@ -10,13 +12,16 @@ import { env } from './config/env.js';
 import { ROOT_UPLOAD_DIR_ABS, UPLOADS_PUBLIC_PATH } from './middleware/upload.js';
 
 // Build Express app (no network listeners here)
-export function createApp(): Application {
+export function createApp(providedLogger?: Logger): Application {
 	const app = express();
 
 	const pinoOpts: any = env.NODE_ENV === 'development' ? { transport: { target: 'pino-pretty' } } : {};
-	const logger = pino(pinoOpts);
+	const logger = providedLogger ?? pino(pinoOpts);
 	const httpLogger = (pinoHttp as any)({ logger });
 	app.use(httpLogger);
+
+	// attach the logger to the app instance for handlers to use
+	(app as any).log = logger;
 
 	applySecurity(app);
 	app.use(express.json({ limit: '10kb' }));
@@ -65,6 +70,4 @@ export function createApp(): Application {
 
 	return app;
 }
-
-export const app: Application = createApp();
 

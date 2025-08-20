@@ -1,3 +1,5 @@
+// dotenv + schema (zod/joi) to validate env
+
 // Environment variable loader and validator
 import { config as dotenvConfig } from 'dotenv';
 import { z } from 'zod';
@@ -28,6 +30,8 @@ export const EnvSchema = z.object({
   CORS_ORIGINS: z.string().default('http://localhost:5173'),
   // Shutdown timeout in milliseconds when graceful shutdown should be forced.
   SHUTDOWN_TIMEOUT_MS: z.coerce.number().optional(), // 10000
+  // Cleanup interval for orphaned uploads in milliseconds (default: 24h)
+  CLEANUP_INTERVAL_MS: z.coerce.number().optional(),
 });
 
 /**

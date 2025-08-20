@@ -14,12 +14,12 @@ async function run() {
     console.log(`Found ${staff.length} staff rows`);
     const base = 'http://localhost:4000';
     for (let i = 0; i < Math.min(files.length, staff.length); i++) {
-      const s = staff[i];
+  const s = staff[i]!;
       const file = files[i];
       const publicUrl = `${base}/uploads/staff/${file}`;
-      console.log(`Setting staff ${s.id} photoUrl -> ${publicUrl}`);
-      // eslint-disable-next-line no-await-in-loop
-      await s.update({ photoUrl: publicUrl });
+  console.log(`Setting staff ${s.id} photoUrl -> ${publicUrl}`);
+  // eslint-disable-next-line no-await-in-loop
+  await s.update({ photoUrl: publicUrl });
     }
     console.log('Done');
     process.exit(0);
