@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button, Form } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../api/hooks/useAuth';
+import { registerSchema } from '../lib/validation';
 
 export default function Register() {
 	const [email, setEmail] = useState('');
@@ -14,6 +15,7 @@ export default function Register() {
 		e.preventDefault();
 		setErr(undefined);
 		try {
+			registerSchema.parse({ email, password });
 			await register({ email, password });
 			nav('/login');
 		} catch {

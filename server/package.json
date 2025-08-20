@@ -12,10 +12,10 @@
     "start": "node dist/index.js",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "seed": "tsx src/db/seeders/run-seeder.ts",
-  "test": "vitest run",
-  "test:watch": "vitest",
-  "lint": "eslint --ext .ts,.js src --max-warnings 0",
-  "lint:fix": "eslint --ext .ts,.js src --fix"
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint --ext .ts,.js src --max-warnings 0",
+    "lint:fix": "eslint --ext .ts,.js src --fix"
   },
   "keywords": [],
   "dependencies": {
@@ -27,6 +27,7 @@
     "express-rate-limit": "^7.4.0",
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
+    "multer": "^2.0.2",
     "mysql2": "^3.14.3",
     "pino": "^9.9.0",
     "pino-http": "^10.5.0",
@@ -40,6 +41,7 @@
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
     "@types/jsonwebtoken": "^9.0.10",
+    "@types/multer": "^2.0.0",
     "@types/node": "^24.3.0",
     "@types/supertest": "^6.0.3",
     "eslint-config-prettier": "^9.1.2",

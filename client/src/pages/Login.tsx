@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button, Form } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../api/hooks/useAuth';
+import { loginSchema } from '../lib/validation';
 
 export default function Login() {
 	const [email, setEmail] = useState('');
@@ -14,6 +15,8 @@ export default function Login() {
 		e.preventDefault();
 		setErr(undefined);
 		try {
+			// client-side validation
+			loginSchema.parse({ email, password });
 			await login({ email, password });
 			nav('/');
 		} catch {

@@ -64,4 +64,22 @@ export function useDeleteStaff() {
 	});
 }
 
+export function useUploadStaffPhoto() {
+	const qc = useQueryClient();
+	return useMutation({
+		mutationFn: async ({ id, file }: { id: number; file: File }): Promise<{ id: number; photoUrl: string }> => {
+			const form = new FormData();
+			form.append('photo', file);
+			const { data } = await api.post(`/staff/${id}/photo`, form, {
+				headers: { 'Content-Type': 'multipart/form-data' },
+			});
+			return data;
+		},
+		onSuccess: (_d, vars) => {
+			qc.invalidateQueries({ queryKey: key.detail(vars.id) });
+			qc.invalidateQueries({ queryKey: key.all });
+		},
+	});
+}
+
 export default useStaffList;

@@ -6,6 +6,7 @@ import * as User from '../controllers/user.controller.js';
 import * as Admin from '../controllers/admin.controller.js';
 import * as AdminUsers from '../controllers/users.admin.controller.js';
 import { requireAuth, requireAdmin } from '../middleware/auth.js';
+import { staffPhotoUpload } from '../middleware/upload.js';
 
 const r: Router = Router();
 
@@ -27,6 +28,8 @@ r.get('/staff/:id', Staff.getStaffById);
 r.post('/staff', requireAuth, requireAdmin, Staff.createStaff);
 r.put('/staff/:id', requireAuth, requireAdmin, Staff.updateStaff);
 r.delete('/staff/:id', requireAuth, requireAdmin, Staff.deleteStaff);
+// Upload staff photo
+r.post('/staff/:id/photo', requireAuth, requireAdmin, staffPhotoUpload.single('photo'), Staff.uploadStaffPhoto);
 
 // Users
 r.get('/users/me', requireAuth, User.getMyProfile);
