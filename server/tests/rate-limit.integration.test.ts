@@ -20,14 +20,12 @@ describe('API rate limiting', () => {
     const attempts = 120;
     let got429 = false;
     for (let i = 0; i < attempts; i++) {
-      // eslint-disable-next-line no-await-in-loop
       const res = await request(app as any).get('/api/health');
       if (res.status === 429) {
         got429 = true;
         break;
       }
       // Small delay keeps test reasonably fast but still within same window
-      // eslint-disable-next-line no-await-in-loop
       await new Promise((r) => setTimeout(r, 2));
     }
     // We allow environments where MAX is > attempts to pass too.

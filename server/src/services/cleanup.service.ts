@@ -29,7 +29,8 @@ export async function runCleanupOnce() {
   const referenced = new Set<string>();
   const base = env.BASE_URL || 'http://localhost:3000';
   const prefix = `${base}/uploads`;
-  for (const s of services) if (s.imageUrl) referenced.add(s.imageUrl as string);
+  for (const s of services)
+    if (s.imageUrl) referenced.add(s.imageUrl as string);
   for (const s of staff) if (s.photoUrl) referenced.add(s.photoUrl as string);
 
   for (const f of files) {
@@ -43,7 +44,8 @@ export async function runCleanupOnce() {
 }
 
 export function startCleanup(intervalMs?: number) {
-  const ms = (intervalMs ?? Number(env.CLEANUP_INTERVAL_MS)) || 24 * 60 * 60 * 1000;
+  const ms =
+    (intervalMs ?? Number(env.CLEANUP_INTERVAL_MS)) || 24 * 60 * 60 * 1000;
   if (timer) clearInterval(timer);
   timer = setInterval(() => {
     runCleanupOnce().catch(() => {});

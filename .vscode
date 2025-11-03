@@ -5,10 +5,13 @@
       "name": "API (server) – tsx",
       "type": "node",
       "request": "launch",
-      "runtimeExecutable": "pnpm",
-      "runtimeArgs": ["--filter", "server", "dev"],
+      "runtimeExecutable": "yarn",
+      "runtimeArgs": [
+        "workspace",
+        "server",
+        "dev"
+      ],
       "console": "integratedTerminal"
     }
   ]
 }
-

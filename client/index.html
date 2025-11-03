@@ -1,13 +1,45 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React + TS</title>
+    <meta
+      name="description"
+      content="Bob's Garage - Fullstack React + Vite + TypeScript Application"
+    />
+    <meta name="theme-color" content="#0d1117" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="apple-touch-icon" href="/vite.svg" />
+    <!-- Manifest is optional; remove or add a valid file if needed -->
+    <title>Bob's Garage</title>
+    <!-- Preconnect for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Example: Google Fonts (customize as needed) -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Example: Global CSS (uncomment if needed) -->
+    <!-- <link rel="stylesheet" href="/src/styles/index.css" /> -->
   </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+  <body
+    style="
+      margin: 0;
+      min-height: 100vh;
+      background: #f8fafc;
+      color: #222;
+      font-family: 'Inter', system-ui, sans-serif;
+    "
+  >
+    <noscript>
+      <strong
+        >We're sorry but Bob's Garage app doesn't work properly without
+        JavaScript enabled. Please enable it to continue.</strong
+      >
+    </noscript>
+    <div id="root" tabindex="-1" aria-label="Application Root"></div>
+    <script type="module" src="/src/app/main.tsx"></script>
   </body>
 </html>

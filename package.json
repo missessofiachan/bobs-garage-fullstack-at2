@@ -1,35 +1,33 @@
 {
   "name": "bobs-garage-fullstack",
   "private": true,
+  "packageManager": "yarn@1.22.22",
+  "workspaces": [
+    "server",
+    "client"
+  ],
   "scripts": {
-    "dev": "concurrently \"pnpm -C server dev\" \"pnpm -C client dev\"",
-    "build": "pnpm -C server build && pnpm -C client build",
-    "lint": "eslint .",
-    "format": "prettier -w .",
-    "typecheck": "pnpm -C server typecheck && pnpm -C client typecheck",
-    "test": "pnpm -C server test && pnpm -C client test",
-    "seed": "pnpm -C server seed",
+    "dev": "concurrently \"yarn workspace server dev\" \"yarn workspace client dev\"",
+    "build": "yarn workspace server build && yarn workspace client build",
+    "lint": "biome lint .",
+    "format": "biome format --write .",
+    "typecheck": "yarn workspace server typecheck && yarn workspace client typecheck",
+    "test": "yarn workspace server test && yarn workspace client test",
+    "seed": "yarn workspace server seed",
     "prepare": "husky"
   },
   "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
     "@commitlint/cli": "^19.5.0",
     "@commitlint/config-conventional": "^19.5.0",
     "@types/node": "^24.3.0",
-    "concurrently": "^9.2.0",
-    "eslint": "^9.9.0",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-import": "^2.31.0",
-    "eslint-plugin-promise": "^6.5.1",
-    "eslint-plugin-security": "^3.0.1",
-    "eslint-plugin-unicorn": "^55.0.0",
+    "concurrently": "^9.1.2",
     "husky": "^9.1.5",
-    "lint-staged": "^15.2.10",
-    "prettier": "^3.3.3"
+    "lint-staged": "^15.2.10"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,json,md,css,scss}": [
-      "prettier -w",
-      "eslint --fix"
+      "biome check --write"
     ]
   }
 }

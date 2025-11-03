@@ -8,6 +8,11 @@ const r: RouterType = Router();
 
 r.get('/', requireAuth, User.getMyProfile);
 // For updating profile we accept a subset similar to staff update (email, active)
-r.put('/', requireAuth, validateBody(staffSchemas.staffUpdateSchema), User.updateProfile);
+r.put(
+  '/',
+  requireAuth,
+  validateBody(staffSchemas.staffUpdateSchema),
+  User.updateProfile,
+);
 
 export default r;

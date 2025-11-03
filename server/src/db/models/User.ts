@@ -1,5 +1,16 @@
-
-import { Table, Column, Model, DataType, Unique, Default, PrimaryKey, AutoIncrement, AllowNull, CreatedAt, UpdatedAt } from 'sequelize-typescript';
+import {
+  Table,
+  Column,
+  Model,
+  DataType,
+  Unique,
+  Default,
+  PrimaryKey,
+  AutoIncrement,
+  AllowNull,
+  CreatedAt,
+  UpdatedAt,
+} from 'sequelize-typescript';
 
 @Table({ tableName: 'users' })
 

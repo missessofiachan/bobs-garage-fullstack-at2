@@ -1,0 +1,20 @@
+# Docker Compose Override Example
+# Copy this file to 'docker-compose.override.yml' to customize for local development
+# This file will be automatically merged with docker-compose.yml
+
+version: '3.8'
+
+services:
+  mysql:
+    # Override port mapping if 3306 is in use
+    ports:
+      - "3307:3306"  # Use 3307 on host, 3306 in container
+    
+    # Add custom MySQL configuration
+    command: >
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --max-connections=200
+      --innodb-buffer-pool-size=1G
+
