@@ -1,4 +1,15 @@
-import { Table, Column, Model, DataType, PrimaryKey, AutoIncrement, AllowNull, Default, CreatedAt, UpdatedAt } from 'sequelize-typescript';
+import {
+  Table,
+  Column,
+  Model,
+  DataType,
+  PrimaryKey,
+  AutoIncrement,
+  AllowNull,
+  Default,
+  CreatedAt,
+  UpdatedAt,
+} from 'sequelize-typescript';
 
 @Table({ tableName: 'services' })
 
@@ -17,8 +28,8 @@ export class Service extends Model {
 
   // Service price (required, default: 0.00)
   @AllowNull(false)
-  @Default(0.00)
-  @Column(DataType.DECIMAL(10,2))
+  @Default(0.0)
+  @Column(DataType.DECIMAL(10, 2))
   declare price: number;
 
   // Description (optional)

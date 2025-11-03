@@ -40,3 +40,17 @@ export type AdminUserDTO = {
   active: boolean;
   createdAt?: string;
 };
+
+export type AdminUserCreateDTO = {
+  email: string;
+  password: string;
+  role?: Role;
+  active?: boolean;
+};
+
+export type AdminUserUpdateDTO = {
+  email?: string;
+  password?: string;
+  role?: Role;
+  active?: boolean;
+};

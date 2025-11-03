@@ -1,17 +1,16 @@
 //// startup (reads env, connect DB, listen)
-import pino from 'pino';
+import 'reflect-metadata';
 import type { Server } from 'http';
 import { env } from './config/env.js';
 import { sequelize } from './config/sequelize.js';
 import { createApp } from './app.js';
 import cleanupService from './services/cleanup.service.js';
-
-const logger = pino(env.NODE_ENV === 'development' ? { transport: { target: 'pino-pretty' } } : {});
+import { winstonLogger } from './config/winston.js';
 
 // Ensure PORT is a number when read from env
 const PORT = Number(env.PORT);
 if (!Number.isFinite(PORT) || PORT <= 0) {
-  logger.error({ port: env.PORT }, 'Invalid PORT; must be a positive number');
+  winstonLogger.error(`Invalid PORT ${env.PORT}; must be a positive number`);
   process.exit(1);
 }
 
@@ -19,41 +18,42 @@ let server: Server | undefined;
 let isShuttingDown = false;
 
 async function start() {
-  logger.info({ env: env.NODE_ENV, pid: process.pid }, 'Starting application');
+  winstonLogger.info(`Starting application [${env.NODE_ENV}] (PID: ${process.pid})`);
 
   try {
     await sequelize.authenticate();
-    logger.info('Database connection OK');
+    winstonLogger.info('Database connection OK');
 
     if (env.NODE_ENV === 'development') {
-      logger.info('Running sequelize.sync() (development only)');
+      winstonLogger.info('Running sequelize.sync() (development only)');
       await sequelize.sync();
     }
 
-    const app = createApp(logger);
+    const app = createApp();
 
     server = app.listen(PORT, () => {
       const addr = server?.address();
-      const host = typeof addr === 'object' && addr ? addr.address : 'localhost';
+      const host =
+        typeof addr === 'object' && addr ? addr.address : 'localhost';
       const port = typeof addr === 'object' && addr ? addr.port : PORT;
-      logger.info({ host, port }, `API listening`);
+      winstonLogger.info(`API listening on ${host}:${port}`);
       // start background cleanup job
       try {
         cleanupService.startCleanup();
-        logger.info('Started uploads cleanup job');
+        winstonLogger.info('Started uploads cleanup job');
       } catch (err) {
-        logger.warn({ err }, 'Failed to start cleanup job');
+        winstonLogger.warn(`Failed to start cleanup job: ${err}`);
       }
     });
 
     server.on('error', (err: NodeJS.ErrnoException) => {
-      logger.error({ err }, 'Server error');
+      winstonLogger.error(`Server error: ${err.message}`);
       if (!isShuttingDown) {
         setTimeout(() => process.exit(1), 100);
       }
     });
   } catch (err) {
-    logger.error({ err }, 'Failed to start application');
+    winstonLogger.error(`Failed to start application: ${err}`);
     setTimeout(() => process.exit(1), 100);
   }
 }
@@ -64,12 +64,12 @@ async function shutdown(signal?: string) {
   if (isShuttingDown) return;
   isShuttingDown = true;
 
-  logger.info({ signal }, 'Shutting down');
+  winstonLogger.info(`Shutting down due to signal: ${signal}`);
 
   // Force exit if shutdown hangs
   const forceTimeout = Number(env.SHUTDOWN_TIMEOUT_MS) || 10000;
   const forceKill = setTimeout(() => {
-    logger.warn('Forcing shutdown after timeout');
+    winstonLogger.warn('Forcing shutdown after timeout');
     process.exit(1);
   }, forceTimeout);
 
@@ -81,14 +81,16 @@ async function shutdown(signal?: string) {
     }
 
     await sequelize.close();
-  // stop cleanup job when shutting down
-  try { cleanupService.stopCleanup(); } catch {}
+    // stop cleanup job when shutting down
+    try {
+      cleanupService.stopCleanup();
+    } catch {}
     clearTimeout(forceKill);
-    logger.info('Shutdown complete');
+    winstonLogger.info('Shutdown complete');
     process.exit(0);
   } catch (err) {
     clearTimeout(forceKill);
-    logger.error({ err }, 'Error during shutdown');
+    winstonLogger.error(`Error during shutdown: ${err}`);
     process.exit(1);
   }
 }
@@ -102,12 +104,16 @@ process.on('SIGUSR2', () => {
 });
 
 process.on('uncaughtException', (err) => {
-  logger.fatal({ err }, 'uncaughtException');
+  winstonLogger.error(`Uncaught exception: ${err.message}`, err);
   // attempt graceful shutdown, then exit
-  shutdown('uncaughtException').catch(() => setTimeout(() => process.exit(1), 100));
+  shutdown('uncaughtException').catch(() =>
+    setTimeout(() => process.exit(1), 100),
+  );
 });
 
 process.on('unhandledRejection', (reason) => {
-  logger.fatal({ reason }, 'unhandledRejection');
-  shutdown('unhandledRejection').catch(() => setTimeout(() => process.exit(1), 100));
+  winstonLogger.error(`Unhandled rejection: ${reason}`);
+  shutdown('unhandledRejection').catch(() =>
+    setTimeout(() => process.exit(1), 100),
+  );
 });

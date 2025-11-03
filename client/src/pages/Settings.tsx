@@ -1,14 +1,22 @@
-import usePageTitle from '../a/usePageTitle';
+import usePageTitle from '../hooks/usePageTitle.ts';
 import { Form } from 'react-bootstrap';
-import DSButton from '../components/ui/ds/Button';
-import { useAppDispatch, useAppSelector } from '../a/hooks';
-import { setServicesSort, setServicesView, setThemeDefault, type ThemeChoice, type ServicesSort, type ServicesView } from '../slices/preferences.slice';
-import { vars } from '../styles/theme.css';
+import DSButton from '../components/buttons/Button';
+import { useAppDispatch, useAppSelector } from '../hooks/hooks';
+import type { RootState } from '../store/store';
+import {
+  setServicesSort,
+  setServicesView,
+  setThemeDefault,
+  type ThemeChoice,
+  type ServicesSort,
+  type ServicesView,
+} from '../slices/preferences.slice';
+import { vars } from '../styles/theme.css.ts';
 
 export default function Settings() {
   usePageTitle('Settings');
   const dispatch = useAppDispatch();
-  const prefs = useAppSelector(s => s.preferences);
+  const prefs = useAppSelector((s: RootState) => s.preferences);
 
   const onSave = (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,7 +33,9 @@ export default function Settings() {
           <Form.Select
             aria-label="Theme default"
             value={prefs.theme}
-            onChange={e => dispatch(setThemeDefault(e.target.value as ThemeChoice))}
+            onChange={(e) =>
+              dispatch(setThemeDefault(e.target.value as ThemeChoice))
+            }
             className="mb-3"
           >
             <option value="light">Light</option>
@@ -35,12 +45,16 @@ export default function Settings() {
         </fieldset>
 
         <fieldset>
-          <legend style={{ color: vars.color.muted }}>Services preferences</legend>
+          <legend style={{ color: vars.color.muted }}>
+            Services preferences
+          </legend>
           <Form.Group className="mb-3">
             <Form.Label>Default sort</Form.Label>
             <Form.Select
               value={prefs.servicesSort}
-              onChange={e => dispatch(setServicesSort(e.target.value as ServicesSort))}
+              onChange={(e) =>
+                dispatch(setServicesSort(e.target.value as ServicesSort))
+              }
             >
               <option value="price-asc">Price: Low → High</option>
               <option value="price-desc">Price: High → Low</option>
@@ -50,7 +64,9 @@ export default function Settings() {
             <Form.Label>Default view</Form.Label>
             <Form.Select
               value={prefs.servicesView}
-              onChange={e => dispatch(setServicesView(e.target.value as ServicesView))}
+              onChange={(e) =>
+                dispatch(setServicesView(e.target.value as ServicesView))
+              }
             >
               <option value="grid">Grid</option>
               <option value="list">List</option>
@@ -58,7 +74,9 @@ export default function Settings() {
           </Form.Group>
         </fieldset>
 
-  <DSButton type="submit" tone="primary">Save</DSButton>
+        <DSButton type="submit" tone="primary">
+          Save
+        </DSButton>
       </Form>
     </div>
   );

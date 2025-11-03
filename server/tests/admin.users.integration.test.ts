@@ -28,9 +28,17 @@ describe('Admin Users CRUD integration', () => {
 
   beforeAll(async () => {
     await sequelize.sync();
-    const a = await User.create({ email: adminEmail, passwordHash: await hashPasswordFn(adminPassword), role: 'admin' } as any);
+    const a = await User.create({
+      email: adminEmail,
+      passwordHash: await hashPasswordFn(adminPassword),
+      role: 'admin',
+    } as any);
     adminId = a.id;
-    const u = await User.create({ email: existingUserEmail, passwordHash: await hashPasswordFn(existingUserPassword), role: 'user' } as any);
+    const u = await User.create({
+      email: existingUserEmail,
+      passwordHash: await hashPasswordFn(existingUserPassword),
+      role: 'user',
+    } as any);
     existingUserId = u.id;
   });
 
@@ -40,7 +48,11 @@ describe('Admin Users CRUD integration', () => {
   });
 
   test('create user: validation errors and success then conflict', async () => {
-    const adminAccess = await loginAndGetAccess(agent, adminEmail, adminPassword);
+    const adminAccess = await loginAndGetAccess(
+      agent,
+      adminEmail,
+      adminPassword,
+    );
 
     // invalid email
     const badEmail = await agent
@@ -53,7 +65,11 @@ describe('Admin Users CRUD integration', () => {
     const shortPwd = await agent
       .post('/api/admin/users')
       .set('Authorization', `Bearer ${adminAccess}`)
-      .send({ email: `ok+${Math.floor(Math.random() * 1e6)}@example.com`, password: 'short', role: 'user' });
+      .send({
+        email: `ok+${Math.floor(Math.random() * 1e6)}@example.com`,
+        password: 'short',
+        role: 'user',
+      });
     expect(shortPwd.status).toBe(400);
 
     // success
@@ -61,7 +77,12 @@ describe('Admin Users CRUD integration', () => {
     const createOk = await agent
       .post('/api/admin/users')
       .set('Authorization', `Bearer ${adminAccess}`)
-      .send({ email: newEmail, password: 'StrongPwd!123', role: 'user', active: true });
+      .send({
+        email: newEmail,
+        password: 'StrongPwd!123',
+        role: 'user',
+        active: true,
+      });
     expect(createOk.status).toBe(201);
     const newUserId = createOk.body.id as number;
 
@@ -87,7 +108,11 @@ describe('Admin Users CRUD integration', () => {
   });
 
   test('get user by id: 400 invalid id and 404 missing', async () => {
-    const adminAccess = await loginAndGetAccess(agent, adminEmail, adminPassword);
+    const adminAccess = await loginAndGetAccess(
+      agent,
+      adminEmail,
+      adminPassword,
+    );
     const badId = await agent
       .get('/api/admin/users/abc')
       .set('Authorization', `Bearer ${adminAccess}`);
@@ -100,7 +125,11 @@ describe('Admin Users CRUD integration', () => {
   });
 
   test('update user: validation, 404 missing, email conflict and success', async () => {
-    const adminAccess = await loginAndGetAccess(agent, adminEmail, adminPassword);
+    const adminAccess = await loginAndGetAccess(
+      agent,
+      adminEmail,
+      adminPassword,
+    );
 
     // create a user to update
     const email = `upd+${Math.floor(Math.random() * 1e9)}@example.com`;
@@ -155,7 +184,11 @@ describe('Admin Users CRUD integration', () => {
   });
 
   test('delete user: 400 invalid id and 404 missing', async () => {
-    const adminAccess = await loginAndGetAccess(agent, adminEmail, adminPassword);
+    const adminAccess = await loginAndGetAccess(
+      agent,
+      adminEmail,
+      adminPassword,
+    );
 
     const badId = await agent
       .delete('/api/admin/users/abc')

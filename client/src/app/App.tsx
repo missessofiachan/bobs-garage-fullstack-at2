@@ -1,14 +1,14 @@
 import { Suspense, lazy } from 'react';
 import { Container } from 'react-bootstrap';
 import { Routes, Route } from 'react-router-dom';
-import ProtectedRoute, { AdminRoute } from '../components/ProtectedRoute';
-import NavBar from '../components/layout/NavBar';
+import ProtectedRoute, { AdminRoute } from '../routes/ProtectedRoute';
+import NavBar from '../components/NavBar';
 import ErrorBoundary from '../pages/Error';
 // import Loading from './components/ui/Loading';
 import Loading from '../components/ui/Loading';
-import ScrollToTop from '../a/ScrollToTop';
-import Footer from '../components/layout/Footer';
-import { lightTheme, darkTheme } from './styles/theme.css';
+import ScrollToTop from './ScrollToTop.tsx';
+import Footer from '../components/Footer';
+import { lightTheme, darkTheme } from '../styles/theme.css.ts';
 
 // Lazy-load pages to reduce initial bundle size
 const Home = lazy(() => import('../pages/Home'));
@@ -28,7 +28,13 @@ const NotFound = lazy(() => import('../pages/NotFound'));
 
 export default function App() {
   return (
-    <div className={document.documentElement.getAttribute('data-bs-theme') === 'light' ? lightTheme : darkTheme}>
+    <div
+      className={
+        document.documentElement.getAttribute('data-bs-theme') === 'light'
+          ? lightTheme
+          : darkTheme
+      }
+    >
       <NavBar />
       <ErrorBoundary>
         <ScrollToTop />
@@ -41,30 +47,61 @@ export default function App() {
               <Route path="/staff" element={<Staff />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
-              <Route path="/admin" element={<Admin />} />
+              <Route
+                path="/admin"
+                element={
+                  <AdminRoute>
+                    <Admin />
+                  </AdminRoute>
+                }
+              />
               <Route
                 path="/admin/dashboard"
-                element={<AdminRoute><Dashboard /></AdminRoute>}
+                element={
+                  <AdminRoute>
+                    <Dashboard />
+                  </AdminRoute>
+                }
               />
               <Route
                 path="/profile"
-                element={<ProtectedRoute><Profile /></ProtectedRoute>}
+                element={
+                  <ProtectedRoute>
+                    <Profile />
+                  </ProtectedRoute>
+                }
               />
               <Route
                 path="/settings"
-                element={<ProtectedRoute><Settings /></ProtectedRoute>}
+                element={
+                  <ProtectedRoute>
+                    <Settings />
+                  </ProtectedRoute>
+                }
               />
               <Route
                 path="/admin/services"
-                element={<AdminRoute><ServicesAdmin /></AdminRoute>}
+                element={
+                  <AdminRoute>
+                    <ServicesAdmin />
+                  </AdminRoute>
+                }
               />
               <Route
                 path="/admin/staff"
-                element={<AdminRoute><StaffAdmin /></AdminRoute>}
+                element={
+                  <AdminRoute>
+                    <StaffAdmin />
+                  </AdminRoute>
+                }
               />
               <Route
                 path="/admin/users"
-                element={<AdminRoute><UsersAdmin /></AdminRoute>}
+                element={
+                  <AdminRoute>
+                    <UsersAdmin />
+                  </AdminRoute>
+                }
               />
               <Route path="*" element={<NotFound />} />
             </Routes>

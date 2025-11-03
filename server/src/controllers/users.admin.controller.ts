@@ -1,7 +1,13 @@
 import type { Request, Response } from 'express';
 import { z } from 'zod';
+import type { UserQueryParams, CreateUserRequest, UpdateUserRequest } from '../types/requests.js';
 import { User } from '../db/models/User.js';
 import { hashPassword } from '../utils/hash.js';
+import {
+  handleControllerError,
+  sendNotFound,
+} from '../utils/errors.js';
+import { parseIdParam } from '../utils/validation.js';
 
 const createSchema = z.object({
   email: z.string().email(),
@@ -17,73 +23,123 @@ const updateSchema = z.object({
   active: z.boolean().optional(),
 });
 
-export async function listUsers(_req: Request, res: Response) {
+export async function listUsers(req: Request, res: Response) {
   try {
-    const users = await User.findAll({ attributes: ['id', 'email', 'role', 'active', 'createdAt'] });
-    res.json(users);
+    const query = req.query as unknown as UserQueryParams;
+    const { page = 1, limit = 20, role, active } = query;
+    
+    const where: Record<string, unknown> = {};
+    if (role) where.role = role;
+    if (typeof active !== 'undefined') where.active = active;
+    
+    const offset = (Number(page) - 1) * Number(limit);
+    const actualLimit = Math.min(Number(limit), 100); // Cap at 100 per page
+    
+    const { count, rows: users } = await User.findAndCountAll({
+      where,
+      attributes: ['id', 'email', 'role', 'active', 'createdAt'],
+      limit: actualLimit,
+      offset,
+      order: [['createdAt', 'DESC']],
+    });
+    
+    res.json({
+      data: users,
+      pagination: {
+        page: Number(page),
+        limit: actualLimit,
+        total: count,
+        pages: Math.ceil(count / actualLimit),
+      },
+    });
   } catch (err) {
-    res.status(500).json({ message: 'Internal server error' });
+    handleControllerError(err, res);
   }
 }
 
 export async function getUserById(req: Request, res: Response) {
   try {
-    const id = Number(req.params.id);
-    if (!Number.isFinite(id)) return res.status(400).json({ message: 'Invalid id' });
-    const user = await User.findByPk(id, { attributes: ['id', 'email', 'role', 'active', 'createdAt'] });
-    if (!user) return res.status(404).json({ message: 'Not found' });
+    const id = parseIdParam(req, res);
+    if (id === null) return; // Error response already sent
+
+    const user = await User.findByPk(id, {
+      attributes: ['id', 'email', 'role', 'active', 'createdAt'],
+    });
+    if (!user) return sendNotFound(res);
+
     res.json(user);
   } catch (err) {
-    res.status(500).json({ message: 'Internal server error' });
+    handleControllerError(err, res);
   }
 }
 
 export async function createUser(req: Request, res: Response) {
   try {
-    const payload = createSchema.parse(req.body);
+    const payload = createSchema.parse(req.body) as CreateUserRequest;
     const passwordHash = await hashPassword(payload.password);
-    const user = await User.create({ email: payload.email, passwordHash, role: payload.role, active: payload.active });
-    res.status(201).json({ id: user.id, email: user.email, role: user.role, active: user.active });
+    const user = await User.create({
+      email: payload.email,
+      passwordHash,
+      role: payload.role,
+      active: payload.active,
+    });
+    res.status(201).json({
+      id: user.id,
+      email: user.email,
+      role: user.role,
+      active: user.active,
+    });
   } catch (err) {
-    if (err instanceof z.ZodError) return res.status(400).json({ message: 'Validation error', errors: err.issues });
-    if (typeof err === 'object' && err && 'name' in err && (err as any).name === 'SequelizeUniqueConstraintError') {
-      return res.status(409).json({ message: 'Email already in use' });
-    }
-    res.status(500).json({ message: 'Internal server error' });
+    handleControllerError(err, res, {
+      uniqueConstraintMessage: 'Email already in use',
+    });
   }
 }
 
 export async function updateUser(req: Request, res: Response) {
   try {
-    const id = Number(req.params.id);
-    if (!Number.isFinite(id)) return res.status(400).json({ message: 'Invalid id' });
-    const payload = updateSchema.parse(req.body);
+    const id = parseIdParam(req, res);
+    if (id === null) return; // Error response already sent
+
+    const payload = updateSchema.parse(req.body) as UpdateUserRequest;
     const user = await User.findByPk(id);
-    if (!user) return res.status(404).json({ message: 'Not found' });
+    if (!user) return sendNotFound(res);
+
     if (payload.password) {
       const passwordHash = await hashPassword(payload.password);
       await user.update({ passwordHash });
     }
-    await user.update({ email: payload.email ?? user.email, role: payload.role ?? user.role, active: payload.active ?? user.active });
-    res.json({ id: user.id, email: user.email, role: user.role, active: user.active });
+    
+    await user.update({
+      email: payload.email ?? user.email,
+      role: payload.role ?? user.role,
+      active: payload.active ?? user.active,
+    });
+    
+    res.json({
+      id: user.id,
+      email: user.email,
+      role: user.role,
+      active: user.active,
+    });
   } catch (err) {
-    if (err instanceof z.ZodError) return res.status(400).json({ message: 'Validation error', errors: err.issues });
-    if (typeof err === 'object' && err && 'name' in err && (err as any).name === 'SequelizeUniqueConstraintError') {
-      return res.status(409).json({ message: 'Email already in use' });
-    }
-    res.status(500).json({ message: 'Internal server error' });
+    handleControllerError(err, res, {
+      uniqueConstraintMessage: 'Email already in use',
+    });
   }
 }
 
 export async function deleteUser(req: Request, res: Response) {
   try {
-    const id = Number(req.params.id);
-    if (!Number.isFinite(id)) return res.status(400).json({ message: 'Invalid id' });
+    const id = parseIdParam(req, res);
+    if (id === null) return; // Error response already sent
+
     const user = await User.findByPk(id);
-    if (!user) return res.status(404).json({ message: 'Not found' });
+    if (!user) return sendNotFound(res);
+
     await user.destroy();
     res.status(204).send();
   } catch (err) {
-    res.status(500).json({ message: 'Internal server error' });
+    handleControllerError(err, res);
   }
 }

@@ -15,12 +15,12 @@ async function run() {
       await sequelize.sync();
     }
 
-  console.log('Running user seeder...');
-  await seedUsers();
-  console.log('Running staff seeder...');
-  await seedStaff();
-  console.log('Running services seeder...');
-  await seedServices();
+    console.log('Running user seeder...');
+    await seedUsers();
+    console.log('Running staff seeder...');
+    await seedStaff();
+    console.log('Running services seeder...');
+    await seedServices();
 
     console.log('Seeding complete');
     process.exit(0);

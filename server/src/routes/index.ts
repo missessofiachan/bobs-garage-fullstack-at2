@@ -6,31 +6,35 @@ import * as Staff from '../controllers/staff.controller.js';
 import * as Admin from '../controllers/admin.controller.js';
 import * as AdminUsers from '../controllers/users.admin.controller.js';
 import { requireAuth, requireAdmin } from '../middleware/auth.js';
-import { staffPhotoUpload } from '../middleware/upload.js';
+import { authLimiter } from '../middleware/rateLimit.js';
 import servicesRouter from './services.routes.js';
+import staffRouter from './staff.routes.js';
 import meRouter from './me.routes.js';
+import favoritesRouter from './favorites.routes.js';
 
 const r: Router = Router();
 
-// Auth
-r.post('/auth/register', validateBody(authSchemas.registerSchema), Auth.register);
-r.post('/auth/login', validateBody(authSchemas.loginSchema), Auth.login);
-r.post('/auth/refresh', Auth.refresh);
+// Auth (with stricter rate limiting)
+r.post(
+  '/auth/register',
+  authLimiter,
+  validateBody(authSchemas.registerSchema),
+  Auth.register,
+);
+r.post('/auth/login', authLimiter, validateBody(authSchemas.loginSchema), Auth.login);
+r.post('/auth/refresh', authLimiter, Auth.refresh);
 
 // Services mounted router
 r.use('/services', servicesRouter);
 
 // Staff
-r.get('/staff', Staff.listStaff);
-r.get('/staff/:id', Staff.getStaffById);
-r.post('/staff', requireAuth, requireAdmin, Staff.createStaff);
-r.put('/staff/:id', requireAuth, requireAdmin, Staff.updateStaff);
-r.delete('/staff/:id', requireAuth, requireAdmin, Staff.deleteStaff);
-// Upload staff photo
-r.post('/staff/:id/photo', requireAuth, requireAdmin, staffPhotoUpload.single('photo'), Staff.uploadStaffPhoto);
+r.use('/staff', staffRouter);
 
 // Users (me)
 r.use('/users/me', meRouter);
+
+// Favorites
+r.use('/users/me/favorites', favoritesRouter);
 
 // Admin
 r.get('/admin/metrics', requireAuth, requireAdmin, Admin.getMetrics);
@@ -44,4 +48,3 @@ r.delete('/admin/users/:id', requireAuth, requireAdmin, AdminUsers.deleteUser);
 r.get('/health', (_req, res) => res.status(200).json({ status: 'ok' }));
 
 export default r;
-

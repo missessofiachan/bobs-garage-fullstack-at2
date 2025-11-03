@@ -21,7 +21,11 @@ describe('Validation edge cases across endpoints', () => {
 
   beforeAll(async () => {
     await sequelize.sync();
-    await User.create({ email: adminEmail, passwordHash: await hashPasswordFn(adminPassword), role: 'admin' } as any);
+    await User.create({
+      email: adminEmail,
+      passwordHash: await hashPasswordFn(adminPassword),
+      role: 'admin',
+    } as any);
   });
 
   test('services: missing body fields -> 400; price must be nonnegative; imageUrl must be URL', async () => {
@@ -62,7 +66,9 @@ describe('Validation edge cases across endpoints', () => {
 
   test('users: update profile invalid email -> 400; unauthorized without token', async () => {
     // No token
-    const unauth = await agent.put('/api/users/me').send({ email: 'x@example.com' });
+    const unauth = await agent
+      .put('/api/users/me')
+      .send({ email: 'x@example.com' });
     expect(unauth.status).toBe(401);
 
     const access = await loginAndGetAccess(agent, adminEmail, adminPassword);

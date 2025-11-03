@@ -21,9 +21,9 @@
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "esModuleInterop": true,
-  "types": ["node"],
-  "target": "ES2022",
-  "lib": ["ES2022"],
+    "types": ["node"],
+    "target": "ES2022",
+    "lib": ["ES2022"],
 
     // For nodejs:
     // "lib": ["esnext"],
@@ -47,9 +47,7 @@
     "moduleDetection": "force",
     "skipLibCheck": true,
 
-
     "resolveJsonModule": true
-  }
-,
+  },
   "include": ["src/**/*"]
 }

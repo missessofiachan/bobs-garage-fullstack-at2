@@ -1,133 +1,172 @@
 import { z } from 'zod';
 import { Service } from '../db/models/Service.js';
-import { UPLOADS_PUBLIC_PATH } from '../middleware/upload.js';
 import { Op } from 'sequelize';
-import fs from 'node:fs/promises';
-import path from 'node:path';
-import { ROOT_UPLOAD_DIR_ABS } from '../middleware/upload.js';
 import type { Request, Response } from 'express';
+import type {
+  CreateServiceRequest,
+  UpdateServiceRequest,
+  ServiceQueryParams,
+  FileUploadRequest,
+} from '../types/requests.js';
+import {
+  handleControllerError,
+  sendBadRequest,
+  sendNotFound,
+} from '../utils/errors.js';
+import { parseIdParam } from '../utils/validation.js';
+import {
+  generatePublicUrl,
+  getUploadedFilename,
+  deleteOldUpload,
+} from '../services/upload.service.js';
 
 const serviceSchema = z.object({
   name: z.string().min(2),
   price: z.coerce.number().nonnegative(),
   description: z.string().min(2),
   imageUrl: z.string().url().optional().default(''),
-  published: z.boolean().default(true)
+  published: z.boolean().default(true),
 });
 
 // List all services
 export async function listServices(req: Request, res: Response) {
   try {
     // Filters: active (published), q (name contains), minPrice, maxPrice, sort
-    const { q, minPrice, maxPrice, active, sort } = req.query as Record<string, string | undefined>;
-    const where: any = {};
-    if (typeof active !== 'undefined') where.published = ['1', 'true', 'yes'].includes(String(active).toLowerCase());
+    const query = req.query as unknown as ServiceQueryParams;
+    const { q, minPrice, maxPrice, active, sort, page = 1, limit = 20 } = query;
+    
+    const where: Record<string, unknown> = {};
+    if (typeof active !== 'undefined')
+      where.published = ['1', 'true', 'yes'].includes(
+        String(active).toLowerCase(),
+      );
     if (q) where.name = { [Op.like]: `%${q}%` };
-    if (minPrice || maxPrice) where.price = {};
-    if (minPrice) where.price[Op.gte] = Number(minPrice);
-    if (maxPrice) where.price[Op.lte] = Number(maxPrice);
-    let order: any = [['name', 'ASC']];
+    if (minPrice || maxPrice) {
+      const priceWhere: Record<string, unknown> = {};
+      if (minPrice) priceWhere[Op.gte as unknown as string] = Number(minPrice);
+      if (maxPrice) priceWhere[Op.lte as unknown as string] = Number(maxPrice);
+      where.price = priceWhere;
+    }
+    
+    let order: [string, 'ASC' | 'DESC'][] = [['name', 'ASC']];
     if (sort) {
       const [f, dir] = String(sort).split(':');
       const field: string = f || 'name';
       const allowed = new Set(['name', 'price', 'createdAt']);
-      const direction = String(dir || 'ASC').toUpperCase() === 'DESC' ? 'DESC' : 'ASC';
+      const direction =
+        String(dir || 'ASC').toUpperCase() === 'DESC' ? 'DESC' : 'ASC';
       if (allowed.has(field)) order = [[field, direction]];
     }
-    const services = await Service.findAll({ where, order });
-    res.json(services);
+    // Pagination
+    const offset = (Number(page) - 1) * Number(limit);
+    const actualLimit = Math.min(Number(limit), 100); // Cap at 100 per page
+    
+    const { count, rows: services } = await Service.findAndCountAll({
+      where,
+      order,
+      limit: actualLimit,
+      offset,
+    });
+    
+    res.json({
+      data: services,
+      pagination: {
+        page: Number(page),
+        limit: actualLimit,
+        total: count,
+        pages: Math.ceil(count / actualLimit),
+      },
+    });
   } catch (err) {
-    res.status(500).json({ message: 'Internal server error' });
+    handleControllerError(err, res);
   }
 }
 
 // Get a single service by ID
 export async function getServiceById(req: Request, res: Response) {
   try {
-    const id = Number(req.params.id);
-    if (!Number.isFinite(id)) return res.status(400).json({ message: 'Invalid id' });
+    const id = parseIdParam(req, res);
+    if (id === null) return; // Error response already sent
+
     const s = await Service.findByPk(id);
-    if (!s) return res.status(404).json({ message: 'Not found' });
+    if (!s) return sendNotFound(res);
+
     res.json(s);
   } catch (err) {
-    res.status(500).json({ message: 'Internal server error' });
+    handleControllerError(err, res);
   }
 }
+
 // Create a new service with validation and error handling
 export async function createService(req: Request, res: Response) {
   try {
-    const body = req.body as any;
-    const s = await Service.create(body);
+    const body = req.body as CreateServiceRequest;
+    const s = await Service.create(body as unknown as Parameters<typeof Service.create>[0]);
     res.status(201).json(s);
   } catch (err) {
-    if (typeof err === 'object' && err && 'name' in err && (err as any).name === 'SequelizeUniqueConstraintError') {
-      return res.status(409).json({ message: 'Duplicate entry' });
-    }
-    res.status(500).json({ message: 'Internal server error' });
+    handleControllerError(err, res, {
+      uniqueConstraintMessage: 'Duplicate entry',
+    });
   }
 }
+
 // Update a service by ID with validation and error handling
 export async function updateService(req: Request, res: Response) {
   try {
-  const id = Number(req.params.id);
-  if (!Number.isFinite(id)) return res.status(400).json({ message: 'Invalid id' });
-    const body = req.body as any;
+    const id = parseIdParam(req, res);
+    if (id === null) return; // Error response already sent
+
+    const body = req.body as UpdateServiceRequest;
     const s = await Service.findByPk(id);
-    if (!s) return res.status(404).json({ message: 'Not found' });
+    if (!s) return sendNotFound(res);
+
     await s.update(body);
     res.json(s);
   } catch (err) {
-    if (typeof err === 'object' && err && 'name' in err && (err as any).name === 'SequelizeUniqueConstraintError') {
-      return res.status(409).json({ message: 'Duplicate entry' });
-    }
-    res.status(500).json({ message: 'Internal server error' });
+    handleControllerError(err, res, {
+      uniqueConstraintMessage: 'Duplicate entry',
+    });
   }
 }
+
 // Delete a service by ID with error handling
 export async function deleteService(req: Request, res: Response) {
   try {
-  const id = Number(req.params.id);
-  if (!Number.isFinite(id)) return res.status(400).json({ message: 'Invalid id' });
+    const id = parseIdParam(req, res);
+    if (id === null) return; // Error response already sent
+
     const s = await Service.findByPk(id);
-    if (!s) return res.status(404).json({ message: 'Not found' });
+    if (!s) return sendNotFound(res);
+
     await s.destroy();
     res.status(204).send();
   } catch (err) {
-    res.status(500).json({ message: 'Internal server error' });
+    handleControllerError(err, res);
   }
 }
 
 // Upload a service image and set imageUrl
 export async function uploadServiceImage(req: Request, res: Response) {
   try {
-    const id = Number(req.params.id);
-    if (!Number.isFinite(id)) return res.status(400).json({ message: 'Invalid id' });
-    const file = (req as any).file as Express.Multer.File | undefined;
-    if (!file) return res.status(400).json({ message: 'No file uploaded' });
-    const s = await Service.findByPk(id);
-    if (!s) return res.status(404).json({ message: 'Not found' });
-    const base = process.env.BASE_URL || 'http://localhost:3000';
-    const publicUrl = `${base}${UPLOADS_PUBLIC_PATH}/services/${file.filename}`;
-    // Attempt to remove previous local file if it's under our uploads dir
-    try {
-      const prev = s.imageUrl;
-      if (prev && typeof prev === 'string') {
-        const uploadsPrefix = `${base}${UPLOADS_PUBLIC_PATH}`;
-        if (prev.startsWith(uploadsPrefix)) {
-          const relative = prev.slice(uploadsPrefix.length);
-          const candidate = path.resolve(path.join(ROOT_UPLOAD_DIR_ABS, '.' + relative));
-          if (candidate.startsWith(path.resolve(ROOT_UPLOAD_DIR_ABS))) {
-            await fs.unlink(candidate).catch(() => {});
-          }
-        }
-      }
-    } catch (err) {
-      // ignore cleanup errors
+    const id = parseIdParam(req, res);
+    if (id === null) return; // Error response already sent
+
+    const filename = getUploadedFilename((req as unknown as FileUploadRequest).file);
+    if (!filename) {
+      return sendBadRequest(res, 'No file uploaded');
     }
 
+    const s = await Service.findByPk(id);
+    if (!s) return sendNotFound(res);
+
+    // Delete old image if it exists
+    await deleteOldUpload(s.imageUrl);
+
+    const publicUrl = generatePublicUrl(filename, 'services');
     await s.update({ imageUrl: publicUrl });
+    
     res.status(200).json({ id: s.id, imageUrl: publicUrl });
   } catch (err) {
-    res.status(500).json({ message: 'Internal server error' });
+    handleControllerError(err, res);
   }
 }

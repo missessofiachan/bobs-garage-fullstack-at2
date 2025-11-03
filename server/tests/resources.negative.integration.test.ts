@@ -22,11 +22,19 @@ describe('Additional negative validations for services/staff', () => {
 
   beforeAll(async () => {
     await sequelize.sync();
-    await User.create({ email: adminEmail, passwordHash: await hashPasswordFn(adminPassword), role: 'admin' } as any);
+    await User.create({
+      email: adminEmail,
+      passwordHash: await hashPasswordFn(adminPassword),
+      role: 'admin',
+    } as any);
   });
 
   test('services: invalid id param on get/update/delete -> 400', async () => {
-    const adminAccess = await loginAndGetAccess(agent, adminEmail, adminPassword);
+    const adminAccess = await loginAndGetAccess(
+      agent,
+      adminEmail,
+      adminPassword,
+    );
 
     const g = await agent.get('/api/services/abc');
     expect([400, 404]).toContain(g.status);
@@ -44,7 +52,11 @@ describe('Additional negative validations for services/staff', () => {
   });
 
   test('services: update with invalid payload -> 400', async () => {
-    const adminAccess = await loginAndGetAccess(agent, adminEmail, adminPassword);
+    const adminAccess = await loginAndGetAccess(
+      agent,
+      adminEmail,
+      adminPassword,
+    );
     // first create a service
     const c = await agent
       .post('/api/services')
@@ -68,7 +80,11 @@ describe('Additional negative validations for services/staff', () => {
   });
 
   test('staff: invalid id param on get/update/delete -> 400', async () => {
-    const adminAccess = await loginAndGetAccess(agent, adminEmail, adminPassword);
+    const adminAccess = await loginAndGetAccess(
+      agent,
+      adminEmail,
+      adminPassword,
+    );
 
     const g = await agent.get('/api/staff/abc');
     expect([400, 404]).toContain(g.status);
@@ -86,7 +102,11 @@ describe('Additional negative validations for services/staff', () => {
   });
 
   test('staff: create/update invalid payload -> 400', async () => {
-    const adminAccess = await loginAndGetAccess(agent, adminEmail, adminPassword);
+    const adminAccess = await loginAndGetAccess(
+      agent,
+      adminEmail,
+      adminPassword,
+    );
 
     // invalid url
     const cBad = await agent
@@ -99,7 +119,12 @@ describe('Additional negative validations for services/staff', () => {
     const c = await agent
       .post('/api/staff')
       .set('Authorization', `Bearer ${adminAccess}`)
-      .send({ name: 'Alice', role: 'Mechanic', bio: 'pro', photoUrl: 'https://example.com/a.png' });
+      .send({
+        name: 'Alice',
+        role: 'Mechanic',
+        bio: 'pro',
+        photoUrl: 'https://example.com/a.png',
+      });
     expect([200, 201]).toContain(c.status);
     const id = c.body.id;
 

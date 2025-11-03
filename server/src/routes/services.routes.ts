@@ -9,9 +9,27 @@ const r: RouterType = Router();
 
 r.get('/', Svc.listServices);
 r.get('/:id', Svc.getServiceById);
-r.post('/', requireAuth, requireAdmin, validateBody(servicesSchemas.serviceCreateSchema), Svc.createService);
-r.put('/:id', requireAuth, requireAdmin, validateBody(servicesSchemas.serviceUpdateSchema), Svc.updateService);
+r.post(
+  '/',
+  requireAuth,
+  requireAdmin,
+  validateBody(servicesSchemas.serviceCreateSchema),
+  Svc.createService,
+);
+r.put(
+  '/:id',
+  requireAuth,
+  requireAdmin,
+  validateBody(servicesSchemas.serviceUpdateSchema),
+  Svc.updateService,
+);
 r.delete('/:id', requireAuth, requireAdmin, Svc.deleteService);
-r.post('/:id/image', requireAuth, requireAdmin, serviceImageUpload.single('image'), Svc.uploadServiceImage);
+r.post(
+  '/:id/image',
+  requireAuth,
+  requireAdmin,
+  serviceImageUpload.single('image'),
+  Svc.uploadServiceImage,
+);
 
 export default r;

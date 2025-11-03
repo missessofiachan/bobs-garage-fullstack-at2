@@ -27,10 +27,18 @@ describe('Services/Staff/Users/Admin integration', () => {
   beforeAll(async () => {
     await sequelize.sync();
     // create normal user
-    const u1 = await User.create({ email: userEmail, passwordHash: await hashPasswordFn(userPassword), role: 'user' } as any);
+    const u1 = await User.create({
+      email: userEmail,
+      passwordHash: await hashPasswordFn(userPassword),
+      role: 'user',
+    } as any);
     userId = u1.id;
     // create admin
-    const u2 = await User.create({ email: adminEmail, passwordHash: await hashPasswordFn(adminPassword), role: 'admin' } as any);
+    const u2 = await User.create({
+      email: adminEmail,
+      passwordHash: await hashPasswordFn(adminPassword),
+      role: 'admin',
+    } as any);
     adminId = u2.id;
   });
 
@@ -62,12 +70,22 @@ describe('Services/Staff/Users/Admin integration', () => {
       .send({ name: 'SvcNoAuth', price: 10, description: 'x' });
     expect(cNo.status).toBe(401);
 
-    const adminAccess = await loginAndGetAccess(agent, adminEmail, adminPassword);
+    const adminAccess = await loginAndGetAccess(
+      agent,
+      adminEmail,
+      adminPassword,
+    );
     // Create as admin -> 201
     const c2 = await agent
       .post('/api/services')
       .set('Authorization', `Bearer ${adminAccess}`)
-      .send({ name: 'Full Service', price: 249.0, description: 'Full service', imageUrl: 'https://example.com/x.png', published: true });
+      .send({
+        name: 'Full Service',
+        price: 249.0,
+        description: 'Full service',
+        imageUrl: 'https://example.com/x.png',
+        published: true,
+      });
     expect([200, 201]).toContain(c2.status);
     const serviceId = c2.body.id;
 
@@ -90,7 +108,11 @@ describe('Services/Staff/Users/Admin integration', () => {
   });
 
   test('services: 400 on invalid payload (admin)', async () => {
-    const adminAccess = await loginAndGetAccess(agent, adminEmail, adminPassword);
+    const adminAccess = await loginAndGetAccess(
+      agent,
+      adminEmail,
+      adminPassword,
+    );
     const res = await agent
       .post('/api/services')
       .set('Authorization', `Bearer ${adminAccess}`)
@@ -102,17 +124,26 @@ describe('Services/Staff/Users/Admin integration', () => {
     const list = await agent.get('/api/staff');
     expect(list.status).toBe(200);
 
-    const adminAccess = await loginAndGetAccess(agent, adminEmail, adminPassword);
+    const adminAccess = await loginAndGetAccess(
+      agent,
+      adminEmail,
+      adminPassword,
+    );
     const c1 = await agent
       .post('/api/staff')
       .set('Authorization', `Bearer ${adminAccess}`)
-      .send({ name: 'Bob', role: 'Owner/Mechanic', bio: 'Veteran', photoUrl: 'https://example.com/bob.png' });
+      .send({
+        name: 'Bob',
+        role: 'Owner/Mechanic',
+        bio: 'Veteran',
+        photoUrl: 'https://example.com/bob.png',
+      });
     expect([200, 201]).toContain(c1.status);
     const staffId = c1.body.id;
 
-  // Get non-existing staff -> 404
-  const g404 = await agent.get('/api/staff/9999999');
-  expect([404, 400]).toContain(g404.status);
+    // Get non-existing staff -> 404
+    const g404 = await agent.get('/api/staff/9999999');
+    expect([404, 400]).toContain(g404.status);
 
     const userAccess = await loginAndGetAccess(agent, userEmail, userPassword);
     const uAttempt = await agent
@@ -138,7 +169,9 @@ describe('Services/Staff/Users/Admin integration', () => {
     expect(unauth.status).toBe(401);
 
     const access = await loginAndGetAccess(agent, userEmail, userPassword);
-    const me = await agent.get('/api/users/me').set('Authorization', `Bearer ${access}`);
+    const me = await agent
+      .get('/api/users/me')
+      .set('Authorization', `Bearer ${access}`);
     expect(me.status).toBe(200);
     expect(me.body).toHaveProperty('email', userEmail);
   });
@@ -168,15 +201,25 @@ describe('Services/Staff/Users/Admin integration', () => {
 
   test('admin: metrics and list users require admin', async () => {
     const userAccess = await loginAndGetAccess(agent, userEmail, userPassword);
-    const m1 = await agent.get('/api/admin/metrics').set('Authorization', `Bearer ${userAccess}`);
+    const m1 = await agent
+      .get('/api/admin/metrics')
+      .set('Authorization', `Bearer ${userAccess}`);
     expect(m1.status).toBe(403);
 
-    const adminAccess = await loginAndGetAccess(agent, adminEmail, adminPassword);
-    const m2 = await agent.get('/api/admin/metrics').set('Authorization', `Bearer ${adminAccess}`);
+    const adminAccess = await loginAndGetAccess(
+      agent,
+      adminEmail,
+      adminPassword,
+    );
+    const m2 = await agent
+      .get('/api/admin/metrics')
+      .set('Authorization', `Bearer ${adminAccess}`);
     expect(m2.status).toBe(200);
     expect(m2.body).toHaveProperty('users');
 
-    const l1 = await agent.get('/api/admin/users').set('Authorization', `Bearer ${adminAccess}`);
+    const l1 = await agent
+      .get('/api/admin/users')
+      .set('Authorization', `Bearer ${adminAccess}`);
     expect(l1.status).toBe(200);
     expect(Array.isArray(l1.body)).toBe(true);
   });

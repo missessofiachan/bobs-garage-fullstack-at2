@@ -15,7 +15,11 @@ describe('Auth token edge cases (expired/malformed/wrong signature)', () => {
 
   beforeAll(async () => {
     await sequelize.sync();
-    const u = await User.create({ email, passwordHash: await hashPasswordFn(password), role: 'user' } as any);
+    const u = await User.create({
+      email,
+      passwordHash: await hashPasswordFn(password),
+      role: 'user',
+    } as any);
     userId = u.id;
   });
 
@@ -24,7 +28,9 @@ describe('Auth token edge cases (expired/malformed/wrong signature)', () => {
   });
 
   test('malformed token -> 401', async () => {
-    const res = await agent.get('/api/users/me').set('Authorization', 'Bearer not-a-jwt');
+    const res = await agent
+      .get('/api/users/me')
+      .set('Authorization', 'Bearer not-a-jwt');
     expect(res.status).toBe(401);
     expect(res.body).toHaveProperty('message');
   });
@@ -33,17 +39,25 @@ describe('Auth token edge cases (expired/malformed/wrong signature)', () => {
     const badToken = jwt.sign(
       { sub: userId, role: 'user' },
       // intentionally wrong secret
-      env.JWT_SECRET + '_wrong'
+      env.JWT_SECRET + '_wrong',
     );
-    const res = await agent.get('/api/users/me').set('Authorization', `Bearer ${badToken}`);
+    const res = await agent
+      .get('/api/users/me')
+      .set('Authorization', `Bearer ${badToken}`);
     expect(res.status).toBe(401);
   });
 
   test('expired token -> 401', async () => {
     // Create a token that is already expired (exp in the past)
     const expPast = Math.floor(Date.now() / 1000) - 60;
-    const expired = jwt.sign({ sub: userId, role: 'user', exp: expPast }, env.JWT_SECRET as any, { noTimestamp: true } as any);
-    const res = await agent.get('/api/users/me').set('Authorization', `Bearer ${expired}`);
+    const expired = jwt.sign(
+      { sub: userId, role: 'user', exp: expPast },
+      env.JWT_SECRET as any,
+      { noTimestamp: true } as any,
+    );
+    const res = await agent
+      .get('/api/users/me')
+      .set('Authorization', `Bearer ${expired}`);
     expect(res.status).toBe(401);
   });
 });

@@ -10,4 +10,3 @@ export async function seedUsers() {
   });
   // Add more users as needed
 }
-
