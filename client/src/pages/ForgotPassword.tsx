@@ -7,7 +7,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Button, Card, Col, Form, Row, Alert, InputGroup } from "react-bootstrap";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useToast } from "../components/ui/ToastProvider";
 import { MdLockReset, MdEmail, MdArrowBack, MdCheckCircle } from "react-icons/md";
 import api from "../api/axios";
@@ -19,7 +19,6 @@ export default function ForgotPassword() {
 	const [err, setErr] = useState<string | undefined>();
 	const [loading, setLoading] = useState(false);
 	const [success, setSuccess] = useState(false);
-	const nav = useNavigate();
 	const { notify } = useToast();
 
 	const onSubmit = async (e: React.FormEvent) => {

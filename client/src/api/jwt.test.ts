@@ -5,7 +5,7 @@
  */
 
 import { describe, it, expect } from "vitest";
-import { decodeJwt, type JwtPayload } from "./jwt";
+import { decodeJwt } from "./jwt";
 
 /**
  * Helper to create a mock JWT token

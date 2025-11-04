@@ -1,12 +1,10 @@
 /**
  * @author Bob's Garage Team
- * @purpose Reusable confirmation dialog using Radix UI
+ * @purpose Reusable confirmation dialog using Bootstrap Modal
  * @version 1.0.0
  */
 
-import * as Dialog from "@radix-ui/react-dialog";
-import { Button } from "react-bootstrap";
-import { motion, AnimatePresence } from "framer-motion";
+import { Button, Modal } from "react-bootstrap";
 
 interface ConfirmDialogProps {
 	open: boolean;
@@ -35,54 +33,19 @@ export default function ConfirmDialog({
 	};
 
 	return (
-		<Dialog.Root open={open} onOpenChange={onOpenChange}>
-			<AnimatePresence>
-				{open && (
-					<Dialog.Portal forceMount>
-						<Dialog.Overlay asChild forceMount>
-							<motion.div
-								className="position-fixed top-0 start-0 w-100 h-100"
-								style={{
-									backgroundColor: "rgba(0, 0, 0, 0.5)",
-									zIndex: 1040,
-								}}
-								initial={{ opacity: 0 }}
-								animate={{ opacity: 1 }}
-								exit={{ opacity: 0 }}
-							/>
-						</Dialog.Overlay>
-						<Dialog.Content asChild forceMount>
-							<motion.div
-								className="position-fixed top-50 start-50 translate-middle bg-body rounded shadow-lg p-4"
-								style={{
-									zIndex: 1050,
-									minWidth: "300px",
-									maxWidth: "90vw",
-								}}
-								initial={{ opacity: 0, scale: 0.9, y: -20 }}
-								animate={{ opacity: 1, scale: 1, y: 0 }}
-								exit={{ opacity: 0, scale: 0.9, y: -20 }}
-								transition={{ type: "spring", duration: 0.3 }}
-							>
-								<Dialog.Title className="h5 mb-2">{title}</Dialog.Title>
-								{description && (
-									<Dialog.Description className="text-muted mb-3">{description}</Dialog.Description>
-								)}
-								<div className="d-flex justify-content-end gap-2">
-									<Dialog.Close asChild>
-										<Button variant="secondary" size="sm">
-											{cancelLabel}
-										</Button>
-									</Dialog.Close>
-									<Button variant={variant} size="sm" onClick={handleConfirm}>
-										{confirmLabel}
-									</Button>
-								</div>
-							</motion.div>
-						</Dialog.Content>
-					</Dialog.Portal>
-				)}
-			</AnimatePresence>
-		</Dialog.Root>
+		<Modal show={open} onHide={() => onOpenChange(false)} centered>
+			<Modal.Header closeButton>
+				<Modal.Title>{title}</Modal.Title>
+			</Modal.Header>
+			{description && <Modal.Body>{description}</Modal.Body>}
+			<Modal.Footer>
+				<Button variant="secondary" size="sm" onClick={() => onOpenChange(false)}>
+					{cancelLabel}
+				</Button>
+				<Button variant={variant} size="sm" onClick={handleConfirm}>
+					{confirmLabel}
+				</Button>
+			</Modal.Footer>
+		</Modal>
 	);
 }

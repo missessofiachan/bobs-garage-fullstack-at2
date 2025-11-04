@@ -210,7 +210,7 @@ export default function Home() {
 						animate="animate"
 					>
 						<Row className="g-3">
-							{featuredServices.map((service, idx) => {
+							{featuredServices.map((service) => {
 								const imageSrc = getImageSrc(service.imageUrl, getImageBaseUrl());
 								return (
 									<Col key={service.id} xs={12} sm={6} lg={3}>
