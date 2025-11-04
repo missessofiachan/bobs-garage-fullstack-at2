@@ -65,8 +65,10 @@ export default function ConfirmDialog({
 								transition={{ type: "spring", duration: 0.3 }}
 							>
 								<Dialog.Title className="h5 mb-2">{title}</Dialog.Title>
-								{description && (
+								{description ? (
 									<Dialog.Description className="text-muted mb-3">{description}</Dialog.Description>
+								) : (
+									<Dialog.Description className="visually-hidden">{title}</Dialog.Description>
 								)}
 								<div className="d-flex justify-content-end gap-2">
 									<Dialog.Close asChild>

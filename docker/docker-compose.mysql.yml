@@ -3,11 +3,14 @@
 # This setup provides a MySQL database container for local development.
 # For non-Docker MySQL setup, see docs/MYSQL_SETUP_GUIDE.md
 #
-# Usage:
-#   docker-compose up -d        # Start database
-#   docker-compose down         # Stop database
-#   docker-compose logs -f      # View logs
-#   docker-compose down -v      # Stop and remove data
+# Usage (from server directory):
+#   docker-compose -f ../docker/docker-compose.mysql.yml up -d        # Start database
+#   docker-compose -f ../docker/docker-compose.mysql.yml down         # Stop database
+#   docker-compose -f ../docker/docker-compose.mysql.yml logs -f      # View logs
+#   docker-compose -f ../docker/docker-compose.mysql.yml down -v      # Stop and remove data
+#
+# Usage (from project root):
+#   docker-compose -f docker/docker-compose.mysql.yml --env-file server/.env up -d
 
 version: '3.8'
 

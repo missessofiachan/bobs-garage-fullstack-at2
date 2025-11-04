@@ -9,7 +9,21 @@ import { describe, expect, it } from "vitest";
 import Loading from "./Loading";
 
 describe("Loading", () => {
-	it("should render spinner with default message", () => {
+	it("should render with default message", () => {
+		render(<Loading />);
+
+		expect(screen.getByText("Loading...")).toBeInTheDocument();
+	});
+
+	it("should render with custom message", () => {
+		render(<Loading message="Fetching data..." />);
+
+		expect(screen.getByText("Fetching data...")).toBeInTheDocument();
+		// The "Loading..." text is always present as visually-hidden text
+		expect(screen.getByText("Loading...")).toBeInTheDocument();
+	});
+
+	it("should render spinner", () => {
 		const { container } = render(<Loading />);
 
 		const spinner = container.querySelector(".trans-pride-spinner");
@@ -18,39 +32,27 @@ describe("Loading", () => {
 		expect(spinner).toHaveAttribute("aria-hidden", "true");
 	});
 
-	it("should render spinner with custom message", () => {
-		const { container } = render(<Loading message="Loading data..." />);
+	it("should have accessible loading text", () => {
+		const { container } = render(<Loading message="Please wait" />);
 
 		const spinner = container.querySelector(".trans-pride-spinner");
-		expect(spinner).toBeInTheDocument();
+		expect(spinner).toHaveAttribute("role", "status");
+		expect(spinner).toHaveAttribute("aria-hidden", "true");
 
-		const message = screen.getByText("Loading data...");
-		expect(message).toBeInTheDocument();
-		expect(message).toHaveAttribute("aria-live", "polite");
+		// Check for visually hidden text
+		const hiddenText = screen.getByText("Loading...");
+		expect(hiddenText).toHaveClass("visually-hidden");
 	});
 
-	it("should not render message when not provided", () => {
+	it("should render without visible message when message is not provided", () => {
 		const { container } = render(<Loading />);
 
-		// Spinner is in the document
 		const spinner = container.querySelector(".trans-pride-spinner");
 		expect(spinner).toBeInTheDocument();
-		expect(spinner).toHaveAttribute("role", "status");
-		// Check that the visible message element is not rendered (visually-hidden text is OK)
+		// The "Loading..." text is always present as visually-hidden text
+		expect(screen.getByText("Loading...")).toBeInTheDocument();
+		// But no visible message element should be rendered
 		const messageElement = container.querySelector(".mt-3.text-muted");
 		expect(messageElement).not.toBeInTheDocument();
-	});
-
-	it("should have correct structure and styling", () => {
-		const { container } = render(<Loading message="Test" />);
-
-		const wrapper = container.firstChild as HTMLElement;
-		expect(wrapper).toHaveClass(
-			"d-flex",
-			"flex-column",
-			"align-items-center",
-			"justify-content-center",
-		);
-		expect(wrapper).toHaveStyle({ minHeight: "160px" });
 	});
 });

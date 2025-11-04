@@ -26,8 +26,9 @@ const fadeInUp = {
 };
 
 const staggerContainer = {
-	initial: {},
+	initial: { opacity: 1 },
 	animate: {
+		opacity: 1,
 		transition: {
 			staggerChildren: 0.1,
 		},
@@ -161,7 +162,7 @@ export default function Services() {
 			{/* Services Display */}
 			{list.length > 0 ? (
 				view === "grid" ? (
-					<motion.div variants={staggerContainer} initial="initial" animate="animate">
+					<motion.div variants={staggerContainer} initial="initial" animate="animate" style={{ width: "100%" }}>
 						<Row xs={1} sm={2} md={3} lg={4} className="g-4">
 							{list.map((service) => {
 								const imageSrc = getImageSrc(service.imageUrl, getImageBaseUrl());

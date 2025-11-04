@@ -116,7 +116,17 @@ api.interceptors.request.use(async (config: InternalAxiosRequestConfig) => {
 
 // Response interceptor to handle 401 refresh and limited 429 retries
 api.interceptors.response.use(
-	(res) => res,
+	(res) => {
+		// Store request ID and response time from headers for debugging
+		const requestId = res.headers["x-request-id"];
+		const responseTime = res.headers["x-response-time"];
+		if (requestId && import.meta.env.DEV) {
+			// Store in response for access if needed
+			(res as any).__requestId = requestId;
+			(res as any).__responseTime = responseTime;
+		}
+		return res;
+	},
 	async (error: AxiosError) => {
 		const response = error.response;
 		const original = error.config as RetriesConfig | undefined;

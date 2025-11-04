@@ -8,13 +8,40 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, Col, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import api from "../../api/axios";
+import ErrorDisplay from "../../components/admin/ErrorDisplay";
+import MetricsPanel from "../../components/admin/MetricsPanel";
+import SystemHealthPanel from "../../components/admin/SystemHealthPanel";
 import Loading from "../../components/ui/Loading";
 import usePageTitle from "../../hooks/usePageTitle";
 
 interface Metrics {
-	users: number;
-	services: number;
-	staff: number;
+	users: {
+		total: number;
+		active: number;
+		inactive: number;
+		admins: number;
+		recent: number;
+	};
+	services: {
+		total: number;
+		published: number;
+		unpublished: number;
+		recent: number;
+	};
+	staff: {
+		total: number;
+		active: number;
+		inactive: number;
+		recent: number;
+	};
+	favorites: {
+		total: number;
+	};
+	recentActivity: {
+		usersToday: number;
+		servicesToday: number;
+		staffToday: number;
+	};
 }
 
 export default function Dashboard() {
@@ -34,12 +61,17 @@ export default function Dashboard() {
 	});
 
 	if (isLoading) return <Loading message="Loading dashboard…" />;
-	if (error) return <div className="alert alert-danger">Failed to load dashboard data.</div>;
 
 	return (
 		<div>
 			<h2>Admin Dashboard</h2>
 			<p className="text-muted mb-4">Overview of your Bob's Garage administration panel</p>
+
+			{error && (
+				<div className="mb-4">
+					<ErrorDisplay error={error} title="Failed to load dashboard data" />
+				</div>
+			)}
 
 			{/* Statistics Cards */}
 			<Row className="g-4 mb-4">
@@ -47,11 +79,24 @@ export default function Dashboard() {
 					<Card className="h-100 shadow-sm">
 						<Card.Body>
 							<div className="d-flex justify-content-between align-items-start">
-								<div>
+								<div className="flex-grow-1">
 									<Card.Title className="text-muted small text-uppercase mb-2">
 										Total Users
 									</Card.Title>
-									<h3 className="mb-0">{metrics?.users ?? 0}</h3>
+									<h3 className="mb-1">{metrics?.users.total ?? 0}</h3>
+									<div className="small text-muted">
+										<span className="text-success">{metrics?.users.active ?? 0} active</span>
+										{" • "}
+										<span className="text-danger">{metrics?.users.inactive ?? 0} inactive</span>
+										<br />
+										<span className="text-primary">{metrics?.users.admins ?? 0} admins</span>
+										{metrics?.users.recent ? (
+											<>
+												{" • "}
+												<span className="text-info">{metrics.users.recent} new (7d)</span>
+											</>
+										) : null}
+									</div>
 								</div>
 								<div className="fs-1 text-primary opacity-25">👥</div>
 							</div>
@@ -67,11 +112,26 @@ export default function Dashboard() {
 					<Card className="h-100 shadow-sm">
 						<Card.Body>
 							<div className="d-flex justify-content-between align-items-start">
-								<div>
+								<div className="flex-grow-1">
 									<Card.Title className="text-muted small text-uppercase mb-2">
 										Total Services
 									</Card.Title>
-									<h3 className="mb-0">{metrics?.services ?? 0}</h3>
+									<h3 className="mb-1">{metrics?.services.total ?? 0}</h3>
+									<div className="small text-muted">
+										<span className="text-success">
+											{metrics?.services.published ?? 0} published
+										</span>
+										{" • "}
+										<span className="text-warning">
+											{metrics?.services.unpublished ?? 0} unpublished
+										</span>
+										{metrics?.services.recent ? (
+											<>
+												<br />
+												<span className="text-info">{metrics.services.recent} new (7d)</span>
+											</>
+										) : null}
+									</div>
 								</div>
 								<div className="fs-1 text-success opacity-25">🔧</div>
 							</div>
@@ -87,11 +147,22 @@ export default function Dashboard() {
 					<Card className="h-100 shadow-sm">
 						<Card.Body>
 							<div className="d-flex justify-content-between align-items-start">
-								<div>
+								<div className="flex-grow-1">
 									<Card.Title className="text-muted small text-uppercase mb-2">
 										Total Staff
 									</Card.Title>
-									<h3 className="mb-0">{metrics?.staff ?? 0}</h3>
+									<h3 className="mb-1">{metrics?.staff.total ?? 0}</h3>
+									<div className="small text-muted">
+										<span className="text-success">{metrics?.staff.active ?? 0} active</span>
+										{" • "}
+										<span className="text-danger">{metrics?.staff.inactive ?? 0} inactive</span>
+										{metrics?.staff.recent ? (
+											<>
+												<br />
+												<span className="text-info">{metrics.staff.recent} new (7d)</span>
+											</>
+										) : null}
+									</div>
 								</div>
 								<div className="fs-1 text-info opacity-25">👔</div>
 							</div>
@@ -102,6 +173,71 @@ export default function Dashboard() {
 							</Link>
 						</Card.Footer>
 					</Card>
+				</Col>
+			</Row>
+
+			{/* Additional Metrics */}
+			<Row className="g-4 mb-4">
+				<Col md={6}>
+					<Card className="h-100 shadow-sm">
+						<Card.Body>
+							<div className="d-flex justify-content-between align-items-start">
+								<div className="flex-grow-1">
+									<Card.Title className="text-muted small text-uppercase mb-2">
+										Total Favorites
+									</Card.Title>
+									<h3 className="mb-0">{metrics?.favorites.total ?? 0}</h3>
+									<small className="text-muted">User service favorites</small>
+								</div>
+								<div className="fs-1 text-warning opacity-25">⭐</div>
+							</div>
+						</Card.Body>
+					</Card>
+				</Col>
+				<Col md={6}>
+					<Card className="h-100 shadow-sm">
+						<Card.Body>
+							<Card.Title className="text-muted small text-uppercase mb-3">
+								Activity Today
+							</Card.Title>
+							<Row className="g-3">
+								<Col xs={4}>
+									<div className="text-center">
+										<div className="h4 mb-1 text-primary">
+											{metrics?.recentActivity.usersToday ?? 0}
+										</div>
+										<small className="text-muted d-block">Users</small>
+									</div>
+								</Col>
+								<Col xs={4}>
+									<div className="text-center">
+										<div className="h4 mb-1 text-success">
+											{metrics?.recentActivity.servicesToday ?? 0}
+										</div>
+										<small className="text-muted d-block">Services</small>
+									</div>
+								</Col>
+								<Col xs={4}>
+									<div className="text-center">
+										<div className="h4 mb-1 text-info">
+											{metrics?.recentActivity.staffToday ?? 0}
+										</div>
+										<small className="text-muted d-block">Staff</small>
+									</div>
+								</Col>
+							</Row>
+						</Card.Body>
+					</Card>
+				</Col>
+			</Row>
+
+			{/* System Health & Metrics */}
+			<Row className="g-4 mb-4">
+				<Col lg={6}>
+					<SystemHealthPanel />
+				</Col>
+				<Col lg={6}>
+					<MetricsPanel />
 				</Col>
 			</Row>
 

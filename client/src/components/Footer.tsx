@@ -15,7 +15,7 @@ import { Link } from "react-router-dom";
 import { useConnectionStatus } from "../hooks/useConnectionStatus";
 
 export default function Footer() {
-	const { api, db, apiPing, dbPing } = useConnectionStatus(5000);
+	const { api, db, apiPing, dbPing, responseTime } = useConnectionStatus(5000);
 	const [theme, setTheme] = useState<string>(() => {
 		if (typeof window !== "undefined") {
 			return (
@@ -188,9 +188,15 @@ export default function Footer() {
 											({apiPing}ms)
 										</span>
 									)}
+									{responseTime && (
+										<span className="text-muted" style={{ fontSize: "0.75rem" }}>
+											{" "}
+											· {responseTime}
+										</span>
+									)}
 								</span>
 							</div>
-							<div className="d-flex align-items-center">
+							<div className="d-flex align-items-center mb-1">
 								{getStatusDot(db)}
 								<span>
 									<span className="visually-hidden">Database connection status: </span>DB:{" "}
@@ -202,6 +208,9 @@ export default function Footer() {
 										</span>
 									)}
 								</span>
+							</div>
+							<div className="mt-2 pt-2 border-top small text-muted">
+								API Version: <code>v1</code>
 							</div>
 						</div>
 					</Col>

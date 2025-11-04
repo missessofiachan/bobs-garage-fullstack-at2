@@ -11,6 +11,7 @@ import type { Request, Response } from "express";
 import { Op } from "sequelize";
 import { z } from "zod";
 import { Service } from "../db/models/Service.js";
+import { invalidateCache } from "../middleware/cache.js";
 import {
 	deleteOldUpload,
 	generatePublicUrl,
@@ -164,6 +165,10 @@ export async function createService(req: Request, res: Response) {
 	try {
 		const body = req.body as CreateServiceRequest;
 		const s = await Service.create(body as unknown as Parameters<typeof Service.create>[0]);
+
+		// Invalidate cache for services list
+		await invalidateCache("services");
+
 		res.status(201).json(s);
 	} catch (err) {
 		handleControllerError(err, res, {
@@ -196,6 +201,10 @@ export async function updateService(req: Request, res: Response) {
 		if (!s) return sendNotFound(res);
 
 		await s.update(body);
+
+		// Invalidate cache for this service and list
+		await invalidateCache("services", id);
+
 		res.json(s);
 	} catch (err) {
 		handleControllerError(err, res, {
@@ -226,6 +235,10 @@ export async function deleteService(req: Request, res: Response) {
 		if (!s) return sendNotFound(res);
 
 		await s.destroy();
+
+		// Invalidate cache for this service and list
+		await invalidateCache("services", id);
+
 		res.status(204).send();
 	} catch (err) {
 		handleControllerError(err, res);
@@ -273,6 +286,9 @@ export async function uploadServiceImage(req: Request, res: Response) {
 
 		const publicUrl = generatePublicUrl(filename, "services");
 		await s.update({ imageUrl: publicUrl });
+
+		// Invalidate cache for this service
+		await invalidateCache("services", id);
 
 		res.status(200).json({ id: s.id, imageUrl: publicUrl });
 	} catch (err) {

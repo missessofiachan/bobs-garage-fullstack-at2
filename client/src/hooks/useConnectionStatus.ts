@@ -1,21 +1,31 @@
 /**
  * @file useConnectionStatus.ts
  * @author Bob's Garage Team
- * @description Hook to monitor API and database connection status with ping/latency
+ * @description Hook to monitor API and database connection status with ping/latency using enhanced health check
  * @version 1.0.0
  */
 
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { getApiBaseUrl } from "../utils/api";
 
 interface ConnectionStatus {
 	api: "connected" | "disconnected" | "checking";
 	db: "connected" | "disconnected" | "checking";
 	apiPing: number | null;
 	dbPing: number | null;
+	responseTime?: string; // From X-Response-Time header
 }
 
-import { getApiBaseUrl } from "../utils/api";
+interface HealthResponse {
+	status: "healthy" | "degraded" | "unhealthy";
+	services: {
+		database: {
+			status: "connected" | "disconnected";
+			responseTime?: number;
+		};
+	};
+}
 
 export function useConnectionStatus(intervalMs: number = 5000) {
 	const [status, setStatus] = useState<ConnectionStatus>({
@@ -31,17 +41,36 @@ export function useConnectionStatus(intervalMs: number = 5000) {
 		const checkHealth = async () => {
 			const baseUrl = getApiBaseUrl();
 
-			// Check API health
+			// Check API health using enhanced health endpoint
 			const apiStart = performance.now();
 			try {
-				const apiRes = await axios.get(`${baseUrl}/api/health`, { timeout: 3000 });
+				const apiRes = await axios.get<HealthResponse>(`${baseUrl}/health`, {
+					timeout: 3000,
+				});
 				const apiPing = Math.round(performance.now() - apiStart);
+				const responseTime = apiRes.headers["x-response-time"] as string | undefined;
+
 				if (mounted) {
+					const isHealthy = apiRes.status === 200 && apiRes.data.status !== "unhealthy";
 					setStatus((prev) => ({
 						...prev,
-						api: apiRes.status === 200 ? "connected" : "disconnected",
-						apiPing: apiRes.status === 200 ? apiPing : null,
+						api: isHealthy ? "connected" : "disconnected",
+						apiPing: isHealthy ? apiPing : null,
+						responseTime,
 					}));
+
+					// Also update DB status from health response
+					const dbStatus = apiRes.data.services?.database?.status;
+					if (dbStatus) {
+						setStatus((prev) => ({
+							...prev,
+							db: dbStatus === "connected" ? "connected" : "disconnected",
+							dbPing:
+								dbStatus === "connected" && apiRes.data.services.database.responseTime
+									? apiRes.data.services.database.responseTime
+									: null,
+						}));
+					}
 				}
 			} catch {
 				if (mounted) {
@@ -49,26 +78,6 @@ export function useConnectionStatus(intervalMs: number = 5000) {
 						...prev,
 						api: "disconnected",
 						apiPing: null,
-					}));
-				}
-			}
-
-			// Check DB status
-			const dbStart = performance.now();
-			try {
-				const dbRes = await axios.get(`${baseUrl}/db-status`, { timeout: 3000 });
-				const dbPing = Math.round(performance.now() - dbStart);
-				if (mounted) {
-					setStatus((prev) => ({
-						...prev,
-						db: dbRes.status === 200 ? "connected" : "disconnected",
-						dbPing: dbRes.status === 200 ? dbPing : null,
-					}));
-				}
-			} catch {
-				if (mounted) {
-					setStatus((prev) => ({
-						...prev,
 						db: "disconnected",
 						dbPing: null,
 					}));

@@ -31,6 +31,9 @@ export function createSequelizeInstance() {
 		pool: {
 			min: env.DATABASE_POOL_MIN || 0,
 			max: env.DATABASE_POOL_MAX || 5,
+			acquire: 30000, // Maximum time in ms to try getting connection before throwing error
+			idle: 10000, // Maximum time in ms that a connection can be idle before being released
+			evict: 1000, // Interval in ms to check for idle connections
 		},
 	});
 

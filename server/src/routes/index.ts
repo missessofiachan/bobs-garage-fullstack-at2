@@ -10,6 +10,7 @@ import * as Auth from "../controllers/auth.controller.js";
 import * as Staff from "../controllers/staff.controller.js";
 import * as AdminUsers from "../controllers/users.admin.controller.js";
 import { requireAdmin, requireAuth } from "../middleware/auth.js";
+import { cacheMiddleware } from "../middleware/cache.js";
 import { authLimiter } from "../middleware/rateLimit.js";
 import { validateBody } from "../middleware/validate.js";
 import authSchemas from "../validation/auth.schemas.js";
@@ -38,8 +39,8 @@ r.use("/users/me", meRouter);
 // Favorites
 r.use("/users/me/favorites", favoritesRouter);
 
-// Admin
-r.get("/admin/metrics", requireAuth, requireAdmin, Admin.getMetrics);
+// Admin (with caching for metrics)
+r.get("/admin/metrics", requireAuth, requireAdmin, cacheMiddleware(60, "admin"), Admin.getMetrics);
 r.get("/admin/users", requireAuth, requireAdmin, AdminUsers.listUsers);
 r.get("/admin/users/:id", requireAuth, requireAdmin, AdminUsers.getUserById);
 r.post("/admin/users", requireAuth, requireAdmin, AdminUsers.createUser);

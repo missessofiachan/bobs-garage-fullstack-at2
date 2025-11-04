@@ -17,7 +17,13 @@ import {
 	UpdatedAt,
 } from "sequelize-typescript";
 
-@Table({ tableName: "staff" })
+@Table({
+	tableName: "staff",
+	indexes: [
+		{ fields: ["active"] }, // Index for filtering active staff
+		{ fields: ["name"] }, // Index for sorting/searching by name
+	],
+})
 export class Staff extends Model {
 	@PrimaryKey
 	@AutoIncrement

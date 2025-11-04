@@ -11,13 +11,22 @@ import {
 	CreatedAt,
 	DataType,
 	Default,
+	Index,
 	Model,
 	PrimaryKey,
 	Table,
 	UpdatedAt,
 } from "sequelize-typescript";
 
-@Table({ tableName: "services" })
+@Table({
+	tableName: "services",
+	indexes: [
+		{ fields: ["name"] }, // Index for search queries
+		{ fields: ["published"] }, // Index for filtering by published status
+		{ fields: ["price"] }, // Index for sorting by price
+		{ fields: ["published", "price"] }, // Composite index for common query pattern
+	],
+})
 
 // Service model for garage offerings
 export class Service extends Model {

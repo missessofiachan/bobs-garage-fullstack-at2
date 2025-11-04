@@ -62,10 +62,24 @@ export const EnvSchema = z.object({
 	LOG_MAX_SIZE: z.coerce.number().optional(), // Max log file size (bytes)
 	LOG_MAX_FILES: z.coerce.number().optional(), // Number of rotated log files
 	LOG_DIR: z.string().optional(), // Log directory
+	SLOW_QUERY_THRESHOLD_MS: z.coerce.number().optional().default(1000), // Slow query threshold in ms
+	DETAILED_LOGGING_ENABLED: z.coerce.boolean().optional().default(false), // Enable detailed request/response logging
+	METRICS_ENABLED: z.coerce.boolean().optional().default(true), // Enable Prometheus metrics
 
 	// Performance & limits
 	BODY_PARSER_LIMIT: z.string().default("10kb"), // Request body size limit
-	COMPRESSION_ENABLED: z.coerce.boolean().default(false), // Enable gzip compression
+	COMPRESSION_ENABLED: z.coerce.boolean().default(true), // Enable gzip/brotli compression
+
+	// Caching configuration
+	CACHE_ENABLED: z.coerce.boolean().default(true), // Enable response caching
+	CACHE_TYPE: z.enum(["memory", "redis"]).default("memory"), // Cache backend type
+	CACHE_TTL_SECONDS: z.coerce.number().default(300), // Default cache TTL (5 minutes)
+	REDIS_HOST: z.string().optional(), // Redis host (required if CACHE_TYPE=redis)
+	REDIS_PORT: z.coerce.number().optional().default(6379), // Redis port
+	REDIS_PASSWORD: z.string().optional(), // Redis password
+	REDIS_DB: z.coerce.number().optional().default(0), // Redis database number
+	REDIS_TLS: z.coerce.boolean().optional().default(false), // Enable Redis TLS
+	REDIS_KEY_PREFIX: z.string().default("bobs_garage:"), // Redis key prefix
 
 	// Graceful shutdown & cleanup
 	SHUTDOWN_TIMEOUT_MS: z.coerce.number().optional(), // Force shutdown timeout

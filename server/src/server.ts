@@ -10,9 +10,10 @@ import { createApp } from "./app.js";
 import { env } from "./config/env.js";
 import { sequelize } from "./config/sequelize.js";
 import { winstonLogger } from "./config/winston.js";
+import cacheService from "./services/cache.service.js";
 import cleanupService from "./services/cleanup.service.js";
 
-// Ensure PORT is a number when read from env
+// Validate and normalize PORT configuration
 const PORT = Number(env.PORT);
 if (!Number.isFinite(PORT) || PORT <= 0) {
 	winstonLogger.error(`Invalid PORT ${env.PORT}; must be a positive number`);
@@ -22,26 +23,82 @@ if (!Number.isFinite(PORT) || PORT <= 0) {
 let server: Server | undefined;
 let isShuttingDown = false;
 
+/**
+ * Initialize cache service and verify connection (for Redis backends)
+ */
+async function initializeCache(): Promise<void> {
+	if (!cacheService.isEnabled()) {
+		winstonLogger.info("Cache service disabled");
+		return;
+	}
+
+	try {
+		// For Redis backends, verify connection is ready
+		// The cache service auto-initializes, but we verify it's working
+		if (env.CACHE_TYPE === "redis" && env.REDIS_HOST) {
+			// Test cache connection with a simple operation
+			await cacheService.set("__health_check__", "ok", 1);
+			await cacheService.del("__health_check__");
+			winstonLogger.info("Cache service initialized and verified");
+		} else {
+			winstonLogger.info("Cache service initialized (in-memory)");
+		}
+	} catch (err) {
+		winstonLogger.warn(
+			`Cache service initialization warning: ${err instanceof Error ? err.message : String(err)}. Continuing without cache.`,
+		);
+	}
+}
+
+/**
+ * Handle port conflict errors with helpful messages
+ */
+function handlePortError(err: NodeJS.ErrnoException): void {
+	if (err.code === "EADDRINUSE") {
+		winstonLogger.error(
+			`Port ${PORT} is already in use. Please either:\n` +
+				`  1. Stop the process using port ${PORT}\n` +
+				`  2. Use a different port by setting PORT environment variable\n` +
+				`  3. On Windows, find the process: netstat -ano | findstr :${PORT}\n` +
+				`  4. On Unix/Mac, find the process: lsof -i :${PORT}`,
+		);
+	} else {
+		winstonLogger.error(`Server error: ${err.message}`, err);
+	}
+
+	if (!isShuttingDown) {
+		setTimeout(() => process.exit(1), 100);
+	}
+}
+
 async function start() {
 	winstonLogger.info(`Starting application [${env.NODE_ENV}] (PID: ${process.pid})`);
 
 	try {
+		// Initialize database connection
 		await sequelize.authenticate();
 		winstonLogger.info("Database connection OK");
 
+		// Initialize cache service before app creation
+		await initializeCache();
+
+		// Sync database schema in development
 		if (env.NODE_ENV === "development") {
 			winstonLogger.info("Running sequelize.sync() (development only)");
 			await sequelize.sync();
 		}
 
+		// Create and configure Express app
 		const app = createApp();
 
+		// Start HTTP server with improved error handling
 		server = app.listen(PORT, () => {
 			const addr = server?.address();
 			const host = typeof addr === "object" && addr ? addr.address : "localhost";
 			const port = typeof addr === "object" && addr ? addr.port : PORT;
 			winstonLogger.info(`API listening on ${host}:${port}`);
-			// start background cleanup job
+
+			// Start background cleanup job after server is ready
 			try {
 				cleanupService.startCleanup();
 				winstonLogger.info("Started uploads cleanup job");
@@ -50,14 +107,13 @@ async function start() {
 			}
 		});
 
-		server.on("error", (err: NodeJS.ErrnoException) => {
-			winstonLogger.error(`Server error: ${err.message}`);
-			if (!isShuttingDown) {
-				setTimeout(() => process.exit(1), 100);
-			}
-		});
+		// Enhanced error handling for server events
+		server.on("error", handlePortError);
 	} catch (err) {
-		winstonLogger.error(`Failed to start application: ${err}`);
+		winstonLogger.error(
+			`Failed to start application: ${err instanceof Error ? err.message : String(err)}`,
+			err,
+		);
 		setTimeout(() => process.exit(1), 100);
 	}
 }
@@ -85,6 +141,12 @@ async function shutdown(signal?: string) {
 		}
 
 		await sequelize.close();
+
+		// Disconnect cache service
+		try {
+			await cacheService.disconnect();
+		} catch {}
+
 		// stop cleanup job when shutting down
 		try {
 			cleanupService.stopCleanup();

@@ -1,4 +1,3 @@
-// @author GitHub Copilot
 // @purpose Configure Biome for linting and formatting across workspace packages
 // @version 2.0.0
 {

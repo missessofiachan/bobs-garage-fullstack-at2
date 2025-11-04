@@ -7,6 +7,7 @@
 import type { Request, Response } from "express";
 import { z } from "zod";
 import { Staff } from "../db/models/Staff.js";
+import { invalidateCache } from "../middleware/cache.js";
 import {
 	deleteOldUpload,
 	generatePublicUrl,
@@ -132,6 +133,10 @@ export async function createStaff(req: Request, res: Response) {
 	try {
 		const body = req.body as CreateStaffRequest;
 		const s = await Staff.create(body as unknown as Parameters<typeof Staff.create>[0]);
+
+		// Invalidate cache for staff list
+		await invalidateCache("staff");
+
 		res.status(201).json(s);
 	} catch (err) {
 		handleControllerError(err, res, {
@@ -164,6 +169,10 @@ export async function updateStaff(req: Request, res: Response) {
 		if (!s) return sendNotFound(res);
 
 		await s.update(body);
+
+		// Invalidate cache for this staff member and list
+		await invalidateCache("staff", id);
+
 		res.json(s);
 	} catch (err) {
 		handleControllerError(err, res, {
@@ -194,6 +203,10 @@ export async function deleteStaff(req: Request, res: Response) {
 		if (!s) return sendNotFound(res);
 
 		await s.destroy();
+
+		// Invalidate cache for this staff member and list
+		await invalidateCache("staff", id);
+
 		res.status(204).send();
 	} catch (err) {
 		handleControllerError(err, res);
@@ -241,6 +254,9 @@ export async function uploadStaffPhoto(req: Request, res: Response) {
 
 		const publicUrl = generatePublicUrl(filename, "staff");
 		await s.update({ photoUrl: publicUrl });
+
+		// Invalidate cache for this staff member
+		await invalidateCache("staff", id);
 
 		res.status(200).json({ id: s.id, photoUrl: publicUrl });
 	} catch (err) {
