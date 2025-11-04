@@ -58,6 +58,7 @@ export async function register(req: Request, res: Response) {
  * @param {Request} req - Express request object
  * @param {Request.body.email} req.body.email - User email address (required)
  * @param {Request.body.password} req.body.password - User password (required)
+ * @param {Request.body.rememberMe} req.body.rememberMe - Keep user signed in for 90 days instead of 7 (optional, boolean)
  * @param {Response} res - Express response object
  * @returns {Object} 200 - Access token in response body, refresh token in cookie
  * @returns {Object} 401 - Invalid credentials
@@ -66,7 +67,8 @@ export async function register(req: Request, res: Response) {
  * // Request body:
  * {
  *   "email": "user@example.com",
- *   "password": "password123"
+ *   "password": "password123",
+ *   "rememberMe": true
  * }
  *
  * // Response (200):
@@ -74,10 +76,11 @@ export async function register(req: Request, res: Response) {
  *   "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
  * }
  * // Refresh token is set as HttpOnly cookie: refresh_token
+ * // Cookie expires in 90 days if rememberMe is true, otherwise 7 days
  */
 export async function login(req: Request, res: Response) {
 	try {
-		const { email, password } = req.body as LoginRequest;
+		const { email, password, rememberMe } = req.body as LoginRequest;
 		const result = await authService.loginUser(email, password);
 
 		if (!result) {
@@ -85,13 +88,17 @@ export async function login(req: Request, res: Response) {
 		}
 
 		const isProd = env.NODE_ENV === "production";
+		// Set cookie expiration based on rememberMe flag
+		// Default: 7 days, Remember Me: 90 days
+		const maxAge = rememberMe ? 90 * 24 * 60 * 60 * 1000 : 7 * 24 * 60 * 60 * 1000;
+		
 		res
 			.cookie("refresh_token", result.refresh, {
 				httpOnly: true,
 				secure: isProd,
 				sameSite: "lax",
 				path: "/api", // Allow cookie to be sent to all API endpoints
-				maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
+				maxAge,
 			})
 			.json({ access: result.access });
 	} catch (err) {
@@ -128,4 +135,32 @@ export async function refresh(req: Request, res: Response) {
 		}
 		handleControllerError(err, res, { developmentErrorDetails: true });
 	}
+}
+
+/**
+ * @route POST /api/auth/logout
+ * @description Logout user by clearing refresh token cookie
+ * @access Public (clears cookie regardless of authentication state)
+ * @param {Request} req - Express request object
+ * @param {Response} res - Express response object
+ * @returns {Object} 200 - Success message
+ * @example
+ * // Request: POST /api/auth/logout
+ * // Response (200):
+ * {
+ *   "message": "Logged out successfully"
+ * }
+ */
+export async function logout(req: Request, res: Response) {
+	const isProd = env.NODE_ENV === "production";
+	// Clear the refresh token cookie
+	res
+		.cookie("refresh_token", "", {
+			httpOnly: true,
+			secure: isProd,
+			sameSite: "lax",
+			path: "/api",
+			maxAge: 0, // Immediately expire the cookie
+		})
+		.json({ message: "Logged out successfully" });
 }

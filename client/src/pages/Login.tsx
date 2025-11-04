@@ -11,11 +11,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { loginSchema } from "../lib/validation";
 import { useToast } from "../components/ui/ToastProvider";
-import { MdLogin, MdEmail, MdLock, MdPersonAdd } from "react-icons/md";
+import { MdLogin, MdEmail, MdLock, MdPersonAdd, MdSecurity } from "react-icons/md";
+import { formatErrorMessage } from "../utils/errorFormatter";
 
 export default function Login() {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+	const [rememberMe, setRememberMe] = useState(false);
 	const [err, setErr] = useState<string | undefined>();
 	const [loading, setLoading] = useState(false);
 	const nav = useNavigate();
@@ -29,7 +31,7 @@ export default function Login() {
 		try {
 			// client-side validation
 			loginSchema.parse({ email, password });
-			await login({ email, password });
+			await login({ email, password, rememberMe });
 			notify({
 				title: "Welcome",
 				body: "Logged in successfully",
@@ -37,8 +39,7 @@ export default function Login() {
 			});
 			nav("/");
 		} catch (error: any) {
-			const errorMessage =
-				error?.response?.data?.message || error?.message || "Login failed. Please check your credentials.";
+			const errorMessage = formatErrorMessage(error);
 			setErr(errorMessage);
 			notify({ body: errorMessage, variant: "danger" });
 		} finally {
@@ -133,6 +134,31 @@ export default function Login() {
 												autoComplete="current-password"
 											/>
 										</InputGroup>
+									</Form.Group>
+
+									{/* Remember Me Checkbox */}
+									<Form.Group className="mb-3">
+										<Form.Check
+											type="checkbox"
+											id="remember-me"
+											checked={rememberMe}
+											onChange={(e) => setRememberMe(e.target.checked)}
+											label={
+												<div className="d-flex align-items-start gap-2">
+													<span>Keep me signed in</span>
+												</div>
+											}
+										/>
+										{rememberMe && (
+											<Alert variant="warning" className="mt-2 mb-0 py-2" style={{ fontSize: "0.875rem" }}>
+												<div className="d-flex align-items-start gap-2">
+													<MdSecurity size={18} className="mt-1 flex-shrink-0" />
+													<div>
+														<strong>Security Note:</strong> This will keep you signed in for longer. Only use this on trusted devices.
+													</div>
+												</div>
+											</Alert>
+										)}
 									</Form.Group>
 
 									<motion.div

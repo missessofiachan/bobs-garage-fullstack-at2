@@ -8,7 +8,7 @@
 
 export type Role = "user" | "admin";
 
-export type AuthLoginBody = { email: string; password: string };
+export type AuthLoginBody = { email: string; password: string; rememberMe?: boolean };
 export type AuthRegisterBody = { email: string; password: string };
 export type AuthLoginResponse = { access: string };
 export type AuthRefreshResponse = { access: string };

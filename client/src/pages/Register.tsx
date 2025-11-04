@@ -12,6 +12,7 @@ import { useAuth } from "../hooks/useAuth";
 import { registerSchema } from "../lib/validation";
 import { useToast } from "../components/ui/ToastProvider";
 import { MdPersonAdd, MdEmail, MdLock, MdLogin } from "react-icons/md";
+import { formatErrorMessage } from "../utils/errorFormatter";
 
 export default function Register() {
 	const [email, setEmail] = useState("");
@@ -24,29 +25,8 @@ export default function Register() {
 	const { notify } = useToast();
 
 	const formatError = (error: any): string => {
-		// Handle Zod validation errors from server
-		if (error?.response?.data?.errors && Array.isArray(error.response.data.errors)) {
-			const messages = error.response.data.errors
-				.map((issue: any) => {
-					// Extract user-friendly message from error object
-					if (issue.message) {
-						return issue.message;
-					}
-					// Fallback for structured errors
-					const field = issue.path?.join(".") || "field";
-					return `${field}: Invalid value`;
-				})
-				.filter(Boolean);
-			return messages.length > 0 ? messages.join(". ") : "Please check your input";
-		}
-		// Handle other error formats
-		if (error?.response?.data?.message) {
-			return error.response.data.message;
-		}
-		if (error?.message) {
-			return error.message;
-		}
-		return "Registration failed. Please try again.";
+		// Use the centralized error formatter
+		return formatErrorMessage(error);
 	};
 
 	const extractFieldErrors = (error: any): Record<string, string> => {

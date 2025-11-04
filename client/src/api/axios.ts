@@ -14,6 +14,7 @@ import type {
 	InternalAxiosRequestConfig,
 	AxiosRequestHeaders,
 } from "axios";
+import { formatErrorMessage } from "../utils/errorFormatter";
 
 // Base URL: configure via Vite env, fallback to local dev server
 const BASE_URL = (import.meta as ImportMeta)?.env?.VITE_API_URL ?? "http://localhost:4000/api";
@@ -166,6 +167,21 @@ api.interceptors.response.use(
 				}
 				await sleep(delayMs);
 				return api.request(original as AxiosRequestConfig);
+			}
+			// If retry failed, enhance error with user-friendly message
+			const friendlyMessage = formatErrorMessage(error);
+			const enhancedError = new AxiosError(friendlyMessage, error.code, error.config, error.request, error.response);
+			enhancedError.response = error.response;
+			throw enhancedError;
+		}
+
+		// Enhance error with user-friendly message for other errors too
+		if (error.response) {
+			const friendlyMessage = formatErrorMessage(error);
+			if (friendlyMessage !== error.message) {
+				const enhancedError = new AxiosError(friendlyMessage, error.code, error.config, error.request, error.response);
+				enhancedError.response = error.response;
+				throw enhancedError;
 			}
 		}
 

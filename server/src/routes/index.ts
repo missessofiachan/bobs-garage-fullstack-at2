@@ -24,6 +24,7 @@ const r: Router = Router();
 r.post("/auth/register", authLimiter, validateBody(authSchemas.registerSchema), Auth.register);
 r.post("/auth/login", authLimiter, validateBody(authSchemas.loginSchema), Auth.login);
 r.post("/auth/refresh", authLimiter, Auth.refresh);
+r.post("/auth/logout", Auth.logout);
 
 // Services mounted router
 r.use("/services", servicesRouter);

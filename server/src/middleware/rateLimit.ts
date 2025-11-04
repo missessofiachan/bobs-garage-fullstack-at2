@@ -12,6 +12,10 @@ export const apiLimiter = rateLimit({
 	max: env.RATE_LIMIT_MAX,
 	standardHeaders: true,
 	legacyHeaders: false,
+	message: {
+		status: 429,
+		message: "Too many requests. Please slow down and try again in a moment.",
+	},
 });
 
 // Separate rate limiter for auth endpoints (stricter)
@@ -20,4 +24,8 @@ export const authLimiter = rateLimit({
 	max: env.RATE_LIMIT_AUTH_MAX,
 	standardHeaders: true,
 	legacyHeaders: false,
+	message: {
+		status: 429,
+		message: "Too many login attempts. Please wait a moment before trying again.",
+	},
 });

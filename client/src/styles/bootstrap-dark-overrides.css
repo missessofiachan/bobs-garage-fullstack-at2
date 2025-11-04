@@ -612,3 +612,79 @@ html[data-bs-theme="dark"] .navbar-brand:focus-visible {
 .navbar-nav .nav-link:hover * {
 	color: #ffffff !important;
 }
+
+/* Active navigation link styling - Trans pride pink */
+.navbar-nav .nav-link[style*="#F7A8B8"],
+.navbar-nav .nav-link[style*="color: #F7A8B8"] {
+	color: #F7A8B8 !important;
+}
+
+.navbar-nav .nav-link[style*="#F7A8B8"] svg,
+.navbar-nav .nav-link[style*="color: #F7A8B8"] svg,
+.navbar-nav .nav-link[style*="#F7A8B8"] span,
+.navbar-nav .nav-link[style*="color: #F7A8B8"] span {
+	color: #F7A8B8 !important;
+}
+
+/* Dropdown menu styling - Trans pride blue */
+.navbar-nav .dropdown-menu {
+	border-color: rgba(85, 205, 252, 0.2) !important;
+	box-shadow: 0 4px 6px rgba(85, 205, 252, 0.1) !important;
+}
+
+html[data-bs-theme="dark"] .navbar-nav .dropdown-menu {
+	border-color: rgba(125, 211, 252, 0.2) !important;
+	box-shadow: 0 4px 6px rgba(125, 211, 252, 0.1) !important;
+}
+
+/* Dropdown item hover - Trans pride blue */
+.navbar-nav .dropdown-item:hover {
+	background-color: rgba(85, 205, 252, 0.1) !important;
+	color: #55CDFC !important;
+}
+
+html[data-bs-theme="dark"] .navbar-nav .dropdown-item:hover {
+	background-color: rgba(125, 211, 252, 0.15) !important;
+	color: #7dd3fc !important;
+}
+
+.navbar-nav .dropdown-item:hover svg,
+.navbar-nav .dropdown-item:hover span {
+	color: inherit !important;
+}
+
+/* Active dropdown item styling - Trans pride blue */
+.navbar-nav .dropdown-item.active,
+.navbar-nav .dropdown-item[active="true"] {
+	background-color: rgba(85, 205, 252, 0.2) !important;
+	color: #55CDFC !important;
+}
+
+html[data-bs-theme="dark"] .navbar-nav .dropdown-item.active,
+html[data-bs-theme="dark"] .navbar-nav .dropdown-item[active="true"] {
+	background-color: rgba(125, 211, 252, 0.25) !important;
+	color: #7dd3fc !important;
+}
+
+.navbar-nav .dropdown-item.active svg,
+.navbar-nav .dropdown-item.active span,
+.navbar-nav .dropdown-item[active="true"] svg,
+.navbar-nav .dropdown-item[active="true"] span {
+	color: inherit !important;
+}
+
+/* Dropdown header styling */
+.navbar-nav .dropdown-header {
+	color: #55CDFC !important;
+	font-weight: 600;
+}
+
+html[data-bs-theme="dark"] .navbar-nav .dropdown-header {
+	color: #7dd3fc !important;
+}
+
+/* Active dropdown title styling */
+.navbar-nav .dropdown-toggle[style*="#F7A8B8"] svg,
+.navbar-nav .dropdown-toggle[style*="#F7A8B8"] span {
+	color: #F7A8B8 !important;
+}
