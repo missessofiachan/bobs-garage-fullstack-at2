@@ -19,7 +19,7 @@ describe("useForm", () => {
 		vi.clearAllMocks();
 	});
 
-	interface TestFormData {
+	interface TestFormData extends Record<string, unknown> {
 		email: string;
 		password: string;
 		age?: number;

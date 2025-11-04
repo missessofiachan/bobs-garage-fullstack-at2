@@ -41,7 +41,7 @@ export default function Favorites() {
 						You haven't favorited any services yet. Start exploring to add services you
 						love!
 					</p>
-					<Button as={Link} to="/services" variant="primary">
+					<Button as={Link as any} to="/services" variant="primary">
 						Browse Services
 					</Button>
 				</Alert>
@@ -75,7 +75,7 @@ export default function Favorites() {
 										</Card.Text>
 										<div className="d-flex gap-2 mt-auto">
 											<Button
-												as={Link}
+												as={Link as any}
 												to="/services"
 												size="sm"
 												variant="outline-primary"

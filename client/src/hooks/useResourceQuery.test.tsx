@@ -365,7 +365,7 @@ describe('createResourceHooks', () => {
       const onProgress = vi.fn();
 
       // Mock axios to call onUploadProgress
-      mockPost.mockImplementation((url, formData, config) => {
+      mockPost.mockImplementation((_url: string, _formData: FormData, config?: { onUploadProgress?: (progress: { loaded: number; total: number }) => void }) => {
         if (config?.onUploadProgress) {
           config.onUploadProgress({ loaded: 50, total: 100 });
         }

@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { Button, Card, Col, Form, Row, Badge, Alert } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import api from "../api/axios";
-import type { UserMeDTO, ServiceDTO } from "../api/types";
+import type { UserMeDTO } from "../api/types";
 import Loading from "../components/ui/Loading";
 import usePageTitle from "../hooks/usePageTitle";
 import { useToast } from "../components/ui/ToastProvider";
@@ -147,7 +147,7 @@ export default function Profile() {
 								My Favorites{" "}
 								<Badge bg="primary">{favorites.length}</Badge>
 							</h5>
-							<Button as={Link} to="/favorites" variant="outline-primary" size="sm">
+							<Button as={Link as any} to="/favorites" variant="outline-primary" size="sm">
 								View All Favorites
 							</Button>
 						</Card.Header>
