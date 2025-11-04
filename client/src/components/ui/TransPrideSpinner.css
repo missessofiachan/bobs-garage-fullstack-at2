@@ -1,0 +1,86 @@
+/* Trans Pride Spinner - Celebrates trans pride with flag colors */
+
+@keyframes trans-spinner-rotate {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
+@keyframes trans-spinner-colors {
+	0% {
+		border-top-color: #7dd3fc; /* lighter trans flag blue for better contrast */
+		border-right-color: #ffffff; /* white */
+		border-bottom-color: #f9a8d4; /* lighter trans flag pink for better contrast */
+		border-left-color: #93daff; /* light blue */
+	}
+	25% {
+		border-top-color: #f9a8d4; /* lighter pink */
+		border-right-color: #7dd3fc; /* lighter blue */
+		border-bottom-color: #ffffff; /* white */
+		border-left-color: #f9a8d4; /* pink */
+	}
+	50% {
+		border-top-color: #ffffff; /* white */
+		border-right-color: #f9a8d4; /* lighter pink */
+		border-bottom-color: #7dd3fc; /* lighter blue */
+		border-left-color: #ffffff; /* white */
+	}
+	75% {
+		border-top-color: #93daff; /* light blue */
+		border-right-color: #ffffff; /* white */
+		border-bottom-color: #7dd3fc; /* lighter blue */
+		border-left-color: #f9a8d4; /* lighter pink */
+	}
+	100% {
+		border-top-color: #7dd3fc; /* lighter trans flag blue */
+		border-right-color: #ffffff; /* white */
+		border-bottom-color: #f9a8d4; /* lighter trans flag pink */
+		border-left-color: #93daff; /* light blue */
+	}
+}
+
+.trans-pride-spinner {
+	width: 3rem;
+	height: 3rem;
+	border: 4px solid transparent;
+	border-top-color: #7dd3fc; /* lighter trans flag blue for better contrast */
+	border-right-color: #ffffff; /* white */
+	border-bottom-color: #f9a8d4; /* lighter trans flag pink for better contrast */
+	border-left-color: #93daff; /* light blue */
+	border-radius: 50%;
+	animation: trans-spinner-rotate 1s linear infinite, trans-spinner-colors 3s ease-in-out infinite;
+	display: inline-block;
+}
+
+/* Alternative gradient spinner style */
+.trans-pride-spinner-gradient {
+	width: 3rem;
+	height: 3rem;
+	border: 4px solid transparent;
+	border-top: 4px solid #7dd3fc; /* lighter trans flag blue for better contrast */
+	border-right: 4px solid #ffffff; /* white */
+	border-bottom: 4px solid #f9a8d4; /* lighter trans flag pink for better contrast */
+	border-left: 4px solid transparent;
+	border-radius: 50%;
+	animation: trans-spinner-rotate 0.8s linear infinite;
+	display: inline-block;
+	position: relative;
+}
+
+.trans-pride-spinner-gradient::after {
+	content: "";
+	position: absolute;
+	top: -4px;
+	left: -4px;
+	right: -4px;
+	bottom: -4px;
+	border-radius: 50%;
+	border: 4px solid transparent;
+	border-top: 4px solid #f9a8d4; /* lighter pink */
+	border-left: 4px solid #7dd3fc; /* lighter blue */
+	animation: trans-spinner-rotate 1.2s linear infinite reverse;
+	opacity: 0.6;
+}

@@ -1,55 +1,54 @@
-import { createContext, useCallback, useContext, useState } from 'react';
-import { Toast, ToastContainer } from 'react-bootstrap';
+import { createContext, useCallback, useContext, useState } from "react";
+import { Toast, ToastContainer } from "react-bootstrap";
 
 export type ToastMsg = {
-  id: number;
-  title?: string;
-  body: string;
-  variant?: string;
+	id: number;
+	title?: string;
+	body: string;
+	variant?: string;
 };
 
-type ToastCtx = { notify: (msg: Omit<ToastMsg, 'id'>) => void };
+type ToastCtx = { notify: (msg: Omit<ToastMsg, "id">) => void };
 
 const Ctx = createContext<ToastCtx | null>(null);
 
 export default function ToastProvider({
-  children,
+	children,
 }: {
-  children: React.ReactNode;
+	children: React.ReactNode;
 }) {
-  const [items, setItems] = useState<ToastMsg[]>([]);
-  const notify = useCallback((msg: Omit<ToastMsg, 'id'>) => {
-    setItems((arr) => [...arr, { id: Date.now() + Math.random(), ...msg }]);
-  }, []);
-  const onClose = (id: number) =>
-    setItems((arr) => arr.filter((t) => t.id !== id));
-  return (
-    <Ctx.Provider value={{ notify }}>
-      {children}
-      <ToastContainer position="bottom-end" className="p-3">
-        {items.map((t) => (
-          <Toast
-            key={t.id}
-            bg={t.variant as any}
-            onClose={() => onClose(t.id)}
-            delay={3000}
-            autohide
-          >
-            {t.title && (
-              <Toast.Header closeButton>
-                <strong className="me-auto">{t.title}</strong>
-              </Toast.Header>
-            )}
-            <Toast.Body>{t.body}</Toast.Body>
-          </Toast>
-        ))}
-      </ToastContainer>
-    </Ctx.Provider>
-  );
+	const [items, setItems] = useState<ToastMsg[]>([]);
+	const notify = useCallback((msg: Omit<ToastMsg, "id">) => {
+		setItems((arr) => [...arr, { id: Date.now() + Math.random(), ...msg }]);
+	}, []);
+	const onClose = (id: number) => setItems((arr) => arr.filter((t) => t.id !== id));
+	return (
+		<Ctx.Provider value={{ notify }}>
+			{children}
+			<ToastContainer position="bottom-end" className="p-3">
+				{items.map((t) => (
+					<Toast
+						key={t.id}
+						bg={t.variant as any}
+						onClose={() => onClose(t.id)}
+						delay={3000}
+						autohide
+					>
+						{t.title && (
+							<Toast.Header closeButton>
+								<strong className="me-auto">{t.title}</strong>
+							</Toast.Header>
+						)}
+						<Toast.Body>{t.body}</Toast.Body>
+					</Toast>
+				))}
+			</ToastContainer>
+		</Ctx.Provider>
+	);
 }
 
 export function useToast() {
-  const ctx = useContext(Ctx);
-  if (!ctx) throw new Error('ToastProvider missing');
-  return ctx;
+	const ctx = useContext(Ctx);
+	if (!ctx) throw new Error("ToastProvider missing");
+	return ctx;
 }

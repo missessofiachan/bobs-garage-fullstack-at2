@@ -4,15 +4,15 @@
  * @version 1.0.0
  */
 
-import React from 'react';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { renderHook, waitFor, act } from '@testing-library/react';
-import { Provider } from 'react-redux';
-import { configureStore } from '@reduxjs/toolkit';
-import { useAuth } from './useAuth';
-import authReducer from '../slices/auth.slice';
-import api, { setAccessToken, clearAccessToken } from '../api/axios';
-import { decodeJwt } from '../api/jwt';
+import React from "react";
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { renderHook, waitFor, act } from "@testing-library/react";
+import { Provider } from "react-redux";
+import { configureStore } from "@reduxjs/toolkit";
+import { useAuth } from "./useAuth";
+import authReducer from "../slices/auth.slice";
+import api, { setAccessToken, clearAccessToken } from "../api/axios";
+import { decodeJwt } from "../api/jwt";
 
 const mockPost = api.post as any;
 const mockSetAccessToken = setAccessToken as any;
@@ -20,222 +20,221 @@ const mockClearAccessToken = clearAccessToken as any;
 const mockDecodeJwt = decodeJwt as any;
 
 // Mock axios
-vi.mock('../api/axios', () => ({
-  default: {
-    post: vi.fn(),
-  },
-  setAccessToken: vi.fn(),
-  clearAccessToken: vi.fn(),
+vi.mock("../api/axios", () => ({
+	default: {
+		post: vi.fn(),
+	},
+	setAccessToken: vi.fn(),
+	clearAccessToken: vi.fn(),
 }));
 
 // Mock JWT decoding
-vi.mock('../api/jwt', () => ({
-  decodeJwt: vi.fn(),
+vi.mock("../api/jwt", () => ({
+	decodeJwt: vi.fn(),
 }));
 
-describe('useAuth', () => {
-  const createStore = () => {
-    return configureStore({
-      reducer: {
-        auth: authReducer,
-      },
-    });
-  };
+describe("useAuth", () => {
+	const createStore = () => {
+		return configureStore({
+			reducer: {
+				auth: authReducer,
+			},
+		});
+	};
 
-  const wrapper = ({ children }: { children: React.ReactNode }) => {
-    const store = createStore();
-    return <Provider store={store}>{children}</Provider>;
-  };
+	const wrapper = ({ children }: { children: React.ReactNode }) => {
+		const store = createStore();
+		return <Provider store={store}>{children}</Provider>;
+	};
 
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
+	beforeEach(() => {
+		vi.clearAllMocks();
+	});
 
-  describe('login', () => {
-    it('should login successfully and set auth state', async () => {
-      const mockToken = 'mock-access-token';
-      const mockPayload = { role: 'admin' as const, email: 'admin@example.com' };
-      
-      mockPost.mockResolvedValue({
-        data: { access: mockToken },
-      });
-      mockDecodeJwt.mockReturnValue(mockPayload);
+	describe("login", () => {
+		it("should login successfully and set auth state", async () => {
+			const mockToken = "mock-access-token";
+			const mockPayload = { role: "admin" as const, email: "admin@example.com" };
 
-      const { result } = renderHook(() => useAuth(), { wrapper });
+			mockPost.mockResolvedValue({
+				data: { access: mockToken },
+			});
+			mockDecodeJwt.mockReturnValue(mockPayload);
 
-      await act(async () => {
-        const loginResult = await result.current.login({
-          email: 'admin@example.com',
-          password: 'password123',
-        });
+			const { result } = renderHook(() => useAuth(), { wrapper });
 
-        expect(loginResult.access).toBe(mockToken);
-        expect(loginResult.role).toBe('admin');
-        expect(loginResult.email).toBe('admin@example.com');
-      });
+			await act(async () => {
+				const loginResult = await result.current.login({
+					email: "admin@example.com",
+					password: "password123",
+				});
 
-      await waitFor(() => {
-        expect(mockPost).toHaveBeenCalledWith('/auth/login', {
-          email: 'admin@example.com',
-          password: 'password123',
-        });
-        expect(mockDecodeJwt).toHaveBeenCalledWith(mockToken);
-        expect(mockSetAccessToken).toHaveBeenCalledWith(mockToken);
-      });
-    });
+				expect(loginResult.access).toBe(mockToken);
+				expect(loginResult.role).toBe("admin");
+				expect(loginResult.email).toBe("admin@example.com");
+			});
 
-    it('should handle login with user role', async () => {
-      const mockToken = 'user-token';
-      const mockPayload = { role: 'user' as const, email: 'user@example.com' };
-      
-      mockPost.mockResolvedValue({
-        data: { access: mockToken },
-      });
-      mockDecodeJwt.mockReturnValue(mockPayload);
+			await waitFor(() => {
+				expect(mockPost).toHaveBeenCalledWith("/auth/login", {
+					email: "admin@example.com",
+					password: "password123",
+				});
+				expect(mockDecodeJwt).toHaveBeenCalledWith(mockToken);
+				expect(mockSetAccessToken).toHaveBeenCalledWith(mockToken);
+			});
+		});
 
-      const { result } = renderHook(() => useAuth(), { wrapper });
+		it("should handle login with user role", async () => {
+			const mockToken = "user-token";
+			const mockPayload = { role: "user" as const, email: "user@example.com" };
 
-      await act(async () => {
-        await result.current.login({
-          email: 'user@example.com',
-          password: 'password123',
-        });
-      });
+			mockPost.mockResolvedValue({
+				data: { access: mockToken },
+			});
+			mockDecodeJwt.mockReturnValue(mockPayload);
 
-      await waitFor(() => {
-        expect(mockDecodeJwt).toHaveBeenCalledWith(mockToken);
-      });
-    });
+			const { result } = renderHook(() => useAuth(), { wrapper });
 
-    it('should handle login failure', async () => {
-      const error = new Error('Invalid credentials');
-      mockPost.mockRejectedValue(error);
+			await act(async () => {
+				await result.current.login({
+					email: "user@example.com",
+					password: "password123",
+				});
+			});
 
-      const { result } = renderHook(() => useAuth(), { wrapper });
+			await waitFor(() => {
+				expect(mockDecodeJwt).toHaveBeenCalledWith(mockToken);
+			});
+		});
 
-      await act(async () => {
-        await expect(
-          result.current.login({
-            email: 'wrong@example.com',
-            password: 'wrong',
-          }),
-        ).rejects.toThrow('Invalid credentials');
-      });
+		it("should handle login failure", async () => {
+			const error = new Error("Invalid credentials");
+			mockPost.mockRejectedValue(error);
 
-      expect(mockSetAccessToken).not.toHaveBeenCalled();
-    });
+			const { result } = renderHook(() => useAuth(), { wrapper });
 
-    it('should handle JWT decode returning null', async () => {
-      const mockToken = 'valid-token';
-      mockPost.mockResolvedValue({
-        data: { access: mockToken },
-      });
-      mockDecodeJwt.mockReturnValue(null);
+			await act(async () => {
+				await expect(
+					result.current.login({
+						email: "wrong@example.com",
+						password: "wrong",
+					}),
+				).rejects.toThrow("Invalid credentials");
+			});
 
-      const { result } = renderHook(() => useAuth(), { wrapper });
+			expect(mockSetAccessToken).not.toHaveBeenCalled();
+		});
 
-      await act(async () => {
-        const loginResult = await result.current.login({
-          email: 'test@example.com',
-          password: 'password123',
-        });
+		it("should handle JWT decode returning null", async () => {
+			const mockToken = "valid-token";
+			mockPost.mockResolvedValue({
+				data: { access: mockToken },
+			});
+			mockDecodeJwt.mockReturnValue(null);
 
-        expect(loginResult.access).toBe(mockToken);
-        expect(loginResult.role).toBeUndefined();
-        expect(loginResult.email).toBeUndefined();
-      });
+			const { result } = renderHook(() => useAuth(), { wrapper });
 
-      expect(mockSetAccessToken).toHaveBeenCalledWith(mockToken);
-    });
-  });
+			await act(async () => {
+				const loginResult = await result.current.login({
+					email: "test@example.com",
+					password: "password123",
+				});
 
-  describe('register', () => {
-    it('should register successfully', async () => {
-      mockPost.mockResolvedValue({
-        data: { id: 1, email: 'new@example.com' },
-      });
+				expect(loginResult.access).toBe(mockToken);
+				expect(loginResult.role).toBeUndefined();
+				expect(loginResult.email).toBeUndefined();
+			});
 
-      const { result } = renderHook(() => useAuth(), { wrapper });
+			expect(mockSetAccessToken).toHaveBeenCalledWith(mockToken);
+		});
+	});
 
-      await act(async () => {
-        await result.current.register({
-          email: 'new@example.com',
-          password: 'password123',
-        });
-      });
+	describe("register", () => {
+		it("should register successfully", async () => {
+			mockPost.mockResolvedValue({
+				data: { id: 1, email: "new@example.com" },
+			});
 
-      expect(mockPost).toHaveBeenCalledWith('/auth/register', {
-        email: 'new@example.com',
-        password: 'password123',
-      });
-    });
+			const { result } = renderHook(() => useAuth(), { wrapper });
 
-    it('should handle registration failure', async () => {
-      const error = new Error('Email already exists');
-      mockPost.mockRejectedValue(error);
+			await act(async () => {
+				await result.current.register({
+					email: "new@example.com",
+					password: "password123",
+				});
+			});
 
-      const { result } = renderHook(() => useAuth(), { wrapper });
+			expect(mockPost).toHaveBeenCalledWith("/auth/register", {
+				email: "new@example.com",
+				password: "password123",
+			});
+		});
 
-      await act(async () => {
-        await expect(
-          result.current.register({
-            email: 'existing@example.com',
-            password: 'password123',
-          }),
-        ).rejects.toThrow('Email already exists');
-      });
-    });
-  });
+		it("should handle registration failure", async () => {
+			const error = new Error("Email already exists");
+			mockPost.mockRejectedValue(error);
 
-  describe('refresh', () => {
-    it('should refresh token successfully', async () => {
-      const mockToken = 'new-access-token';
-      const mockPayload = { role: 'admin' as const, email: 'admin@example.com' };
-      
-      mockPost.mockResolvedValue({
-        data: { access: mockToken },
-      });
-      mockDecodeJwt.mockReturnValue(mockPayload);
+			const { result } = renderHook(() => useAuth(), { wrapper });
 
-      const { result } = renderHook(() => useAuth(), { wrapper });
+			await act(async () => {
+				await expect(
+					result.current.register({
+						email: "existing@example.com",
+						password: "password123",
+					}),
+				).rejects.toThrow("Email already exists");
+			});
+		});
+	});
 
-      await act(async () => {
-        const newToken = await result.current.refresh();
-        expect(newToken).toBe(mockToken);
-      });
+	describe("refresh", () => {
+		it("should refresh token successfully", async () => {
+			const mockToken = "new-access-token";
+			const mockPayload = { role: "admin" as const, email: "admin@example.com" };
 
-      await waitFor(() => {
-        expect(mockPost).toHaveBeenCalledWith('/auth/refresh');
-        expect(mockDecodeJwt).toHaveBeenCalledWith(mockToken);
-        expect(mockSetAccessToken).toHaveBeenCalledWith(mockToken);
-      });
-    });
+			mockPost.mockResolvedValue({
+				data: { access: mockToken },
+			});
+			mockDecodeJwt.mockReturnValue(mockPayload);
 
-    it('should handle refresh failure', async () => {
-      const error = new Error('Refresh token expired');
-      mockPost.mockRejectedValue(error);
+			const { result } = renderHook(() => useAuth(), { wrapper });
 
-      const { result } = renderHook(() => useAuth(), { wrapper });
+			await act(async () => {
+				const newToken = await result.current.refresh();
+				expect(newToken).toBe(mockToken);
+			});
 
-      await act(async () => {
-        await expect(result.current.refresh()).rejects.toThrow('Refresh token expired');
-      });
+			await waitFor(() => {
+				expect(mockPost).toHaveBeenCalledWith("/auth/refresh");
+				expect(mockDecodeJwt).toHaveBeenCalledWith(mockToken);
+				expect(mockSetAccessToken).toHaveBeenCalledWith(mockToken);
+			});
+		});
 
-      expect(mockSetAccessToken).not.toHaveBeenCalled();
-    });
-  });
+		it("should handle refresh failure", async () => {
+			const error = new Error("Refresh token expired");
+			mockPost.mockRejectedValue(error);
 
-  describe('logout', () => {
-    it('should clear access token and auth state', () => {
-      const { result } = renderHook(() => useAuth(), { wrapper });
+			const { result } = renderHook(() => useAuth(), { wrapper });
 
-      act(() => {
-        result.current.logout();
-      });
+			await act(async () => {
+				await expect(result.current.refresh()).rejects.toThrow("Refresh token expired");
+			});
 
-      expect(mockClearAccessToken).toHaveBeenCalled();
-      // Redux state cleared via dispatch (tested in integration)
-    });
-  });
+			expect(mockSetAccessToken).not.toHaveBeenCalled();
+		});
+	});
+
+	describe("logout", () => {
+		it("should clear access token and auth state", () => {
+			const { result } = renderHook(() => useAuth(), { wrapper });
+
+			act(() => {
+				result.current.logout();
+			});
+
+			expect(mockClearAccessToken).toHaveBeenCalled();
+			// Redux state cleared via dispatch (tested in integration)
+		});
+	});
 });
-

@@ -1,17 +1,25 @@
-import { Spinner } from 'react-bootstrap';
+/**
+ * @author Bob's Garage Team
+ * @purpose Loading spinner component with trans pride animation
+ * @version 1.0.0
+ */
+
+import "./TransPrideSpinner.css";
 
 export default function Loading({ message }: { message?: string }) {
-  return (
-    <div
-      className="d-flex flex-column align-items-center justify-content-center"
-      style={{ minHeight: 160 }}
-    >
-      <Spinner animation="border" role="status" aria-hidden="true" />
-      {message ? (
-        <div className="mt-2 text-muted" aria-live="polite">
-          {message}
-        </div>
-      ) : null}
-    </div>
-  );
+	return (
+		<div
+			className="d-flex flex-column align-items-center justify-content-center"
+			style={{ minHeight: 160 }}
+		>
+			<div className="trans-pride-spinner" role="status" aria-hidden="true">
+				<span className="visually-hidden">Loading...</span>
+			</div>
+			{message ? (
+				<div className="mt-3 text-muted" aria-live="polite" style={{ color: "#d1d5db" }}>
+					{message}
+				</div>
+			) : null}
+		</div>
+	);
 }

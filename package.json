@@ -1,33 +1,59 @@
 {
-  "name": "bobs-garage-fullstack",
-  "private": true,
-  "packageManager": "yarn@1.22.22",
-  "workspaces": [
-    "server",
-    "client"
-  ],
-  "scripts": {
-    "dev": "concurrently \"yarn workspace server dev\" \"yarn workspace client dev\"",
-    "build": "yarn workspace server build && yarn workspace client build",
-    "lint": "biome lint .",
-    "format": "biome format --write .",
-    "typecheck": "yarn workspace server typecheck && yarn workspace client typecheck",
-    "test": "yarn workspace server test && yarn workspace client test",
-    "seed": "yarn workspace server seed",
-    "prepare": "husky"
-  },
-  "devDependencies": {
-    "@biomejs/biome": "^1.9.4",
-    "@commitlint/cli": "^19.5.0",
-    "@commitlint/config-conventional": "^19.5.0",
-    "@types/node": "^24.3.0",
-    "concurrently": "^9.1.2",
-    "husky": "^9.1.5",
-    "lint-staged": "^15.2.10"
-  },
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx,json,md,css,scss}": [
-      "biome check --write"
-    ]
-  }
+	"name": "bobs-garage-fullstack",
+	"version": "1.0.0",
+	"description": "A modern full-stack web application for managing an auto repair shop",
+	"private": true,
+	"license": "ISC",
+	"author": "",
+	"repository": {
+		"type": "git",
+		"url": ""
+	},
+	"keywords": [
+		"fullstack",
+		"react",
+		"typescript",
+		"express",
+		"mysql",
+		"monorepo"
+	],
+	"packageManager": "yarn@1.22.22",
+	"engines": {
+		"node": ">=20.0.0",
+		"yarn": ">=1.22.22"
+	},
+	"workspaces": [
+		"server",
+		"client"
+	],
+	"scripts": {
+		"dev": "concurrently \"yarn workspace server dev\" \"yarn workspace client dev\"",
+		"build": "yarn workspace server build && yarn workspace client build",
+		"start": "yarn workspace server start",
+		"lint": "biome lint .",
+		"lint:fix": "biome check --write .",
+		"format": "biome format --write .",
+		"format:check": "biome format .",
+		"typecheck": "yarn workspace server typecheck && yarn workspace client typecheck",
+		"test": "yarn workspace server test && yarn workspace client test",
+		"test:watch": "concurrently \"yarn workspace server test:watch\" \"yarn workspace client test:watch\"",
+		"seed": "yarn workspace server seed",
+		"clean": "yarn workspace server clean && yarn workspace client clean || true",
+		"prepare": "husky",
+		"update:dependencies": "yarn upgrade-interactive --latest"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^2.3.3",
+		"@commitlint/cli": "^20.1.0",
+		"@commitlint/config-conventional": "^20.0.0",
+		"@types/node": "^24.10.0",
+		"concurrently": "^9.1.2",
+		"husky": "^9.1.5",
+		"lint-staged": "^16.2.6"
+	},
+	"lint-staged": {
+		"*.{js,jsx,ts,tsx,json,md,css,scss}": [
+			"biome check --write"
+		]
+	}
 }

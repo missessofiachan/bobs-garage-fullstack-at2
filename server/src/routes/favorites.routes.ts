@@ -1,14 +1,19 @@
-import { Router, type Router as RouterType } from 'express';
-import * as Favorites from '../controllers/favorites.controller.js';
-import { requireAuth } from '../middleware/auth.js';
+/**
+ * @author Bob's Garage Team
+ * @purpose Favorites routes for managing user-service favorites
+ * @version 1.0.0
+ */
+
+import { Router, type Router as RouterType } from "express";
+import * as Favorites from "../controllers/favorites.controller.js";
+import { requireAuth } from "../middleware/auth.js";
 
 const r: RouterType = Router();
 
 // All routes require authentication
-r.get('/', requireAuth, Favorites.listFavorites);
-r.post('/:serviceId', requireAuth, Favorites.addFavorite);
-r.delete('/:serviceId', requireAuth, Favorites.removeFavorite);
-r.get('/:serviceId', requireAuth, Favorites.checkFavorite);
+r.get("/", requireAuth, Favorites.listFavorites);
+r.post("/:serviceId", requireAuth, Favorites.addFavorite);
+r.delete("/:serviceId", requireAuth, Favorites.removeFavorite);
+r.get("/:serviceId", requireAuth, Favorites.checkFavorite);
 
 export default r;
-

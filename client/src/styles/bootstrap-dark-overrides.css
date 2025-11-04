@@ -1,0 +1,396 @@
+/* Bootstrap Dark Mode Overrides - Trans Pride Theme */
+
+/* Light Mode Overrides - Trans Pride Theme */
+html[data-bs-theme="light"],
+html[data-bs-theme="light"] body {
+	--bs-body-bg: #ffffff;
+	--bs-body-color: #111827;
+	--bs-body-color-rgb: 17, 24, 39;
+	--bs-emphasis-color: #000000;
+	--bs-emphasis-color-rgb: 0, 0, 0;
+	--bs-secondary-color: #4b5563;
+	--bs-secondary-color-rgb: 75, 85, 99;
+	--bs-secondary-bg: #f9fafb;
+	--bs-secondary-bg-rgb: 249, 250, 251;
+	--bs-tertiary-bg: #f3f4f6;
+	--bs-tertiary-bg-rgb: 243, 244, 246;
+	--bs-border-color: #d1d5db;
+	--bs-border-color-translucent: rgba(209, 213, 219, 0.175);
+	--bs-form-control-bg: #ffffff;
+	--bs-form-control-disabled-bg: #f3f4f6;
+	--bs-form-select-bg: #ffffff;
+	--bs-primary: #55cdfc; /* Trans pride flag blue */
+	--bs-primary-rgb: 85, 205, 252;
+	--bs-secondary: #F7A8B8; /* Trans pride flag pink */
+	--bs-secondary-rgb: 247, 168, 184;
+	--bs-link-color: #55cdfc;
+	--bs-link-hover-color: #3bb5e8;
+	--bs-info: #55cdfc; /* Use trans blue for info */
+	--bs-info-rgb: 85, 205, 252;
+}
+
+html[data-bs-theme="light"] .btn-primary {
+	background-color: #55cdfc;
+	border-color: #55cdfc;
+	color: #0a0a0a;
+	font-weight: 600;
+}
+
+html[data-bs-theme="light"] .btn-primary:hover {
+	background-color: #3bb5e8;
+	border-color: #3bb5e8;
+	color: #0a0a0a;
+}
+
+html[data-bs-theme="light"] .text-primary {
+	color: #55cdfc !important;
+}
+
+html[data-bs-theme="light"] .link-primary {
+	color: #55cdfc;
+	text-decoration: underline;
+}
+
+html[data-bs-theme="light"] .link-primary:hover {
+	color: #3bb5e8;
+}
+
+html[data-bs-theme="light"] .form-control:focus,
+html[data-bs-theme="light"] .form-select:focus {
+	border-color: #55cdfc;
+	box-shadow: 0 0 0 0.25rem rgba(85, 205, 252, 0.25);
+}
+
+html[data-bs-theme="light"] .spinner-border {
+	border-color: #55cdfc;
+	border-right-color: transparent;
+}
+
+html[data-bs-theme="light"] .spinner-grow {
+	background-color: #55cdfc;
+}
+
+/* Fix outline buttons in light mode */
+html[data-bs-theme="light"] .btn-outline-dark {
+	border-color: #111827 !important;
+	color: #111827 !important;
+	background-color: transparent;
+}
+
+html[data-bs-theme="light"] .btn-outline-dark:hover {
+	background-color: #111827 !important;
+	border-color: #111827 !important;
+	color: #ffffff !important;
+}
+
+html[data-bs-theme="light"] .btn-outline-secondary {
+	border-color: #F7A8B8 !important;
+	color: #F7A8B8 !important;
+	background-color: transparent;
+}
+
+html[data-bs-theme="light"] .btn-outline-secondary:hover {
+	background-color: #F7A8B8 !important;
+	border-color: #F7A8B8 !important;
+	color: #0a0a0a !important;
+}
+
+html[data-bs-theme="light"] .btn-outline-light {
+	border-color: #f3f4f6 !important;
+	color: #111827 !important;
+	background-color: transparent;
+}
+
+html[data-bs-theme="light"] .btn-outline-light:hover {
+	background-color: #f3f4f6 !important;
+	border-color: #f3f4f6 !important;
+	color: #111827 !important;
+}
+
+html[data-bs-theme="light"] .btn-outline-primary {
+	border-color: #55cdfc !important;
+	color: #55cdfc !important;
+	background-color: transparent;
+}
+
+html[data-bs-theme="light"] .btn-outline-primary:hover {
+	background-color: #55cdfc !important;
+	border-color: #55cdfc !important;
+	color: #0a0a0a !important;
+}
+
+/* Trans pride pink accent for secondary buttons */
+html[data-bs-theme="light"] .btn-secondary {
+	background-color: #F7A8B8;
+	border-color: #F7A8B8;
+	color: #0a0a0a;
+	font-weight: 600;
+}
+
+html[data-bs-theme="light"] .btn-secondary:hover {
+	background-color: #f59bb0;
+	border-color: #f59bb0;
+	color: #0a0a0a;
+}
+
+html[data-bs-theme="light"] .badge.bg-secondary {
+	background-color: #F7A8B8 !important;
+	color: #0a0a0a;
+}
+
+html[data-bs-theme="light"] .text-secondary {
+	color: #F7A8B8 !important;
+}
+
+/* Bootstrap Dark Mode Overrides - Trans Pride Theme */
+
+html[data-bs-theme="dark"],
+html[data-bs-theme="dark"] body {
+	--bs-body-bg: #121212; /* true dark background */
+	--bs-body-color: #f3f4f6; /* improved contrast - 12.6:1 */
+	--bs-body-color-rgb: 243, 244, 246;
+	--bs-emphasis-color: #ffffff;
+	--bs-emphasis-color-rgb: 255, 255, 255;
+	--bs-secondary-color: #d1d5db; /* improved contrast - 7.1:1 (was #9ca3af) */                                                                            
+	--bs-secondary-color-rgb: 209, 213, 219;
+	--bs-secondary-bg: #1f2937; /* panel color - improved visibility */     
+	--bs-secondary-bg-rgb: 31, 41, 55;
+	--bs-tertiary-bg: #374151;
+	--bs-tertiary-bg-rgb: 55, 65, 81;
+	--bs-border-color: #374151; /* improved visibility */
+	--bs-border-color-translucent: rgba(55, 65, 81, 0.175);
+	--bs-form-control-bg: #1f2937;
+	--bs-form-control-disabled-bg: #374151;
+	--bs-form-select-bg: #1f2937;
+	--bs-primary: #7dd3fc; /* Trans pride flag blue - lighter for better contrast (4.5:1 on #121212) */                                                             
+	--bs-primary-rgb: 125, 211, 252;
+	--bs-secondary: #F7A8B8; /* Trans pride flag pink */
+	--bs-secondary-rgb: 247, 168, 184;
+	--bs-link-color: #7dd3fc;
+	--bs-link-hover-color: #93daff;
+	--bs-info: #7dd3fc; /* Use trans blue for info */
+	--bs-info-rgb: 125, 211, 252;
+}
+
+html[data-bs-theme="dark"] .card {
+	background-color: #1f2937; /* panel color - improved visibility */
+	border-color: #374151;
+	color: #f3f4f6; /* improved contrast */
+}
+
+html[data-bs-theme="dark"] .table {
+	--bs-table-bg: #1f2937;
+	--bs-table-color: #f3f4f6; /* improved contrast */
+	--bs-table-border-color: #374151;
+	--bs-table-striped-bg: #374151;
+	--bs-table-hover-bg: #374151;
+}
+
+html[data-bs-theme="dark"] .form-control,
+html[data-bs-theme="dark"] .form-select {
+	background-color: #1f2937;
+	border-color: #374151;
+	color: #f3f4f6; /* improved contrast */
+}
+
+html[data-bs-theme="dark"] .form-control:focus,
+html[data-bs-theme="dark"] .form-select:focus {
+	background-color: #1f2937;
+	border-color: #7dd3fc; /* lighter trans flag blue for better contrast */
+	color: #f3f4f6;
+	box-shadow: 0 0 0 0.25rem rgba(125, 211, 252, 0.25);
+}
+
+html[data-bs-theme="dark"] .list-group-item {
+	background-color: #1f2937;
+	border-color: #374151;
+	color: #f3f4f6; /* improved contrast */
+}
+
+html[data-bs-theme="dark"] .dropdown-menu {
+	background-color: #1f2937;
+	border-color: #374151;
+}
+
+html[data-bs-theme="dark"] .dropdown-item {
+	color: #f3f4f6; /* improved contrast */
+}
+
+html[data-bs-theme="dark"] .dropdown-item:hover,
+html[data-bs-theme="dark"] .dropdown-item:focus {
+	background-color: #374151;
+	color: #ffffff; /* maximum contrast on hover */
+}
+
+html[data-bs-theme="dark"] .modal-content {
+	background-color: #1f2937;
+	border-color: #374151;
+	color: #f3f4f6; /* improved contrast */
+}
+
+html[data-bs-theme="dark"] .alert {
+	border-color: #374151;
+}
+
+html[data-bs-theme="dark"] .navbar {
+	background-color: #1f2937 !important;
+}
+
+html[data-bs-theme="dark"] .bg-light {
+	background-color: #1f2937 !important;
+}
+
+html[data-bs-theme="dark"] .text-body-secondary {
+	color: #d1d5db !important; /* improved contrast - 7.1:1 */
+}
+
+html[data-bs-theme="dark"] .btn-primary {
+	background-color: #7dd3fc; /* lighter for better contrast */
+	border-color: #7dd3fc;
+	color: #0a0a0a; /* darker text for 4.5:1 contrast on light blue */
+	font-weight: 600; /* bold helps with contrast */
+}
+
+html[data-bs-theme="dark"] .btn-primary:hover {
+	background-color: #93daff;
+	border-color: #93daff;
+	color: #0a0a0a;
+}
+
+html[data-bs-theme="dark"] .text-primary {
+	color: #7dd3fc !important; /* lighter for better contrast */
+}
+
+html[data-bs-theme="dark"] .link-primary {
+	color: #7dd3fc;
+	text-decoration: underline; /* WCAG requirement for links */
+}
+
+html[data-bs-theme="dark"] .link-primary:hover {
+	color: #93daff;
+}
+
+/* Bootstrap spinner override to use trans pride colors */
+html[data-bs-theme="dark"] .spinner-border {
+	border-color: #7dd3fc; /* lighter for better visibility */
+	border-right-color: transparent;
+}
+
+html[data-bs-theme="dark"] .spinner-grow {
+	background-color: #7dd3fc;
+}
+
+/* Fix outline buttons visibility in dark mode */
+html[data-bs-theme="dark"] .btn-outline-dark {
+	border-color: #374151 !important;
+	color: #f3f4f6 !important;
+	background-color: transparent;
+}
+
+html[data-bs-theme="dark"] .btn-outline-dark:hover {
+	background-color: #374151 !important;
+	border-color: #374151 !important;
+	color: #ffffff !important;
+}
+
+html[data-bs-theme="dark"] .btn-outline-secondary {
+	border-color: #F7A8B8 !important;
+	color: #F7A8B8 !important;
+	background-color: transparent;
+}
+
+html[data-bs-theme="dark"] .btn-outline-secondary:hover {
+	background-color: #F7A8B8 !important;
+	border-color: #F7A8B8 !important;
+	color: #0a0a0a !important;
+}
+
+html[data-bs-theme="dark"] .btn-outline-light {
+	border-color: #f3f4f6 !important;
+	color: #f3f4f6 !important;
+	background-color: transparent;
+}
+
+html[data-bs-theme="dark"] .btn-outline-light:hover {
+	background-color: #f3f4f6 !important;
+	border-color: #f3f4f6 !important;
+	color: #121212 !important;
+}
+
+html[data-bs-theme="dark"] .btn-outline-primary {
+	border-color: #7dd3fc !important;
+	color: #7dd3fc !important;
+	background-color: transparent;
+}
+
+html[data-bs-theme="dark"] .btn-outline-primary:hover {
+	background-color: #7dd3fc !important;
+	border-color: #7dd3fc !important;
+	color: #0a0a0a !important;
+}
+
+/* Trans pride pink accent for secondary buttons in dark mode */
+html[data-bs-theme="dark"] .btn-secondary {
+	background-color: #F7A8B8;
+	border-color: #F7A8B8;
+	color: #0a0a0a;
+	font-weight: 600;
+}
+
+html[data-bs-theme="dark"] .btn-secondary:hover {
+	background-color: #f9b0c2;
+	border-color: #f9b0c2;
+	color: #0a0a0a;
+}
+
+html[data-bs-theme="dark"] .btn-outline-secondary {
+	border-color: #F7A8B8 !important;
+	color: #F7A8B8 !important;
+	background-color: transparent;
+}
+
+html[data-bs-theme="dark"] .btn-outline-secondary:hover {
+	background-color: #F7A8B8 !important;
+	border-color: #F7A8B8 !important;
+	color: #0a0a0a !important;
+}
+
+html[data-bs-theme="dark"] .badge.bg-secondary {
+	background-color: #F7A8B8 !important;
+	color: #0a0a0a;
+}
+
+html[data-bs-theme="dark"] .text-secondary {
+	color: #F7A8B8 !important;
+}
+
+
+
+/* Remove outline/box from navbar brand */
+.navbar-brand:focus,
+.navbar-brand:focus-visible,
+.navbar-brand:active {
+	outline: none !important;
+	box-shadow: none !important;
+	border: none !important;
+}
+
+/* Pink hover highlight for navigation links */
+.navbar-nav .nav-link:hover {
+	background-color: #f7a8b8 !important;
+	color: #ffffff !important;
+	border-radius: 4px;
+	transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.navbar-nav .nav-link:focus,
+.navbar-nav .nav-link:focus-visible {
+	outline: 2px solid #f7a8b8 !important;
+	outline-offset: 2px;
+	border-radius: 4px;
+}
+
+/* Ensure text remains visible on hover */
+.navbar-nav .nav-link:hover * {
+	color: #ffffff !important;
+}

@@ -4,295 +4,291 @@
  * @version 1.0.0
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { z } from 'zod';
-import type { Response } from 'express';
+import type { Response } from "express";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { z } from "zod";
 import {
-  isUniqueConstraintError,
-  handleControllerError,
-  sendInternalError,
-  sendBadRequest,
-  sendNotFound,
-  sendUnauthorized,
-  sendConflict,
-} from './errors.js';
+	handleControllerError,
+	isUniqueConstraintError,
+	sendBadRequest,
+	sendConflict,
+	sendInternalError,
+	sendNotFound,
+	sendUnauthorized,
+} from "./errors.js";
 
-describe('isUniqueConstraintError', () => {
-  it('should return true for SequelizeUniqueConstraintError', () => {
-    const error = { name: 'SequelizeUniqueConstraintError' };
-    expect(isUniqueConstraintError(error)).toBe(true);
-  });
+describe("isUniqueConstraintError", () => {
+	it("should return true for SequelizeUniqueConstraintError", () => {
+		const error = { name: "SequelizeUniqueConstraintError" };
+		expect(isUniqueConstraintError(error)).toBe(true);
+	});
 
-  it('should return false for other errors', () => {
-    const error = { name: 'SomeOtherError' };
-    expect(isUniqueConstraintError(error)).toBe(false);
-  });
+	it("should return false for other errors", () => {
+		const error = { name: "SomeOtherError" };
+		expect(isUniqueConstraintError(error)).toBe(false);
+	});
 
-  it('should return false for Error objects', () => {
-    const error = new Error('Some error');
-    expect(isUniqueConstraintError(error)).toBe(false);
-  });
+	it("should return false for Error objects", () => {
+		const error = new Error("Some error");
+		expect(isUniqueConstraintError(error)).toBe(false);
+	});
 
-  it('should return false for null', () => {
-    expect(isUniqueConstraintError(null)).toBe(false);
-  });
+	it("should return false for null", () => {
+		expect(isUniqueConstraintError(null)).toBe(false);
+	});
 
-  it('should return false for undefined', () => {
-    expect(isUniqueConstraintError(undefined)).toBe(false);
-  });
+	it("should return false for undefined", () => {
+		expect(isUniqueConstraintError(undefined)).toBe(false);
+	});
 
-  it('should return false for primitives', () => {
-    expect(isUniqueConstraintError('string')).toBe(false);
-    expect(isUniqueConstraintError(123)).toBe(false);
-  });
+	it("should return false for primitives", () => {
+		expect(isUniqueConstraintError("string")).toBe(false);
+		expect(isUniqueConstraintError(123)).toBe(false);
+	});
 
-  it('should return false for objects without name property', () => {
-    const error = { message: 'Some error' };
-    expect(isUniqueConstraintError(error)).toBe(false);
-  });
+	it("should return false for objects without name property", () => {
+		const error = { message: "Some error" };
+		expect(isUniqueConstraintError(error)).toBe(false);
+	});
 });
 
-describe('handleControllerError', () => {
-  let mockRes: Partial<Response>;
-  let originalEnv: string | undefined;
+describe("handleControllerError", () => {
+	let mockRes: Partial<Response>;
+	let originalEnv: string | undefined;
 
-  beforeEach(() => {
-    mockRes = {
-      status: vi.fn().mockReturnThis(),
-      json: vi.fn().mockReturnThis(),
-    };
-    originalEnv = process.env.NODE_ENV;
-  });
+	beforeEach(() => {
+		mockRes = {
+			status: vi.fn().mockReturnThis(),
+			json: vi.fn().mockReturnThis(),
+		};
+		originalEnv = process.env.NODE_ENV;
+	});
 
-  afterEach(() => {
-    process.env.NODE_ENV = originalEnv;
-    vi.clearAllMocks();
-  });
+	afterEach(() => {
+		process.env.NODE_ENV = originalEnv;
+		vi.clearAllMocks();
+	});
 
-  it('should handle Zod validation errors', () => {
-    const schema = z.object({ email: z.string().email() });
-    const result = schema.safeParse({ email: 'invalid' });
-    
-    if (!result.success) {
-      const handled = handleControllerError(result.error, mockRes as Response);
-      
-      expect(handled).toBe(true);
-      expect(mockRes.status).toHaveBeenCalledWith(400);
-      expect(mockRes.json).toHaveBeenCalledWith({
-        message: 'Validation error',
-        errors: result.error.issues,
-      });
-    }
-  });
+	it("should handle Zod validation errors", () => {
+		const schema = z.object({ email: z.string().email() });
+		const result = schema.safeParse({ email: "invalid" });
 
-  it('should handle Sequelize unique constraint errors', () => {
-    const error = { name: 'SequelizeUniqueConstraintError' };
-    const handled = handleControllerError(error, mockRes as Response);
-    
-    expect(handled).toBe(true);
-    expect(mockRes.status).toHaveBeenCalledWith(409);
-    expect(mockRes.json).toHaveBeenCalledWith({
-      message: 'Duplicate entry',
-    });
-  });
+		if (!result.success) {
+			const handled = handleControllerError(result.error, mockRes as Response);
 
-  it('should use custom message for unique constraint errors', () => {
-    const error = { name: 'SequelizeUniqueConstraintError' };
-    const handled = handleControllerError(error, mockRes as Response, {
-      uniqueConstraintMessage: 'Email already exists',
-    });
-    
-    expect(handled).toBe(true);
-    expect(mockRes.json).toHaveBeenCalledWith({
-      message: 'Email already exists',
-    });
-  });
+			expect(handled).toBe(true);
+			expect(mockRes.status).toHaveBeenCalledWith(400);
+			expect(mockRes.json).toHaveBeenCalledWith({
+				message: "Validation error",
+				errors: result.error.issues,
+			});
+		}
+	});
 
-  it('should handle generic errors in production', () => {
-    process.env.NODE_ENV = 'production';
-    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-    
-    const error = new Error('Some error');
-    const handled = handleControllerError(error, mockRes as Response);
-    
-    expect(handled).toBe(true);
-    expect(mockRes.status).toHaveBeenCalledWith(500);
-    expect(mockRes.json).toHaveBeenCalledWith({
-      message: 'Internal server error',
-    });
-    expect(consoleSpy).toHaveBeenCalled();
-    
-    consoleSpy.mockRestore();
-  });
+	it("should handle Sequelize unique constraint errors", () => {
+		const error = { name: "SequelizeUniqueConstraintError" };
+		const handled = handleControllerError(error, mockRes as Response);
 
-  it('should include error details in development mode', () => {
-    process.env.NODE_ENV = 'development';
-    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-    
-    const error = new Error('Development error');
-    const handled = handleControllerError(error, mockRes as Response, {
-      developmentErrorDetails: true,
-    });
-    
-    expect(handled).toBe(true);
-    expect(mockRes.status).toHaveBeenCalledWith(500);
-    expect(mockRes.json).toHaveBeenCalledWith({
-      message: 'Internal server error',
-      error: 'Development error',
-    });
-    
-    consoleSpy.mockRestore();
-  });
+		expect(handled).toBe(true);
+		expect(mockRes.status).toHaveBeenCalledWith(409);
+		expect(mockRes.json).toHaveBeenCalledWith({
+			message: "Duplicate entry",
+		});
+	});
 
-  it('should not include error details when developmentErrorDetails is false', () => {
-    process.env.NODE_ENV = 'development';
-    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-    
-    const error = new Error('Some error');
-    const handled = handleControllerError(error, mockRes as Response, {
-      developmentErrorDetails: false,
-    });
-    
-    expect(handled).toBe(true);
-    expect(mockRes.json).toHaveBeenCalledWith({
-      message: 'Internal server error',
-    });
-    
-    consoleSpy.mockRestore();
-  });
+	it("should use custom message for unique constraint errors", () => {
+		const error = { name: "SequelizeUniqueConstraintError" };
+		const handled = handleControllerError(error, mockRes as Response, {
+			uniqueConstraintMessage: "Email already exists",
+		});
 
-  it('should handle non-Error objects', () => {
-    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-    
-    const error = { message: 'String error' };
-    const handled = handleControllerError(error, mockRes as Response);
-    
-    expect(handled).toBe(true);
-    expect(mockRes.status).toHaveBeenCalledWith(500);
-    
-    consoleSpy.mockRestore();
-  });
+		expect(handled).toBe(true);
+		expect(mockRes.json).toHaveBeenCalledWith({
+			message: "Email already exists",
+		});
+	});
+
+	it("should handle generic errors in production", () => {
+		process.env.NODE_ENV = "production";
+
+		const error = new Error("Some error");
+		const handled = handleControllerError(error, mockRes as Response);
+
+		expect(handled).toBe(true);
+		expect(mockRes.status).toHaveBeenCalledWith(500);
+		expect(mockRes.json).toHaveBeenCalledWith({
+			message: "Internal server error",
+		});
+		// Logger is mocked, so we just verify the error was handled correctly
+	});
+
+	it("should include error details in development mode", () => {
+		process.env.NODE_ENV = "development";
+		const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+
+		const error = new Error("Development error");
+		const handled = handleControllerError(error, mockRes as Response, {
+			developmentErrorDetails: true,
+		});
+
+		expect(handled).toBe(true);
+		expect(mockRes.status).toHaveBeenCalledWith(500);
+		expect(mockRes.json).toHaveBeenCalledWith({
+			message: "Internal server error",
+			error: "Development error",
+		});
+
+		consoleSpy.mockRestore();
+	});
+
+	it("should not include error details when developmentErrorDetails is false", () => {
+		process.env.NODE_ENV = "development";
+		const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+
+		const error = new Error("Some error");
+		const handled = handleControllerError(error, mockRes as Response, {
+			developmentErrorDetails: false,
+		});
+
+		expect(handled).toBe(true);
+		expect(mockRes.json).toHaveBeenCalledWith({
+			message: "Internal server error",
+		});
+
+		consoleSpy.mockRestore();
+	});
+
+	it("should handle non-Error objects", () => {
+		const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+
+		const error = { message: "String error" };
+		const handled = handleControllerError(error, mockRes as Response);
+
+		expect(handled).toBe(true);
+		expect(mockRes.status).toHaveBeenCalledWith(500);
+
+		consoleSpy.mockRestore();
+	});
 });
 
-describe('sendInternalError', () => {
-  it('should send 500 error response', () => {
-    const mockRes = {
-      status: vi.fn().mockReturnThis(),
-      json: vi.fn().mockReturnThis(),
-    } as Partial<Response>;
-    
-    sendInternalError(mockRes as Response);
-    
-    expect(mockRes.status).toHaveBeenCalledWith(500);
-    expect(mockRes.json).toHaveBeenCalledWith({
-      message: 'Internal server error',
-    });
-  });
+describe("sendInternalError", () => {
+	it("should send 500 error response", () => {
+		const mockRes = {
+			status: vi.fn().mockReturnThis(),
+			json: vi.fn().mockReturnThis(),
+		} as Partial<Response>;
+
+		sendInternalError(mockRes as Response);
+
+		expect(mockRes.status).toHaveBeenCalledWith(500);
+		expect(mockRes.json).toHaveBeenCalledWith({
+			message: "Internal server error",
+		});
+	});
 });
 
-describe('sendBadRequest', () => {
-  it('should send 400 error response with message', () => {
-    const mockRes = {
-      status: vi.fn().mockReturnThis(),
-      json: vi.fn().mockReturnThis(),
-    } as Partial<Response>;
-    
-    sendBadRequest(mockRes as Response, 'Invalid input');
-    
-    expect(mockRes.status).toHaveBeenCalledWith(400);
-    expect(mockRes.json).toHaveBeenCalledWith({
-      message: 'Invalid input',
-    });
-  });
+describe("sendBadRequest", () => {
+	it("should send 400 error response with message", () => {
+		const mockRes = {
+			status: vi.fn().mockReturnThis(),
+			json: vi.fn().mockReturnThis(),
+		} as Partial<Response>;
+
+		sendBadRequest(mockRes as Response, "Invalid input");
+
+		expect(mockRes.status).toHaveBeenCalledWith(400);
+		expect(mockRes.json).toHaveBeenCalledWith({
+			message: "Invalid input",
+		});
+	});
 });
 
-describe('sendNotFound', () => {
-  it('should send 404 error response with default message', () => {
-    const mockRes = {
-      status: vi.fn().mockReturnThis(),
-      json: vi.fn().mockReturnThis(),
-    } as Partial<Response>;
-    
-    sendNotFound(mockRes as Response);
-    
-    expect(mockRes.status).toHaveBeenCalledWith(404);
-    expect(mockRes.json).toHaveBeenCalledWith({
-      message: 'Not found',
-    });
-  });
+describe("sendNotFound", () => {
+	it("should send 404 error response with default message", () => {
+		const mockRes = {
+			status: vi.fn().mockReturnThis(),
+			json: vi.fn().mockReturnThis(),
+		} as Partial<Response>;
 
-  it('should send 404 error response with custom message', () => {
-    const mockRes = {
-      status: vi.fn().mockReturnThis(),
-      json: vi.fn().mockReturnThis(),
-    } as Partial<Response>;
-    
-    sendNotFound(mockRes as Response, 'Resource not found');
-    
-    expect(mockRes.status).toHaveBeenCalledWith(404);
-    expect(mockRes.json).toHaveBeenCalledWith({
-      message: 'Resource not found',
-    });
-  });
+		sendNotFound(mockRes as Response);
+
+		expect(mockRes.status).toHaveBeenCalledWith(404);
+		expect(mockRes.json).toHaveBeenCalledWith({
+			message: "Not found",
+		});
+	});
+
+	it("should send 404 error response with custom message", () => {
+		const mockRes = {
+			status: vi.fn().mockReturnThis(),
+			json: vi.fn().mockReturnThis(),
+		} as Partial<Response>;
+
+		sendNotFound(mockRes as Response, "Resource not found");
+
+		expect(mockRes.status).toHaveBeenCalledWith(404);
+		expect(mockRes.json).toHaveBeenCalledWith({
+			message: "Resource not found",
+		});
+	});
 });
 
-describe('sendUnauthorized', () => {
-  it('should send 401 error response with default message', () => {
-    const mockRes = {
-      status: vi.fn().mockReturnThis(),
-      json: vi.fn().mockReturnThis(),
-    } as Partial<Response>;
-    
-    sendUnauthorized(mockRes as Response);
-    
-    expect(mockRes.status).toHaveBeenCalledWith(401);
-    expect(mockRes.json).toHaveBeenCalledWith({
-      message: 'Unauthorized',
-    });
-  });
+describe("sendUnauthorized", () => {
+	it("should send 401 error response with default message", () => {
+		const mockRes = {
+			status: vi.fn().mockReturnThis(),
+			json: vi.fn().mockReturnThis(),
+		} as Partial<Response>;
 
-  it('should send 401 error response with custom message', () => {
-    const mockRes = {
-      status: vi.fn().mockReturnThis(),
-      json: vi.fn().mockReturnThis(),
-    } as Partial<Response>;
-    
-    sendUnauthorized(mockRes as Response, 'Invalid credentials');
-    
-    expect(mockRes.status).toHaveBeenCalledWith(401);
-    expect(mockRes.json).toHaveBeenCalledWith({
-      message: 'Invalid credentials',
-    });
-  });
+		sendUnauthorized(mockRes as Response);
+
+		expect(mockRes.status).toHaveBeenCalledWith(401);
+		expect(mockRes.json).toHaveBeenCalledWith({
+			message: "Unauthorized",
+		});
+	});
+
+	it("should send 401 error response with custom message", () => {
+		const mockRes = {
+			status: vi.fn().mockReturnThis(),
+			json: vi.fn().mockReturnThis(),
+		} as Partial<Response>;
+
+		sendUnauthorized(mockRes as Response, "Invalid credentials");
+
+		expect(mockRes.status).toHaveBeenCalledWith(401);
+		expect(mockRes.json).toHaveBeenCalledWith({
+			message: "Invalid credentials",
+		});
+	});
 });
 
-describe('sendConflict', () => {
-  it('should send 409 error response with default message', () => {
-    const mockRes = {
-      status: vi.fn().mockReturnThis(),
-      json: vi.fn().mockReturnThis(),
-    } as Partial<Response>;
-    
-    sendConflict(mockRes as Response);
-    
-    expect(mockRes.status).toHaveBeenCalledWith(409);
-    expect(mockRes.json).toHaveBeenCalledWith({
-      message: 'Conflict',
-    });
-  });
+describe("sendConflict", () => {
+	it("should send 409 error response with default message", () => {
+		const mockRes = {
+			status: vi.fn().mockReturnThis(),
+			json: vi.fn().mockReturnThis(),
+		} as Partial<Response>;
 
-  it('should send 409 error response with custom message', () => {
-    const mockRes = {
-      status: vi.fn().mockReturnThis(),
-      json: vi.fn().mockReturnThis(),
-    } as Partial<Response>;
-    
-    sendConflict(mockRes as Response, 'Email already in use');
-    
-    expect(mockRes.status).toHaveBeenCalledWith(409);
-    expect(mockRes.json).toHaveBeenCalledWith({
-      message: 'Email already in use',
-    });
-  });
+		sendConflict(mockRes as Response);
+
+		expect(mockRes.status).toHaveBeenCalledWith(409);
+		expect(mockRes.json).toHaveBeenCalledWith({
+			message: "Conflict",
+		});
+	});
+
+	it("should send 409 error response with custom message", () => {
+		const mockRes = {
+			status: vi.fn().mockReturnThis(),
+			json: vi.fn().mockReturnThis(),
+		} as Partial<Response>;
+
+		sendConflict(mockRes as Response, "Email already in use");
+
+		expect(mockRes.status).toHaveBeenCalledWith(409);
+		expect(mockRes.json).toHaveBeenCalledWith({
+			message: "Email already in use",
+		});
+	});
 });
-

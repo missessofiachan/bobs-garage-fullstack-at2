@@ -1,32 +1,31 @@
 // @author GitHub Copilot
 // @purpose Configure Biome for linting and formatting across workspace packages
-// @version 1.0.0
+// @version 2.0.0
 {
-  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
-  "files": {
-    "ignore": [
-      "node_modules",
-      "dist",
-      "coverage",
-      "uploads",
-      "**/build",
-      "**/tsconfig*.json",
-      "docs/**",
-      "server/tests/**",
-      "server/src/db/scripts/**"
-    ]
-  },
-  "formatter": {
-    "enabled": true,
-    "lineWidth": 100
-  },
-  "linter": {
-    "enabled": true,
-    "rules": {
-      "recommended": false
-    }
-  },
-  "organizeImports": {
-    "enabled": true
-  }
+	"$schema": "https://biomejs.dev/schemas/2.3.3/schema.json",
+	"files": {
+		"ignoreUnknown": true,
+		"includes": [
+			"**",
+			"!**/node_modules",
+			"!**/dist",
+			"!**/coverage",
+			"!**/uploads",
+			"!**/build",
+			"!**/tsconfig*.json",
+			"!**/docs/**",
+			"!**/server/tests/**",
+			"!**/server/src/db/scripts/**"
+		]
+	},
+	"formatter": {
+		"enabled": true,
+		"lineWidth": 100
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"recommended": false
+		}
+	}
 }
