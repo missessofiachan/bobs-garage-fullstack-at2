@@ -34,7 +34,8 @@
 		"test:watch": "vitest",
 		"test:coverage": "vitest run --coverage",
 		"lint": "biome lint src",
-		"lint:fix": "biome check --write src"
+		"lint:fix": "biome check --write src",
+		"format": "biome format --write src"
 	},
 	"dependencies": {
 		"bcrypt": "^6.0.0",

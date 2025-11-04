@@ -11,6 +11,7 @@ import Loading from "../components/ui/Loading";
 import usePageTitle from "../hooks/usePageTitle";
 import { formatCurrency } from "../utils/formatters";
 import { getImageBaseUrl } from "../utils/api";
+import { getImageSrc } from "../utils/imagePlaceholder";
 import FavouriteButton from "../components/FavouriteButton";
 import { MdFavorite } from "react-icons/md";
 
@@ -47,29 +48,22 @@ export default function Favorites() {
 			) : (
 				<Row className="g-4">
 					{favorites.map((service) => {
-						const imageSrc = service.imageUrl
-							? service.imageUrl.startsWith("http")
-								? service.imageUrl
-								: `${getImageBaseUrl()}${service.imageUrl}`
-							: undefined;
+						const imageSrc = getImageSrc(service.imageUrl, getImageBaseUrl());
 
 						return (
 							<Col key={service.id} xs={12} sm={6} md={4} lg={3}>
 								<Card className="h-100 shadow-sm">
-									{imageSrc && (
-										<Card.Img
-											variant="top"
-											src={imageSrc}
-											style={{
-												height: 200,
-												objectFit: "cover",
-											}}
-											onError={(e) => {
-												(e.currentTarget as HTMLImageElement).style.display =
-													"none";
-											}}
-										/>
-									)}
+									<Card.Img
+										variant="top"
+										src={imageSrc}
+										style={{
+											height: 200,
+											objectFit: "cover",
+										}}
+										onError={(e) => {
+											(e.currentTarget as HTMLImageElement).src = imageSrc;
+										}}
+									/>
 									<Card.Body className="d-flex flex-column">
 										<Card.Title>{service.name}</Card.Title>
 										<Card.Text className="flex-grow-1">

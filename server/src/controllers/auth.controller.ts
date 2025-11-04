@@ -30,7 +30,7 @@ import { handleControllerError } from "../utils/errors.js";
  *   "email": "user@example.com",
  *   "password": "password123"
  * }
- * 
+ *
  * // Response (201):
  * {
  *   "id": 1,
@@ -68,7 +68,7 @@ export async function register(req: Request, res: Response) {
  *   "email": "user@example.com",
  *   "password": "password123"
  * }
- * 
+ *
  * // Response (200):
  * {
  *   "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."

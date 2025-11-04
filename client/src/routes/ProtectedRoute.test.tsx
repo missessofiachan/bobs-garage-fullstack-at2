@@ -11,7 +11,6 @@ import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import { ProtectedRoute, AdminRoute } from "./ProtectedRoute";
 import authReducer from "../slices/auth.slice";
-import api from "../api/axios";
 
 // Mock react-router-dom Navigate component
 vi.mock("react-router-dom", async () => {
@@ -53,7 +52,7 @@ describe("ProtectedRoute", () => {
 			preloadedState: {
 				auth: {
 					accessToken,
-					role: "user",
+					role: "user" as const,
 					email: "user@example.com",
 				},
 			},

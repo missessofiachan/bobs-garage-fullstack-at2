@@ -16,11 +16,11 @@ import { logger } from "../utils/logger.js";
  */
 export async function registerUser(email: string, password: string) {
 	const passwordHash = await hashPassword(password);
-	
+
 	// Check if this is the first user to register
 	const userCount = await User.count();
 	const role = userCount === 0 ? "admin" : "user";
-	
+
 	const user = await User.create({ email, passwordHash, role });
 	return {
 		id: user.id,

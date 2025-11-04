@@ -1,146 +1,346 @@
+/**
+ * @author Bob's Garage Team
+ * @purpose Services page with grid/list view, filters, and animations
+ * @version 2.0.0
+ */
+
 import { useMemo, useState } from "react";
-import { Button, Col, Form, Row, Table, Image } from "react-bootstrap";
+import { motion } from "framer-motion";
+import { Alert, Button, Card, Col, Form, Row, Table, Image, InputGroup } from "react-bootstrap";
 import { useServices } from "../hooks/useServices";
-import { useFavorites } from "../hooks/useFavorites";
 import Loading from "../components/ui/Loading";
 import usePageTitle from "../hooks/usePageTitle";
 import { formatCurrency } from "../utils/formatters";
-import { useToast } from "../components/ui/ToastProvider";
 import { getImageBaseUrl } from "../utils/api";
+import { getImageSrc, IMAGE_PLACEHOLDER } from "../utils/imagePlaceholder";
+import FavouriteButton from "../components/FavouriteButton";
+import { useSelector, useDispatch } from "react-redux";
+import { setServicesSort, setServicesView } from "../slices/preferences.slice";
+import type { ServicesSort, ServicesView } from "../slices/preferences.slice";
+import { MdBuild, MdViewModule, MdViewList, MdSearch, MdSort } from "react-icons/md";
+
+const fadeInUp = {
+	initial: { opacity: 0, y: 20 },
+	animate: { opacity: 1, y: 0 },
+	transition: { duration: 0.5 },
+};
+
+const staggerContainer = {
+	initial: {},
+	animate: {
+		transition: {
+			staggerChildren: 0.1,
+		},
+	},
+};
 
 export default function Services() {
 	const { data, isLoading, error, refetch } = useServices();
-	const { isFavorite, addFavorite, removeFavorite } = useFavorites();
-	const { notify } = useToast();
 	usePageTitle("Services");
+	const dispatch = useDispatch();
+	const prefs = useSelector((state: any) => state.preferences);
 	const [q, setQ] = useState("");
-	const [sort, setSort] = useState<"price-asc" | "price-desc">("price-asc");
+	const [maxPrice, setMaxPrice] = useState<number | "">("");
+
+	const sort = prefs?.servicesSort || "price-asc";
+	const view = prefs?.servicesView || "grid";
 
 	const list = useMemo(() => {
 		let arr = (data ?? []).filter((s) => s.published !== false);
 		if (q) arr = arr.filter((s) => s.name.toLowerCase().includes(q.toLowerCase()));
+		if (maxPrice && typeof maxPrice === "number") {
+			arr = arr.filter((s) => s.price <= maxPrice);
+		}
 		arr = arr.sort((a, b) => (sort === "price-asc" ? a.price - b.price : b.price - a.price));
 		return arr;
-	}, [data, q, sort]);
+	}, [data, q, maxPrice, sort]);
 
 	if (isLoading) return <Loading message="Loading services…" />;
 	if (error)
 		return (
-			<div className="alert alert-danger d-flex align-items-center justify-content-between">
+			<Alert variant="danger" className="d-flex align-items-center justify-content-between">
 				<div>Failed to load services.</div>
 				<Button size="sm" variant="outline-light" onClick={() => refetch()}>
 					Retry
 				</Button>
-			</div>
+			</Alert>
 		);
+
 	return (
-		<div>
-			<h1>Services</h1>
-			<Row className="g-2 mb-3">
-				<Col xs={12} md={6} lg={4}>
-					<Form.Control
-						placeholder="Search by name"
-						value={q}
-						onChange={(e) => setQ(e.target.value)}
-						aria-label="Filter services by name"
-					/>
-				</Col>
-				<Col xs="auto">
-					<Form.Select
-						value={sort}
-						onChange={(e) => setSort(e.target.value as any)}
-						aria-label="Sort by price"
+		<motion.div
+			initial={{ opacity: 0 }}
+			animate={{ opacity: 1 }}
+			transition={{ duration: 0.5 }}
+			className="py-4"
+		>
+			{/* Hero Section */}
+			<motion.div
+				className="mb-5"
+				{...fadeInUp}
+				transition={{ delay: 0.2 }}
+			>
+				<div className="d-flex align-items-center gap-3 mb-4">
+					<MdBuild size={48} className="text-primary" />
+					<div>
+						<h1 className="mb-0">Our Services</h1>
+						<p className="text-muted mb-0">
+							Browse our comprehensive range of automotive services. Find exactly what your vehicle needs.
+						</p>
+					</div>
+				</div>
+			</motion.div>
+
+			{/* Filters & Controls */}
+			<motion.div
+				className="mb-4"
+				{...fadeInUp}
+				transition={{ delay: 0.3 }}
+			>
+				<Row className="g-3 align-items-end">
+					<Col xs={12} md={6} lg={4}>
+						<Form.Label className="small text-muted">Search</Form.Label>
+						<InputGroup>
+							<InputGroup.Text aria-hidden="true">
+								<MdSearch />
+							</InputGroup.Text>
+							<Form.Control
+								placeholder="Search by name..."
+								value={q}
+								onChange={(e) => setQ(e.target.value)}
+								aria-label="Filter services by name"
+							/>
+						</InputGroup>
+					</Col>
+					<Col xs={12} sm={6} md={4} lg={3}>
+						<Form.Label className="small text-muted">Max Price</Form.Label>
+						<Form.Control
+							type="number"
+							placeholder="No limit"
+							value={maxPrice}
+							onChange={(e) => setMaxPrice(e.target.value ? Number(e.target.value) : "")}
+							min="0"
+							step="0.01"
+						/>
+					</Col>
+					<Col xs={12} sm={6} md={4} lg={3}>
+						<Form.Label className="small text-muted">Sort</Form.Label>
+						<InputGroup>
+							<InputGroup.Text aria-hidden="true">
+								<MdSort />
+							</InputGroup.Text>
+							<Form.Select
+								value={sort}
+								onChange={(e) => dispatch(setServicesSort(e.target.value as ServicesSort))}
+								aria-label="Sort by price"
+							>
+								<option value="price-asc">Price: Low → High</option>
+								<option value="price-desc">Price: High → Low</option>
+							</Form.Select>
+						</InputGroup>
+					</Col>
+					<Col xs={12} md="auto" lg={2} className="ms-md-auto">
+						<Form.Label className="small text-muted">View</Form.Label>
+						<InputGroup>
+							<Button
+								variant={view === "grid" ? "primary" : "outline-primary"}
+								onClick={() => dispatch(setServicesView("grid" as ServicesView))}
+								aria-label="Grid view"
+							>
+								<MdViewModule />
+							</Button>
+							<Button
+								variant={view === "list" ? "primary" : "outline-primary"}
+								onClick={() => dispatch(setServicesView("list" as ServicesView))}
+								aria-label="List view"
+							>
+								<MdViewList />
+							</Button>
+						</InputGroup>
+					</Col>
+				</Row>
+				{list.length > 0 && (
+					<div className="mt-3 text-muted small">
+						Showing {list.length} {list.length === 1 ? "service" : "services"}
+					</div>
+				)}
+			</motion.div>
+
+			{/* Services Display */}
+			{list.length > 0 ? (
+				view === "grid" ? (
+					<motion.div
+						variants={staggerContainer}
+						initial="initial"
+						animate="animate"
 					>
-						<option value="price-asc">Price: Low → High</option>
-						<option value="price-desc">Price: High → Low</option>
-					</Form.Select>
-				</Col>
-			</Row>
-			<Table striped bordered hover size="sm">
-				<thead>
-					<tr>
-						<th style={{ width: 120 }}>Image</th>
-						<th>Name</th>
-						<th>Price</th>
-						<th>Description</th>
-						<th>Fav</th>
-					</tr>
-				</thead>
-				<tbody>
-					{list.map((s) => {
-						const isFav = isFavorite(s.id);
-						const imageSrc = s.imageUrl
-							? s.imageUrl.startsWith("http")
-								? s.imageUrl
-								: `${getImageBaseUrl()}${s.imageUrl}`
-							: undefined;
+						<Row xs={1} sm={2} md={3} lg={4} className="g-4">
+							{list.map((service) => {
+								const imageSrc = getImageSrc(service.imageUrl, getImageBaseUrl());
+								const isPlaceholder = !service.imageUrl || service.imageUrl.trim() === "";
 
-						const handleToggleFavorite = async () => {
-							try {
-								if (isFav) {
-									await removeFavorite(s.id);
-									notify({ body: "Removed from favorites", variant: "success" });
-								} else {
-									await addFavorite(s.id);
-									notify({ body: "Added to favorites", variant: "success" });
-								}
-							} catch (err: any) {
-								const message =
-									err.response?.data?.message || "Failed to update favorite";
-								notify({ body: message, variant: "danger" });
-							}
-						};
-
-						return (
-							<tr key={s.id}>
-								<td>
-									{imageSrc ? (
-										<Image
-											src={imageSrc}
-											alt={s.name}
-											thumbnail
-											style={{
-												maxWidth: 100,
-												maxHeight: 100,
-												objectFit: "cover",
-												width: "100%",
-												height: "auto",
-											}}
-											onError={(e) => {
-												(e.currentTarget as HTMLImageElement).style.display = "none";
-											}}
-										/>
-									) : (
-										<div className="text-muted small">No image</div>
-									)}
-								</td>
-								<td>{s.name}</td>
-								<td>{formatCurrency(s.price)}</td>
-								<td>{s.description}</td>
-								<td style={{ width: 80 }}>
-									{isFav ? (
-										<Button
-											size="sm"
-											variant="outline-danger"
-											onClick={handleToggleFavorite}
+								return (
+									<Col key={service.id}>
+										<motion.div
+											variants={fadeInUp}
+											whileHover={{ y: -5 }}
+											transition={{ type: "spring", stiffness: 300 }}
 										>
-											Unfavorite
-										</Button>
-									) : (
-										<Button
-											size="sm"
-											variant="outline-primary"
-											onClick={handleToggleFavorite}
-										>
-											Favorite
-										</Button>
-									)}
-								</td>
-							</tr>
-						);
-					})}
-				</tbody>
-			</Table>
-		</div>
+											<Card className="h-100 shadow-sm">
+												<div
+													style={{
+														position: "relative",
+														width: "100%",
+														height: 200,
+														overflow: "hidden",
+														backgroundColor: isPlaceholder ? "#f3f4f6" : "transparent",
+													}}
+												>
+													<Image
+														src={imageSrc}
+														alt={service.name}
+														fluid
+														style={{
+															width: "100%",
+															height: "100%",
+															objectFit: isPlaceholder ? "contain" : "cover",
+															padding: isPlaceholder ? "1rem" : "0",
+														}}
+														loading="lazy"
+														onError={(e) => {
+															if ((e.currentTarget as HTMLImageElement).src !== IMAGE_PLACEHOLDER) {
+																(e.currentTarget as HTMLImageElement).src = IMAGE_PLACEHOLDER;
+															}
+														}}
+													/>
+													<div
+														style={{
+															position: "absolute",
+															top: 8,
+															right: 8,
+														}}
+													>
+														<FavouriteButton id={service.id} />
+													</div>
+												</div>
+												<Card.Body>
+													<Card.Title className="mb-2">{service.name}</Card.Title>
+													<div className="fw-bold text-primary fs-5 mb-2">
+														{formatCurrency(service.price)}
+													</div>
+													{service.description && (
+														<Card.Text
+															className="text-muted small"
+															style={{
+																display: "-webkit-box",
+																WebkitLineClamp: 3,
+																WebkitBoxOrient: "vertical",
+																overflow: "hidden",
+															}}
+														>
+															{service.description}
+														</Card.Text>
+													)}
+												</Card.Body>
+											</Card>
+										</motion.div>
+									</Col>
+								);
+							})}
+						</Row>
+					</motion.div>
+				) : (
+					<motion.div
+						variants={staggerContainer}
+						initial="initial"
+						animate="animate"
+					>
+						<div className="table-responsive">
+							<Table striped bordered hover>
+								<thead>
+									<tr>
+										<th style={{ width: 120 }}>Image</th>
+										<th>Name</th>
+										<th>Price</th>
+										<th>Description</th>
+										<th style={{ width: 100 }}>Favorite</th>
+									</tr>
+								</thead>
+								<tbody>
+									{list.map((service) => {
+										const imageSrc = getImageSrc(service.imageUrl, getImageBaseUrl());
+										return (
+											<motion.tr
+												key={service.id}
+												variants={fadeInUp}
+												whileHover={{ backgroundColor: "var(--bs-secondary-bg)" }}
+											>
+												<td>
+													<Image
+														src={imageSrc}
+														alt={service.name}
+														thumbnail
+														style={{
+															maxWidth: 100,
+															maxHeight: 100,
+															objectFit: "cover",
+															width: "100%",
+															height: "auto",
+														}}
+														onError={(e) => {
+															if ((e.currentTarget as HTMLImageElement).src !== IMAGE_PLACEHOLDER) {
+																(e.currentTarget as HTMLImageElement).src = IMAGE_PLACEHOLDER;
+															}
+														}}
+													/>
+												</td>
+												<td>
+													<strong>{service.name}</strong>
+												</td>
+												<td className="fw-bold text-primary">
+													{formatCurrency(service.price)}
+												</td>
+												<td className="text-muted">
+													{service.description}
+												</td>
+												<td className="text-center">
+													<FavouriteButton id={service.id} />
+												</td>
+											</motion.tr>
+										);
+									})}
+								</tbody>
+							</Table>
+						</div>
+					</motion.div>
+				)
+			) : (
+				<motion.div
+					{...fadeInUp}
+					transition={{ delay: 0.4 }}
+				>
+					<Alert variant="info" className="text-center">
+						<MdBuild size={48} className="mb-3 text-primary" />
+						<h4>No services found</h4>
+						<p className="mb-0">
+							{q || maxPrice
+								? "Try adjusting your search or filters to find what you're looking for."
+								: "No services are currently available. Check back soon!"}
+						</p>
+						{(q || maxPrice) && (
+							<Button
+								variant="outline-primary"
+								className="mt-3"
+								onClick={() => {
+									setQ("");
+									setMaxPrice("");
+								}}
+							>
+								Clear Filters
+							</Button>
+						)}
+					</Alert>
+				</motion.div>
+			)}
+		</motion.div>
 	);
 }

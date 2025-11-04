@@ -5,7 +5,7 @@
  */
 
 import type { NextFunction, Request, Response } from "express";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import asyncHandler from "./asyncHandler.js";
 
 describe("asyncHandler", () => {

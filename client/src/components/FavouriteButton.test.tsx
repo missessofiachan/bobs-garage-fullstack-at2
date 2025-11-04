@@ -51,7 +51,7 @@ describe("FavouriteButton", () => {
 			preloadedState: {
 				auth: {
 					accessToken: "test-token",
-					role: "user",
+					role: "user" as const,
 					email: "test@example.com",
 				},
 			},

@@ -80,9 +80,12 @@ describe("errorHandler", () => {
 			message: "Internal server error",
 		});
 		// Should not include error.message or error.stack
-		const jsonCall = (mockRes.json as ReturnType<typeof vi.fn>).mock.calls[0][0];
-		expect(jsonCall).not.toHaveProperty("error");
-		expect(jsonCall).not.toHaveProperty("stack");
+		const jsonCall = (mockRes.json as ReturnType<typeof vi.fn>).mock.calls[0]?.[0];
+		expect(jsonCall).toBeDefined();
+		if (jsonCall) {
+			expect(jsonCall).not.toHaveProperty("error");
+			expect(jsonCall).not.toHaveProperty("stack");
+		}
 	});
 
 	it("should handle non-Error objects", () => {
