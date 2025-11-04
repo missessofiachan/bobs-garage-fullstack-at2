@@ -5,14 +5,16 @@ A modern full-stack web application for managing an auto repair shop, featuring 
 ## 🚀 Features
 
 ### Frontend (React + TypeScript)
-- **Public Pages**: Home, About, Services (with filtering and sorting)
-- **Authentication**: Login, Register with validation
-- **User Features**: Profile management, favorites system
+- **Public Pages**: Home, About, Services (with filtering and sorting), Staff directory
+- **Authentication**: Login, Register, Forgot Password with validation
+- **User Features**: Profile management, favorites system, settings with preferences
 - **Admin Dashboard**: Comprehensive overview with metrics
 - **Admin Management**: CRUD operations for Services, Staff, and Users
 - **Media Uploads**: Image uploads for services and staff photos
-- **Theme Support**: Light/Dark mode with trans pride color scheme
-- **Accessibility**: WCAG AA compliant with proper contrast ratios
+- **Legal Pages**: Privacy Policy, Terms of Service, Accessibility Statement
+- **Theme Support**: Light/Dark mode with trans pride color scheme (blue #55CDFC, pink #F7A8B8)
+- **Animations**: Smooth Framer Motion animations throughout the UI
+- **Accessibility**: WCAG AA compliant with skip links, ARIA landmarks, proper focus indicators, and screen reader support
 
 ### Backend (Node.js + Express)
 - **RESTful API**: Complete CRUD operations
@@ -25,7 +27,7 @@ A modern full-stack web application for managing an auto repair shop, featuring 
 ## 📋 Prerequisites
 
 - **Node.js** 20.x or higher
-- **Yarn** 1.22.22 (via Corepack)
+- **Yarn** 1.22.19 or higher (via Corepack)
 - **Docker** (optional, for MySQL database)
 - **MySQL** 8.0+ (if not using Docker)
 
@@ -231,6 +233,7 @@ The refresh token is stored in an HttpOnly cookie and is automatically sent with
 - `POST /api/auth/register` - Register a new user (first user becomes admin)
 - `POST /api/auth/login` - Login and receive access token
 - `POST /api/auth/refresh` - Refresh access token
+- `POST /api/auth/forgot-password` - Request password reset (frontend ready, backend implementation pending)
 
 #### Services
 - `GET /api/services` - List all services (public)
@@ -284,15 +287,57 @@ See `server/postman/README.md` for setup and usage instructions.
 4. **Token Refresh**: Client automatically refreshes access token when it expires
 5. **Admin Role**: First registered user automatically receives admin role
 
-## 🎨 Theming
+## 🎨 Theming & Design
 
-The application supports light and dark themes with a trans pride color scheme:
+The application features a beautiful trans pride color scheme with comprehensive theming support:
 
-- **Dark Mode**: True dark background (#121212) with improved contrast
+### Color Scheme
+- **Trans Pride Blue**: #55CDFC (light mode) / #7dd3fc (dark mode) - Primary actions, links, focus indicators
+- **Trans Pride Pink**: #F7A8B8 - Warning/danger messages, secondary accents, hover states
+- **Dark Mode**: True dark background (#121212) with improved contrast ratios
 - **Light Mode**: Clean white background with trans pride accents
-- **Accessibility**: All colors meet WCAG AA contrast ratio requirements
 
-Theme preference is persisted in localStorage and can be toggled from the navigation bar.
+### Features
+- **Theme Toggle**: Switch between light/dark mode from navigation bar
+- **Persistent Preferences**: Theme preference saved in localStorage
+- **Accessibility**: All colors meet WCAG AA contrast ratio requirements (4.5:1 minimum)
+- **Smooth Animations**: Framer Motion animations throughout for enhanced UX
+- **Responsive Design**: Mobile-first approach with Bootstrap 5 grid system
+
+### User Preferences
+- Font size options (small, medium, large)
+- Text density (comfortable, compact)
+- High contrast mode
+- Reduced motion support
+- Date format preferences
+- Language settings (framework ready)
+
+## ♿ Accessibility Features
+
+The application is built with accessibility as a priority, meeting WCAG 2.1 Level AA standards:
+
+### Keyboard Navigation
+- **Skip Links**: "Skip to main content" link for keyboard users
+- **Focus Indicators**: Visible focus outlines using trans pride colors
+- **Keyboard Shortcuts**: Full keyboard navigation support throughout
+
+### Screen Reader Support
+- **ARIA Landmarks**: Proper semantic HTML with `role="main"`, `role="navigation"`, `role="contentinfo"`
+- **ARIA Labels**: Descriptive labels for all interactive elements
+- **Live Regions**: Toast notifications announce changes to screen readers
+- **Form Labels**: All inputs properly associated with labels using `htmlFor`
+
+### Visual Accessibility
+- **High Contrast Mode**: Available in Settings for improved visibility
+- **Reduced Motion**: Option to disable animations for motion sensitivity
+- **Text Size Options**: Adjustable font sizes (small, medium, large)
+- **Color Contrast**: All text meets WCAG AA standards (4.5:1 minimum)
+
+### Form Accessibility
+- **Error Messages**: Field-specific validation errors with `role="alert"`
+- **Input Hints**: Helper text properly associated with `aria-describedby`
+- **Decorative Icons**: Properly marked with `aria-hidden="true"`
+- **Required Fields**: Clearly marked with visual and ARIA indicators
 
 ## 🧪 Testing
 
@@ -352,12 +397,14 @@ Make sure to set `NODE_ENV=production` in your production environment variables.
 - **TypeScript** 5.8.3 - Type safety
 - **Vite** 7.1.2 - Build tool and dev server
 - **React Router** 7.8.1 - Client-side routing
-- **Redux Toolkit** 2.8.2 - State management
-- **React Query** 5.85.3 - Server state management
+- **Redux Toolkit** 2.10.0 - State management
+- **React Query** 5.90.6 - Server state management
 - **Bootstrap** 5.3.7 - UI components
+- **Framer Motion** 12.23.24 - Animation library
 - **Vanilla-Extract** - CSS-in-JS theming
 - **Axios** 1.11.0 - HTTP client
 - **Zod** 4.0.17 - Schema validation
+- **React Icons** 5.3.0 - Icon library
 
 ### Backend
 - **Node.js** 20+ - Runtime
@@ -415,6 +462,16 @@ ISC
 - Delete `node_modules` and reinstall: `rm -rf node_modules && yarn install`
 - Clear TypeScript build cache: `rm -rf server/dist client/dist`
 - Ensure all environment variables are set correctly
+- Verify Yarn version: `yarn --version` (should be >= 1.22.19)
+- Run typecheck: `yarn typecheck` to identify TypeScript errors before building
+
+### Vercel Deployment
+
+If deploying to Vercel:
+- Ensure `yarn` version in `engines` is compatible (>= 1.22.19)
+- TypeScript must pass: `yarn workspace client typecheck`
+- Build must succeed: `yarn workspace client build`
+- All dependencies must be listed in `package.json` (no missing peer dependencies)
 
 ## 📚 Additional Resources
 
