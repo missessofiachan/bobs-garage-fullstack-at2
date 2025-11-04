@@ -7,25 +7,32 @@
  * @since 1.0.0
  */
 
-import { Container, Row, Col } from "react-bootstrap";
-import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
-import { useConnectionStatus } from "../hooks/useConnectionStatus";
-import { MdLocalPhone, MdEmail, MdLocationOn, MdSchedule } from "react-icons/md";
+import { useEffect, useState } from "react";
+import { Col, Container, Row } from "react-bootstrap";
 import { FaFacebook, FaInstagram } from "react-icons/fa";
+import { MdEmail, MdLocalPhone, MdLocationOn, MdSchedule } from "react-icons/md";
+import { Link } from "react-router-dom";
+import { useConnectionStatus } from "../hooks/useConnectionStatus";
 
 export default function Footer() {
 	const { api, db, apiPing, dbPing } = useConnectionStatus(5000);
 	const [theme, setTheme] = useState<string>(() => {
 		if (typeof window !== "undefined") {
-			return localStorage.getItem("theme") || document.documentElement.getAttribute("data-bs-theme") || "dark";
+			return (
+				localStorage.getItem("theme") ||
+				document.documentElement.getAttribute("data-bs-theme") ||
+				"dark"
+			);
 		}
 		return "dark";
 	});
 
 	useEffect(() => {
 		const handleThemeChange = () => {
-			const currentTheme = localStorage.getItem("theme") || document.documentElement.getAttribute("data-bs-theme") || "dark";
+			const currentTheme =
+				localStorage.getItem("theme") ||
+				document.documentElement.getAttribute("data-bs-theme") ||
+				"dark";
 			setTheme(currentTheme);
 		};
 
@@ -173,7 +180,8 @@ export default function Footer() {
 							<div className="d-flex align-items-center mb-1">
 								{getStatusDot(api)}
 								<span>
-									<span className="visually-hidden">API connection status: </span>API: <strong>{api}</strong>
+									<span className="visually-hidden">API connection status: </span>API:{" "}
+									<strong>{api}</strong>
 									{apiPing !== null && (
 										<span className="text-muted" style={{ fontSize: "0.75rem" }}>
 											{" "}
@@ -185,7 +193,8 @@ export default function Footer() {
 							<div className="d-flex align-items-center">
 								{getStatusDot(db)}
 								<span>
-									<span className="visually-hidden">Database connection status: </span>DB: <strong>{db}</strong>
+									<span className="visually-hidden">Database connection status: </span>DB:{" "}
+									<strong>{db}</strong>
 									{dbPing !== null && (
 										<span className="text-muted" style={{ fontSize: "0.75rem" }}>
 											{" "}
@@ -201,12 +210,8 @@ export default function Footer() {
 				{/* Copyright & Legal */}
 				<Row className="mt-4 pt-3 border-top">
 					<Col xs={12} md={6} className="text-center text-md-start text-muted small mb-2 mb-md-0">
-						<div>
-							© {currentYear} Bob's Garage. All rights reserved.
-						</div>
-						<div className="mt-1">
-							Built with pride in our community.
-						</div>
+						<div>© {currentYear} Bob's Garage. All rights reserved.</div>
+						<div className="mt-1">Built with pride in our community.</div>
 					</Col>
 					<Col xs={12} md={6} className="text-center text-md-end">
 						<div className="d-flex flex-wrap justify-content-center justify-content-md-end gap-3 small">

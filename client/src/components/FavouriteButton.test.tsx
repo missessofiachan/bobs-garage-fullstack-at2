@@ -4,13 +4,13 @@
  * @version 2.0.0
  */
 
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
-import FavouriteButton from "./FavouriteButton";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { render, screen, waitFor } from "@testing-library/react";
+import { Provider } from "react-redux";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import authReducer from "../slices/auth.slice";
+import FavouriteButton from "./FavouriteButton";
 
 // Mock framer-motion to avoid animation delays in tests
 vi.mock("framer-motion", async () => {

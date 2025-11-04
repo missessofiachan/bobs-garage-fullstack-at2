@@ -9,8 +9,7 @@
  * Used for root-level endpoints like /health and /db-status
  */
 export function getApiBaseUrl(): string {
-	const apiUrl =
-		(import.meta as ImportMeta)?.env?.VITE_API_URL ?? "http://localhost:4000/api";
+	const apiUrl = (import.meta as ImportMeta)?.env?.VITE_API_URL ?? "http://localhost:4000/api";
 	return apiUrl.replace(/\/api\/?$/, "");
 }
 

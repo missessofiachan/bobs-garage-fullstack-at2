@@ -51,7 +51,9 @@
 	border-bottom-color: #f9a8d4; /* lighter trans flag pink for better contrast */
 	border-left-color: #93daff; /* light blue */
 	border-radius: 50%;
-	animation: trans-spinner-rotate 1s linear infinite, trans-spinner-colors 3s ease-in-out infinite;
+	animation:
+		trans-spinner-rotate 1s linear infinite,
+		trans-spinner-colors 3s ease-in-out infinite;
 	display: inline-block;
 }
 

@@ -1,4 +1,4 @@
-import { styleVariants, style } from "@vanilla-extract/css";
+import { style, styleVariants } from "@vanilla-extract/css";
 import { vars } from "../../styles/theme.css.ts";
 
 const base = style({
@@ -31,7 +31,7 @@ export const variant = styleVariants({
 			background: "transparent",
 			color: vars.color.text,
 			selectors: {
-				"&:hover:not(:disabled)": { 
+				"&:hover:not(:disabled)": {
 					background: "rgba(255,255,255,0.1)",
 					filter: "brightness(1.1)",
 				},

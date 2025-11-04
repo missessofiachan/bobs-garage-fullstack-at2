@@ -5,15 +5,15 @@
  */
 
 import { useEffect, useState } from "react";
-import { Button, Card, Col, Form, Row, Badge, Alert } from "react-bootstrap";
+import { Alert, Badge, Button, Card, Col, Form, Row } from "react-bootstrap";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import api from "../api/axios";
 import type { UserMeDTO } from "../api/types";
 import Loading from "../components/ui/Loading";
-import usePageTitle from "../hooks/usePageTitle";
 import { useToast } from "../components/ui/ToastProvider";
-import { useSelector } from "react-redux";
 import { useFavorites } from "../hooks/useFavorites";
+import usePageTitle from "../hooks/usePageTitle";
 
 export default function Profile() {
 	const [me, setMe] = useState<UserMeDTO | null>(null);
@@ -45,8 +45,7 @@ export default function Profile() {
 			setMe(data);
 			notify({ title: "Success", body: "Profile updated successfully", variant: "success" });
 		} catch (err: any) {
-			const message =
-				err.response?.data?.message || err.message || "Failed to update profile";
+			const message = err.response?.data?.message || err.message || "Failed to update profile";
 			notify({ body: message, variant: "danger" });
 		} finally {
 			setSaving(false);
@@ -89,9 +88,7 @@ export default function Profile() {
 							<div className="mb-3">
 								<strong>Role:</strong>
 								<div>
-									<Badge bg={role === "admin" ? "danger" : "secondary"}>
-										{me.role}
-									</Badge>
+									<Badge bg={role === "admin" ? "danger" : "secondary"}>{me.role}</Badge>
 								</div>
 							</div>
 							<div className="mb-3">
@@ -144,8 +141,7 @@ export default function Profile() {
 					<Card>
 						<Card.Header className="d-flex align-items-center justify-content-between">
 							<h5 className="mb-0">
-								My Favorites{" "}
-								<Badge bg="primary">{favorites.length}</Badge>
+								My Favorites <Badge bg="primary">{favorites.length}</Badge>
 							</h5>
 							<Button as={Link as any} to="/favorites" variant="outline-primary" size="sm">
 								View All Favorites

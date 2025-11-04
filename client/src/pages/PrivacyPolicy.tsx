@@ -6,8 +6,8 @@
 
 import { motion } from "framer-motion";
 import { Card } from "react-bootstrap";
-import usePageTitle from "../hooks/usePageTitle";
 import { MdPrivacyTip } from "react-icons/md";
+import usePageTitle from "../hooks/usePageTitle";
 
 export default function PrivacyPolicy() {
 	usePageTitle("Privacy Policy");
@@ -38,9 +38,9 @@ export default function PrivacyPolicy() {
 									<section className="mb-4">
 										<h2>Introduction</h2>
 										<p>
-											Bob's Garage ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy
-											explains how we collect, use, disclose, and safeguard your information when you use our website
-											and services.
+											Bob's Garage ("we," "our," or "us") is committed to protecting your privacy.
+											This Privacy Policy explains how we collect, use, disclose, and safeguard your
+											information when you use our website and services.
 										</p>
 									</section>
 
@@ -48,7 +48,8 @@ export default function PrivacyPolicy() {
 										<h2>Information We Collect</h2>
 										<h3>Personal Information</h3>
 										<p>
-											We may collect personal information that you voluntarily provide to us, including:
+											We may collect personal information that you voluntarily provide to us,
+											including:
 										</p>
 										<ul>
 											<li>Email address</li>
@@ -59,9 +60,9 @@ export default function PrivacyPolicy() {
 
 										<h3>Automatically Collected Information</h3>
 										<p>
-											When you visit our website, we may automatically collect certain information about your device,
-											including information about your web browser, IP address, time zone, and some of the cookies that
-											are installed on your device.
+											When you visit our website, we may automatically collect certain information
+											about your device, including information about your web browser, IP address,
+											time zone, and some of the cookies that are installed on your device.
 										</p>
 									</section>
 
@@ -80,9 +81,10 @@ export default function PrivacyPolicy() {
 									<section className="mb-4">
 										<h2>Data Security</h2>
 										<p>
-											We implement appropriate technical and organizational measures to protect your personal information
-											against unauthorized access, alteration, disclosure, or destruction. However, no method of
-											transmission over the Internet or electronic storage is 100% secure.
+											We implement appropriate technical and organizational measures to protect your
+											personal information against unauthorized access, alteration, disclosure, or
+											destruction. However, no method of transmission over the Internet or
+											electronic storage is 100% secure.
 										</p>
 									</section>
 
@@ -113,4 +115,3 @@ export default function PrivacyPolicy() {
 		</motion.div>
 	);
 }
-

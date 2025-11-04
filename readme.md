@@ -87,12 +87,18 @@ This will install dependencies for all workspaces (root, client, and server).
 
 #### Option A: Using Docker (Recommended)
 
+**Simple Setup (from root):**
 ```bash
-cd server
-docker-compose up -d
+docker-compose -f docker/docker-compose.yml up -d
 ```
 
-This starts a MySQL 8.0 container. The database will be automatically created based on your `.env` configuration.
+**Production Setup (from server directory):**
+```bash
+cd server
+docker-compose -f ../docker/docker-compose.mysql.yml up -d
+```
+
+This starts a MySQL container. The database will be automatically created based on your `.env` configuration.
 
 #### Option B: Local MySQL Installation
 
@@ -319,12 +325,19 @@ yarn workspace server test:watch
 
 The MySQL database can be run in a Docker container:
 
+**From root directory:**
+```bash
+docker-compose -f docker/docker-compose.yml up -d      # Start database
+docker-compose -f docker/docker-compose.yml down        # Stop database
+docker-compose -f docker/docker-compose.yml logs -f     # View logs
+docker-compose -f docker/docker-compose.yml down -v     # Stop and remove data volumes
+```
+
+**From server directory (production setup):**
 ```bash
 cd server
-docker-compose up -d      # Start database
-docker-compose down       # Stop database
-docker-compose logs -f    # View logs
-docker-compose down -v    # Stop and remove data volumes
+docker-compose -f ../docker/docker-compose.mysql.yml up -d
+docker-compose -f ../docker/docker-compose.mysql.yml down
 ```
 
 The container uses environment variables from `server/.env` for configuration.

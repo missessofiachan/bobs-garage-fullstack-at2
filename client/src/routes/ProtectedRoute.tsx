@@ -1,12 +1,12 @@
-import { Navigate } from "react-router-dom";
 import type { ReactElement } from "react";
 import { useEffect, useState } from "react";
-import { useAppSelector, useAppDispatch } from "../hooks/hooks";
-import type { RootState } from "../store/store";
-import { clearAuth, setAuth } from "../slices/auth.slice";
+import { Navigate } from "react-router-dom";
 import api, { setAccessToken } from "../api/axios";
-import { isTokenExpired } from "../pages/lib/auth";
 import { decodeJwt } from "../api/jwt";
+import { useAppDispatch, useAppSelector } from "../hooks/hooks";
+import { isTokenExpired } from "../pages/lib/auth";
+import { clearAuth, setAuth } from "../slices/auth.slice";
+import type { RootState } from "../store/store";
 
 // Helper to check if token is expired
 function checkTokenExpired(token: string | undefined): boolean {

@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { Button, Form, Image, Table } from "react-bootstrap";
+import Loading from "../../components/ui/Loading";
 import {
-	useStaffList,
 	useCreateStaff,
 	useDeleteStaff,
+	useStaffList,
 	useUploadStaffPhoto,
 } from "../../hooks/useStaff";
-import Loading from "../../components/ui/Loading";
 import { getImageSrc } from "../../utils/imagePlaceholder";
 
 export default function StaffAdmin() {
@@ -59,7 +59,7 @@ export default function StaffAdmin() {
 										onError={(e) => {
 											(e.currentTarget as HTMLImageElement).src = photoSrc;
 										}}
-																		/>
+									/>
 									<div className="mt-1">
 										<input
 											className="form-control form-control-sm"
@@ -81,13 +81,13 @@ export default function StaffAdmin() {
 									</div>
 									{uploadError && <div className="text-danger small mt-1">{uploadError}</div>}
 								</td>
-							<td>{m.name}</td>
-							<td>{m.role}</td>
-							<td className="d-flex gap-2">
-								<Button size="sm" variant="danger" onClick={() => deleteStaff.mutate(m.id)}>
-									Delete
-								</Button>
-															</td>
+								<td>{m.name}</td>
+								<td>{m.role}</td>
+								<td className="d-flex gap-2">
+									<Button size="sm" variant="danger" onClick={() => deleteStaff.mutate(m.id)}>
+										Delete
+									</Button>
+								</td>
 							</tr>
 						);
 					})}

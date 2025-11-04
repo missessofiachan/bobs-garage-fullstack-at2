@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { Button, Form, Image, Table } from "react-bootstrap";
+import Loading from "../../components/ui/Loading";
 import {
-	useServices,
 	useCreateService,
 	useDeleteService,
+	useServices,
 	useUpdateService,
 	useUploadServiceImage,
 } from "../../hooks/useServices";
-import Loading from "../../components/ui/Loading";
 import { getImageSrc } from "../../utils/imagePlaceholder";
 
 export default function ServicesAdmin() {
@@ -72,20 +72,20 @@ export default function ServicesAdmin() {
 											(e.currentTarget as HTMLImageElement).src = imageSrc;
 										}}
 									/>
-								{preview[s.id] && (
-									<div className="mt-1">
-										<Image
-											src={preview[s.id]}
-											alt="Preview"
-											thumbnail
-											style={{
-												maxWidth: 120,
-												maxHeight: 120,
-												objectFit: "cover",
-											}}
-										/>
-									</div>
-								)}
+									{preview[s.id] && (
+										<div className="mt-1">
+											<Image
+												src={preview[s.id]}
+												alt="Preview"
+												thumbnail
+												style={{
+													maxWidth: 120,
+													maxHeight: 120,
+													objectFit: "cover",
+												}}
+											/>
+										</div>
+									)}
 									<div className="mt-1">
 										<input
 											className="form-control form-control-sm"

@@ -121,7 +121,10 @@ globalStyle(`html.${highContrast} a`, {
 	fontWeight: "600",
 });
 
-globalStyle(`html.${highContrast} input, html.${highContrast} select, html.${highContrast} textarea`, {
-	borderWidth: "2px",
-	borderStyle: "solid",
-});
+globalStyle(
+	`html.${highContrast} input, html.${highContrast} select, html.${highContrast} textarea`,
+	{
+		borderWidth: "2px",
+		borderStyle: "solid",
+	},
+);

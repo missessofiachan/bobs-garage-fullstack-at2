@@ -73,4 +73,3 @@ export function formatErrorMessage(error: unknown): string {
 	// Fallback
 	return "An unexpected error occurred. Please try again.";
 }
-

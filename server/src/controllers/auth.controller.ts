@@ -91,7 +91,7 @@ export async function login(req: Request, res: Response) {
 		// Set cookie expiration based on rememberMe flag
 		// Default: 7 days, Remember Me: 90 days
 		const maxAge = rememberMe ? 90 * 24 * 60 * 60 * 1000 : 7 * 24 * 60 * 60 * 1000;
-		
+
 		res
 			.cookie("refresh_token", result.refresh, {
 				httpOnly: true,

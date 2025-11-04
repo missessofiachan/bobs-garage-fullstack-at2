@@ -4,10 +4,10 @@
  * @version 1.0.0
  */
 
-import React from "react";
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
+import React from "react";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import ConfirmDialog from "./ConfirmDialog";
 
 // Mock framer-motion to avoid animation delays

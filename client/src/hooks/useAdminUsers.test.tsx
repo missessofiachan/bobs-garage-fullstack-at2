@@ -4,11 +4,11 @@
  * @version 1.0.0
  */
 
-import { describe, it, expect, vi } from "vitest";
-import { renderHook, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { renderHook, waitFor } from "@testing-library/react";
 import React from "react";
-import { useAdminUsers, useAdminUser } from "./useAdminUsers";
+import { describe, expect, it, vi } from "vitest";
+import { useAdminUser, useAdminUsers } from "./useAdminUsers";
 
 // Mock the API
 vi.mock("../api/axios", () => ({

@@ -4,8 +4,8 @@
  * @version 1.0.0
  */
 
-import { variant, size } from "./button.css";
 import type { ButtonHTMLAttributes } from "react";
+import { size, variant } from "./button.css";
 
 type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
 	tone?: keyof typeof variant;

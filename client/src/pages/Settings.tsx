@@ -5,45 +5,36 @@
  */
 
 import { useState } from "react";
+import { Accordion, Alert, Button, Card, Col, Form, Modal, Row } from "react-bootstrap";
+import { useSelector } from "react-redux";
+import DSButton from "../components/buttons/Button";
+import { useToast } from "../components/ui/ToastProvider";
+import { useAppDispatch, useAppSelector } from "../hooks/hooks";
+import { useFavorites } from "../hooks/useFavorites";
 import usePageTitle from "../hooks/usePageTitle.ts";
 import {
-	Button,
-	Card,
-	Col,
-	Form,
-	Row,
-	Alert,
-	Modal,
-	Accordion,
-} from "react-bootstrap";
-import DSButton from "../components/buttons/Button";
-import { useAppDispatch, useAppSelector } from "../hooks/hooks";
-import type { RootState } from "../store/store";
-import {
+	type DateFormat,
+	type Density,
+	type FontSize,
+	type Language,
+	resetPreferences,
+	type ServicesSort,
+	type ServicesView,
+	setAccessibilityHighContrast,
+	setAccessibilityReducedMotion,
+	setAnimationsEnabled,
+	setDateFormat,
+	setDensity,
+	setFontSize,
+	setLanguage,
+	setNotificationsEmail,
+	setNotificationsMarketing,
 	setServicesSort,
 	setServicesView,
 	setThemeDefault,
-	setFontSize,
-	setDateFormat,
-	setLanguage,
-	setDensity,
-	setAnimationsEnabled,
-	setNotificationsEmail,
-	setNotificationsMarketing,
-	setAccessibilityHighContrast,
-	setAccessibilityReducedMotion,
-	resetPreferences,
 	type ThemeChoice,
-	type ServicesSort,
-	type ServicesView,
-	type FontSize,
-	type DateFormat,
-	type Language,
-	type Density,
 } from "../slices/preferences.slice";
-import { useToast } from "../components/ui/ToastProvider";
-import { useSelector } from "react-redux";
-import { useFavorites } from "../hooks/useFavorites";
+import type { RootState } from "../store/store";
 
 export default function Settings() {
 	usePageTitle("Settings");
@@ -66,14 +57,8 @@ export default function Settings() {
 		localStorage.setItem("animations-enabled", String(prefs.animationsEnabled));
 		localStorage.setItem("notifications-email", String(prefs.notificationsEmail));
 		localStorage.setItem("notifications-marketing", String(prefs.notificationsMarketing));
-		localStorage.setItem(
-			"accessibility-high-contrast",
-			String(prefs.accessibilityHighContrast),
-		);
-		localStorage.setItem(
-			"accessibility-reduced-motion",
-			String(prefs.accessibilityReducedMotion),
-		);
+		localStorage.setItem("accessibility-high-contrast", String(prefs.accessibilityHighContrast));
+		localStorage.setItem("accessibility-reduced-motion", String(prefs.accessibilityReducedMotion));
 	};
 
 	const onSave = (e: React.FormEvent) => {
@@ -151,17 +136,13 @@ export default function Settings() {
 										<Form.Select
 											aria-label="Theme default"
 											value={prefs.theme}
-											onChange={(e) =>
-												dispatch(setThemeDefault(e.target.value as ThemeChoice))
-											}
+											onChange={(e) => dispatch(setThemeDefault(e.target.value as ThemeChoice))}
 										>
 											<option value="light">Light</option>
 											<option value="dark">Dark</option>
 											<option value="system">System</option>
 										</Form.Select>
-										<Form.Text className="text-muted">
-											Choose your preferred color theme
-										</Form.Text>
+										<Form.Text className="text-muted">Choose your preferred color theme</Form.Text>
 									</Form.Group>
 								</Col>
 								<Col md={6}>
@@ -223,9 +204,7 @@ export default function Settings() {
 										<Form.Label>Default Sort</Form.Label>
 										<Form.Select
 											value={prefs.servicesSort}
-											onChange={(e) =>
-												dispatch(setServicesSort(e.target.value as ServicesSort))
-											}
+											onChange={(e) => dispatch(setServicesSort(e.target.value as ServicesSort))}
 										>
 											<option value="price-asc">Price: Low → High</option>
 											<option value="price-desc">Price: High → Low</option>
@@ -237,9 +216,7 @@ export default function Settings() {
 										<Form.Label>Default View</Form.Label>
 										<Form.Select
 											value={prefs.servicesView}
-											onChange={(e) =>
-												dispatch(setServicesView(e.target.value as ServicesView))
-											}
+											onChange={(e) => dispatch(setServicesView(e.target.value as ServicesView))}
 										>
 											<option value="grid">Grid</option>
 											<option value="list">List</option>
@@ -268,9 +245,7 @@ export default function Settings() {
 											<option value="es">Español</option>
 											<option value="fr">Français</option>
 										</Form.Select>
-										<Form.Text className="text-muted">
-											Change the interface language
-										</Form.Text>
+										<Form.Text className="text-muted">Change the interface language</Form.Text>
 									</Form.Group>
 								</Col>
 								<Col md={6}>
@@ -278,17 +253,13 @@ export default function Settings() {
 										<Form.Label>Date Format</Form.Label>
 										<Form.Select
 											value={prefs.dateFormat}
-											onChange={(e) =>
-												dispatch(setDateFormat(e.target.value as DateFormat))
-											}
+											onChange={(e) => dispatch(setDateFormat(e.target.value as DateFormat))}
 										>
 											<option value="MM/DD/YYYY">MM/DD/YYYY (US)</option>
 											<option value="DD/MM/YYYY">DD/MM/YYYY (EU)</option>
 											<option value="YYYY-MM-DD">YYYY-MM-DD (ISO)</option>
 										</Form.Select>
-										<Form.Text className="text-muted">
-											Preferred date format for display
-										</Form.Text>
+										<Form.Text className="text-muted">Preferred date format for display</Form.Text>
 									</Form.Group>
 								</Col>
 							</Row>
@@ -340,9 +311,7 @@ export default function Settings() {
 									type="switch"
 									label="High Contrast Mode"
 									checked={prefs.accessibilityHighContrast}
-									onChange={(e) =>
-										dispatch(setAccessibilityHighContrast(e.target.checked))
-									}
+									onChange={(e) => dispatch(setAccessibilityHighContrast(e.target.checked))}
 								/>
 								<Form.Text className="text-muted">
 									Increase contrast for better visibility
@@ -353,9 +322,7 @@ export default function Settings() {
 									type="switch"
 									label="Reduce Motion"
 									checked={prefs.accessibilityReducedMotion}
-									onChange={(e) =>
-										dispatch(setAccessibilityReducedMotion(e.target.checked))
-									}
+									onChange={(e) => dispatch(setAccessibilityReducedMotion(e.target.checked))}
 								/>
 								<Form.Text className="text-muted">
 									Minimize animations and transitions for reduced motion preference
@@ -427,8 +394,8 @@ export default function Settings() {
 					<Modal.Title>Reset Settings</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
-					Are you sure you want to reset all settings to their default values? This action
-					cannot be undone.
+					Are you sure you want to reset all settings to their default values? This action cannot be
+					undone.
 				</Modal.Body>
 				<Modal.Footer>
 					<Button variant="secondary" onClick={() => setShowResetModal(false)}>
@@ -446,9 +413,9 @@ export default function Settings() {
 					<Modal.Title>Clear Cache</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
-					Are you sure you want to clear all cached data? This will remove your local
-					preferences and cached data. The page will reload after clearing. Your account data
-					will not be affected.
+					Are you sure you want to clear all cached data? This will remove your local preferences
+					and cached data. The page will reload after clearing. Your account data will not be
+					affected.
 				</Modal.Body>
 				<Modal.Footer>
 					<Button variant="secondary" onClick={() => setShowClearCacheModal(false)}>

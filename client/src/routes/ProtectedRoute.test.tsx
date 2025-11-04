@@ -4,13 +4,13 @@
  * @version 2.0.0
  */
 
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, waitFor, screen } from "@testing-library/react";
-import { BrowserRouter } from "react-router-dom";
-import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
-import { ProtectedRoute, AdminRoute } from "./ProtectedRoute";
+import { render, screen, waitFor } from "@testing-library/react";
+import { Provider } from "react-redux";
+import { BrowserRouter } from "react-router-dom";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import authReducer from "../slices/auth.slice";
+import { AdminRoute, ProtectedRoute } from "./ProtectedRoute";
 
 // Mock react-router-dom Navigate component
 vi.mock("react-router-dom", async () => {

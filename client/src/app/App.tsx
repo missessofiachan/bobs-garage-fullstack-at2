@@ -7,27 +7,27 @@
  * @since 1.0.0
  */
 
-import { Suspense, lazy, useState, useEffect } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { Container } from "react-bootstrap";
-import { Routes, Route, Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import type { RootState } from "../store/store";
-import ProtectedRoute, { AdminRoute } from "../routes/ProtectedRoute";
-import NavBar from "../components/NavBar";
-import ErrorBoundary from "../pages/Error";
-import Loading from "../components/ui/Loading";
-import ScrollToTop from "./ScrollToTop.tsx";
+import { Navigate, Route, Routes } from "react-router-dom";
 import Footer from "../components/Footer";
-import { lightTheme, darkTheme } from "../styles/theme.css.ts";
+import NavBar from "../components/NavBar";
+import Loading from "../components/ui/Loading";
+import ErrorBoundary from "../pages/Error";
+import ProtectedRoute, { AdminRoute } from "../routes/ProtectedRoute";
+import type { RootState } from "../store/store";
 import {
-	fontSizeSmall,
-	fontSizeMedium,
-	fontSizeLarge,
 	densityComfortable,
 	densityCompact,
+	fontSizeLarge,
+	fontSizeMedium,
+	fontSizeSmall,
 	highContrast,
 	reducedMotion,
 } from "../styles/preferences.css";
+import { darkTheme, lightTheme } from "../styles/theme.css.ts";
+import ScrollToTop from "./ScrollToTop.tsx";
 
 // Lazy-load pages to reduce initial bundle size
 const Home = lazy(() => import("../pages/Home"));

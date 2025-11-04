@@ -4,14 +4,14 @@
  * @version 2.0.0
  */
 
-import { useState } from "react";
 import { motion } from "framer-motion";
-import { Button, Card, Col, Form, Row, Alert, InputGroup } from "react-bootstrap";
+import { useState } from "react";
+import { Alert, Button, Card, Col, Form, InputGroup, Row } from "react-bootstrap";
+import { MdEmail, MdLock, MdLogin, MdPersonAdd, MdSecurity } from "react-icons/md";
 import { Link, useNavigate } from "react-router-dom";
+import { useToast } from "../components/ui/ToastProvider";
 import { useAuth } from "../hooks/useAuth";
 import { loginSchema } from "../lib/validation";
-import { useToast } from "../components/ui/ToastProvider";
-import { MdLogin, MdEmail, MdLock, MdPersonAdd, MdSecurity } from "react-icons/md";
 import { formatErrorMessage } from "../utils/errorFormatter";
 
 export default function Login() {
@@ -78,10 +78,7 @@ export default function Login() {
 
 								{/* Error Alert */}
 								{err && (
-									<motion.div
-										initial={{ opacity: 0, y: -10 }}
-										animate={{ opacity: 1, y: 0 }}
-									>
+									<motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
 										<Alert variant="danger" className="mb-4">
 											{err}
 										</Alert>
@@ -111,7 +108,9 @@ export default function Login() {
 
 									<Form.Group className="mb-3">
 										<div className="d-flex justify-content-between align-items-center mb-2">
-											<Form.Label htmlFor="login-password" className="mb-0">Password</Form.Label>
+											<Form.Label htmlFor="login-password" className="mb-0">
+												Password
+											</Form.Label>
 											<Link
 												to="/forgot-password"
 												className="text-decoration-none small"
@@ -150,21 +149,23 @@ export default function Login() {
 											}
 										/>
 										{rememberMe && (
-											<Alert variant="warning" className="mt-2 mb-0 py-2" style={{ fontSize: "0.875rem" }}>
+											<Alert
+												variant="warning"
+												className="mt-2 mb-0 py-2"
+												style={{ fontSize: "0.875rem" }}
+											>
 												<div className="d-flex align-items-start gap-2">
 													<MdSecurity size={18} className="mt-1 flex-shrink-0" />
 													<div>
-														<strong>Security Note:</strong> This will keep you signed in for longer. Only use this on trusted devices.
+														<strong>Security Note:</strong> This will keep you signed in for longer.
+														Only use this on trusted devices.
 													</div>
 												</div>
 											</Alert>
 										)}
 									</Form.Group>
 
-									<motion.div
-										whileHover={{ scale: 1.02 }}
-										whileTap={{ scale: 0.98 }}
-									>
+									<motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
 										<Button
 											type="submit"
 											variant="primary"
@@ -181,7 +182,10 @@ export default function Login() {
 								<div className="text-center mt-4 pt-3 border-top">
 									<p className="text-muted mb-2">Don't have an account?</p>
 									<Link to="/register" className="text-decoration-none">
-										<Button variant="outline-secondary" className="d-inline-flex align-items-center gap-2">
+										<Button
+											variant="outline-secondary"
+											className="d-inline-flex align-items-center gap-2"
+										>
 											<MdPersonAdd />
 											Create Account
 										</Button>

@@ -5,17 +5,17 @@
  */
 
 import { useCallback } from "react";
-import api, { setAccessToken, clearAccessToken } from "../api/axios";
+import { useDispatch } from "react-redux";
+import api, { clearAccessToken, setAccessToken } from "../api/axios";
+import { decodeJwt } from "../api/jwt";
 import type {
 	AuthLoginBody,
 	AuthLoginResponse,
-	AuthRegisterBody,
 	AuthRefreshResponse,
+	AuthRegisterBody,
 	Role,
 } from "../api/types";
-import { useDispatch } from "react-redux";
-import { setAuth, clearAuth } from "../slices/auth.slice";
-import { decodeJwt } from "../api/jwt";
+import { clearAuth, setAuth } from "../slices/auth.slice";
 
 type LoginResult = { access: string; role?: Role; email?: string };
 

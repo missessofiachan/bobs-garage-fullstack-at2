@@ -7,8 +7,8 @@
 import { motion } from "framer-motion";
 import { Button } from "react-bootstrap";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
-import { useFavorites } from "../hooks/useFavorites";
 import { useToast } from "../components/ui/ToastProvider";
+import { useFavorites } from "../hooks/useFavorites";
 
 export default function FavouriteButton({ id }: { id: number }) {
 	const { isFavorite, addFavorite, removeFavorite } = useFavorites();

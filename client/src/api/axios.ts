@@ -7,13 +7,13 @@
  * @since 1.0.0
  */
 
-import axios, { AxiosError } from "axios";
 import type {
 	AxiosInstance,
 	AxiosRequestConfig,
-	InternalAxiosRequestConfig,
 	AxiosRequestHeaders,
+	InternalAxiosRequestConfig,
 } from "axios";
+import axios, { AxiosError } from "axios";
 import { formatErrorMessage } from "../utils/errorFormatter";
 
 // Base URL: configure via Vite env, fallback to local dev server
@@ -170,7 +170,13 @@ api.interceptors.response.use(
 			}
 			// If retry failed, enhance error with user-friendly message
 			const friendlyMessage = formatErrorMessage(error);
-			const enhancedError = new AxiosError(friendlyMessage, error.code, error.config, error.request, error.response);
+			const enhancedError = new AxiosError(
+				friendlyMessage,
+				error.code,
+				error.config,
+				error.request,
+				error.response,
+			);
 			enhancedError.response = error.response;
 			throw enhancedError;
 		}
@@ -179,7 +185,13 @@ api.interceptors.response.use(
 		if (error.response) {
 			const friendlyMessage = formatErrorMessage(error);
 			if (friendlyMessage !== error.message) {
-				const enhancedError = new AxiosError(friendlyMessage, error.code, error.config, error.request, error.response);
+				const enhancedError = new AxiosError(
+					friendlyMessage,
+					error.code,
+					error.config,
+					error.request,
+					error.response,
+				);
 				enhancedError.response = error.response;
 				throw enhancedError;
 			}

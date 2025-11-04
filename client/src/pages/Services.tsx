@@ -4,20 +4,20 @@
  * @version 2.0.0
  */
 
-import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { Alert, Button, Card, Col, Form, Row, Table, Image, InputGroup } from "react-bootstrap";
-import { useServices } from "../hooks/useServices";
+import { useMemo, useState } from "react";
+import { Alert, Button, Card, Col, Form, Image, InputGroup, Row, Table } from "react-bootstrap";
+import { MdBuild, MdSearch, MdSort, MdViewList, MdViewModule } from "react-icons/md";
+import { useDispatch, useSelector } from "react-redux";
+import FavouriteButton from "../components/FavouriteButton";
 import Loading from "../components/ui/Loading";
 import usePageTitle from "../hooks/usePageTitle";
-import { formatCurrency } from "../utils/formatters";
-import { getImageBaseUrl } from "../utils/api";
-import { getImageSrc, IMAGE_PLACEHOLDER } from "../utils/imagePlaceholder";
-import FavouriteButton from "../components/FavouriteButton";
-import { useSelector, useDispatch } from "react-redux";
-import { setServicesSort, setServicesView } from "../slices/preferences.slice";
+import { useServices } from "../hooks/useServices";
 import type { ServicesSort, ServicesView } from "../slices/preferences.slice";
-import { MdBuild, MdViewModule, MdViewList, MdSearch, MdSort } from "react-icons/md";
+import { setServicesSort, setServicesView } from "../slices/preferences.slice";
+import { getImageBaseUrl } from "../utils/api";
+import { formatCurrency } from "../utils/formatters";
+import { getImageSrc, IMAGE_PLACEHOLDER } from "../utils/imagePlaceholder";
 
 const fadeInUp = {
 	initial: { opacity: 0, y: 20 },
@@ -74,28 +74,21 @@ export default function Services() {
 			className="py-4"
 		>
 			{/* Hero Section */}
-			<motion.div
-				className="mb-5"
-				{...fadeInUp}
-				transition={{ delay: 0.2 }}
-			>
+			<motion.div className="mb-5" {...fadeInUp} transition={{ delay: 0.2 }}>
 				<div className="d-flex align-items-center gap-3 mb-4">
 					<MdBuild size={48} className="text-primary" />
 					<div>
 						<h1 className="mb-0">Our Services</h1>
 						<p className="text-muted mb-0">
-							Browse our comprehensive range of automotive services. Find exactly what your vehicle needs.
+							Browse our comprehensive range of automotive services. Find exactly what your vehicle
+							needs.
 						</p>
 					</div>
 				</div>
 			</motion.div>
 
 			{/* Filters & Controls */}
-			<motion.div
-				className="mb-4"
-				{...fadeInUp}
-				transition={{ delay: 0.3 }}
-			>
+			<motion.div className="mb-4" {...fadeInUp} transition={{ delay: 0.3 }}>
 				<Row className="g-3 align-items-end">
 					<Col xs={12} md={6} lg={4}>
 						<Form.Label className="small text-muted">Search</Form.Label>
@@ -168,11 +161,7 @@ export default function Services() {
 			{/* Services Display */}
 			{list.length > 0 ? (
 				view === "grid" ? (
-					<motion.div
-						variants={staggerContainer}
-						initial="initial"
-						animate="animate"
-					>
+					<motion.div variants={staggerContainer} initial="initial" animate="animate">
 						<Row xs={1} sm={2} md={3} lg={4} className="g-4">
 							{list.map((service) => {
 								const imageSrc = getImageSrc(service.imageUrl, getImageBaseUrl());
@@ -249,11 +238,7 @@ export default function Services() {
 						</Row>
 					</motion.div>
 				) : (
-					<motion.div
-						variants={staggerContainer}
-						initial="initial"
-						animate="animate"
-					>
+					<motion.div variants={staggerContainer} initial="initial" animate="animate">
 						<div className="table-responsive">
 							<Table striped bordered hover>
 								<thead>
@@ -296,12 +281,8 @@ export default function Services() {
 												<td>
 													<strong>{service.name}</strong>
 												</td>
-												<td className="fw-bold text-primary">
-													{formatCurrency(service.price)}
-												</td>
-												<td className="text-muted">
-													{service.description}
-												</td>
+												<td className="fw-bold text-primary">{formatCurrency(service.price)}</td>
+												<td className="text-muted">{service.description}</td>
 												<td className="text-center">
 													<FavouriteButton id={service.id} />
 												</td>
@@ -314,10 +295,7 @@ export default function Services() {
 					</motion.div>
 				)
 			) : (
-				<motion.div
-					{...fadeInUp}
-					transition={{ delay: 0.4 }}
-				>
+				<motion.div {...fadeInUp} transition={{ delay: 0.4 }}>
 					<Alert variant="info" className="text-center">
 						<MdBuild size={48} className="mb-3 text-primary" />
 						<h4>No services found</h4>

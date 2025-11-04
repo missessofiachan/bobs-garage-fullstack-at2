@@ -25,10 +25,7 @@ export const IMAGE_PLACEHOLDER =
  * @param baseUrl - Optional base URL for relative paths
  * @returns The image URL or placeholder if no image is provided
  */
-export function getImageSrc(
-	imageUrl: string | undefined | null,
-	baseUrl?: string,
-): string {
+export function getImageSrc(imageUrl: string | undefined | null, baseUrl?: string): string {
 	if (!imageUrl || imageUrl.trim() === "") {
 		return IMAGE_PLACEHOLDER;
 	}

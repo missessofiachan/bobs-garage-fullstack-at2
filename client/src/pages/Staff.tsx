@@ -5,13 +5,13 @@
  */
 
 import { motion } from "framer-motion";
-import { Card, Col, Row, Image, Alert, Button } from "react-bootstrap";
-import { useStaffList } from "../hooks/useStaff";
+import { Alert, Button, Card, Col, Image, Row } from "react-bootstrap";
+import { MdPeople } from "react-icons/md";
 import Loading from "../components/ui/Loading";
 import usePageTitle from "../hooks/usePageTitle";
+import { useStaffList } from "../hooks/useStaff";
 import { getImageBaseUrl } from "../utils/api";
 import { getImageSrc, IMAGE_PLACEHOLDER } from "../utils/imagePlaceholder";
-import { MdPeople } from "react-icons/md";
 
 const fadeInUp = {
 	initial: { opacity: 0, y: 20 },
@@ -53,11 +53,7 @@ export default function Staff() {
 			className="py-4"
 		>
 			{/* Hero Section */}
-			<motion.div
-				className="mb-5"
-				{...fadeInUp}
-				transition={{ delay: 0.2 }}
-			>
+			<motion.div className="mb-5" {...fadeInUp} transition={{ delay: 0.2 }}>
 				<div className="d-flex align-items-center gap-3 mb-3">
 					<MdPeople size={48} className="text-primary" />
 					<div>
@@ -71,11 +67,7 @@ export default function Staff() {
 
 			{/* Staff Cards */}
 			{staff.length > 0 ? (
-				<motion.div
-					variants={staggerContainer}
-					initial="initial"
-					animate="animate"
-				>
+				<motion.div variants={staggerContainer} initial="initial" animate="animate">
 					<Row xs={1} sm={2} md={3} lg={4} className="g-4">
 						{staff.map((member) => {
 							const photoSrc = getImageSrc(member.photoUrl, getImageBaseUrl());
@@ -146,10 +138,7 @@ export default function Staff() {
 					</Row>
 				</motion.div>
 			) : (
-				<motion.div
-					{...fadeInUp}
-					transition={{ delay: 0.3 }}
-				>
+				<motion.div {...fadeInUp} transition={{ delay: 0.3 }}>
 					<Alert variant="info" className="text-center">
 						<MdPeople size={48} className="mb-3 text-primary" />
 						<h4>No team members available</h4>

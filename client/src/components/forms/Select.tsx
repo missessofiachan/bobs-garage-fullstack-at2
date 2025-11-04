@@ -1,5 +1,5 @@
+import type { ReactNode, SelectHTMLAttributes } from "react";
 import { Form } from "react-bootstrap";
-import type { SelectHTMLAttributes, ReactNode } from "react";
 
 type Props = SelectHTMLAttributes<HTMLSelectElement> & {
 	label: ReactNode;

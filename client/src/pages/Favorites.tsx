@@ -4,16 +4,16 @@
  * @version 1.0.0
  */
 
-import { Button, Card, Row, Col, Alert, Badge } from "react-bootstrap";
-import { Link } from "react-router-dom";
-import { useFavorites } from "../hooks/useFavorites";
-import Loading from "../components/ui/Loading";
-import usePageTitle from "../hooks/usePageTitle";
-import { formatCurrency } from "../utils/formatters";
-import { getImageBaseUrl } from "../utils/api";
-import { getImageSrc } from "../utils/imagePlaceholder";
-import FavouriteButton from "../components/FavouriteButton";
+import { Alert, Badge, Button, Card, Col, Row } from "react-bootstrap";
 import { MdFavorite } from "react-icons/md";
+import { Link } from "react-router-dom";
+import FavouriteButton from "../components/FavouriteButton";
+import Loading from "../components/ui/Loading";
+import { useFavorites } from "../hooks/useFavorites";
+import usePageTitle from "../hooks/usePageTitle";
+import { getImageBaseUrl } from "../utils/api";
+import { formatCurrency } from "../utils/formatters";
+import { getImageSrc } from "../utils/imagePlaceholder";
 
 export default function Favorites() {
 	const { favorites, isLoading } = useFavorites();
@@ -29,7 +29,9 @@ export default function Favorites() {
 				<div className="d-flex align-items-center gap-2">
 					<MdFavorite size={32} className="text-primary" />
 					<h1 className="mb-0">My Favorites</h1>
-					<Badge bg="secondary" className="fs-6">{favorites.length}</Badge>
+					<Badge bg="secondary" className="fs-6">
+						{favorites.length}
+					</Badge>
 				</div>
 			</div>
 
@@ -38,8 +40,7 @@ export default function Favorites() {
 					<MdFavorite size={48} className="text-muted mb-3" />
 					<h4>No favorites yet</h4>
 					<p className="mb-3">
-						You haven't favorited any services yet. Start exploring to add services you
-						love!
+						You haven't favorited any services yet. Start exploring to add services you love!
 					</p>
 					<Button as={Link as any} to="/services" variant="primary">
 						Browse Services
@@ -67,9 +68,7 @@ export default function Favorites() {
 									<Card.Body className="d-flex flex-column">
 										<Card.Title>{service.name}</Card.Title>
 										<Card.Text className="flex-grow-1">
-											<strong className="text-primary fs-5">
-												{formatCurrency(service.price)}
-											</strong>
+											<strong className="text-primary fs-5">{formatCurrency(service.price)}</strong>
 											<br />
 											<small className="text-muted">{service.description}</small>
 										</Card.Text>

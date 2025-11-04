@@ -4,31 +4,31 @@
  * @version 3.0.0
  */
 
-import { Container, Nav, Navbar, Button, NavDropdown, Spinner, Badge } from "react-bootstrap";
-import { Link, useNavigate, useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import { Badge, Button, Container, Nav, Navbar, NavDropdown, Spinner } from "react-bootstrap";
+import { FaTools } from "react-icons/fa";
 import {
+	MdAccountCircle,
+	MdAdminPanelSettings,
+	MdBuild,
+	MdDarkMode,
+	MdFavorite,
 	MdHome,
 	MdInfo,
-	MdBuild,
-	MdPeople,
-	MdLogin,
-	MdPersonAdd,
-	MdAccountCircle,
-	MdSettings,
-	MdLogout,
-	MdAdminPanelSettings,
-	MdDarkMode,
 	MdLightMode,
-	MdFavorite,
+	MdLogin,
+	MdLogout,
+	MdPeople,
+	MdPersonAdd,
+	MdSettings,
 } from "react-icons/md";
-import { FaTools } from "react-icons/fa";
-import { clearAuth } from "../slices/auth.slice";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import api, { clearAccessToken } from "../api/axios";
-import { lightTheme, darkTheme } from "../styles/theme.css.ts";
 import { useFavorites } from "../hooks/useFavorites";
+import { clearAuth } from "../slices/auth.slice";
+import { darkTheme, lightTheme } from "../styles/theme.css.ts";
 
 export default function NavBar() {
 	const [theme, setTheme] = useState<string>(() => localStorage.getItem("theme") || "dark");
@@ -84,7 +84,14 @@ export default function NavBar() {
 	};
 
 	return (
-		<Navbar bg={theme} data-bs-theme={theme} expand="lg" className="shadow-sm" role="navigation" aria-label="Main navigation">
+		<Navbar
+			bg={theme}
+			data-bs-theme={theme}
+			expand="lg"
+			className="shadow-sm"
+			role="navigation"
+			aria-label="Main navigation"
+		>
 			<Container>
 				<Navbar.Brand
 					as={Link}
@@ -105,19 +112,39 @@ export default function NavBar() {
 				<Navbar.Collapse id="basic-navbar-nav">
 					{/* Public Navigation Links */}
 					<Nav className="me-auto">
-						<Nav.Link as={Link} to="/" className="d-flex align-items-center gap-1" style={isActive("/") ? activeStyle : undefined}>
+						<Nav.Link
+							as={Link}
+							to="/"
+							className="d-flex align-items-center gap-1"
+							style={isActive("/") ? activeStyle : undefined}
+						>
 							<MdHome size={18} style={isActive("/") ? activeStyle : undefined} />
 							<span style={isActive("/") ? activeStyle : undefined}>Home</span>
 						</Nav.Link>
-						<Nav.Link as={Link} to="/about" className="d-flex align-items-center gap-1" style={isActive("/about") ? activeStyle : undefined}>
+						<Nav.Link
+							as={Link}
+							to="/about"
+							className="d-flex align-items-center gap-1"
+							style={isActive("/about") ? activeStyle : undefined}
+						>
 							<MdInfo size={18} style={isActive("/about") ? activeStyle : undefined} />
 							<span style={isActive("/about") ? activeStyle : undefined}>About</span>
 						</Nav.Link>
-						<Nav.Link as={Link} to="/services" className="d-flex align-items-center gap-1" style={isActive("/services") ? activeStyle : undefined}>
+						<Nav.Link
+							as={Link}
+							to="/services"
+							className="d-flex align-items-center gap-1"
+							style={isActive("/services") ? activeStyle : undefined}
+						>
 							<MdBuild size={18} style={isActive("/services") ? activeStyle : undefined} />
 							<span style={isActive("/services") ? activeStyle : undefined}>Services</span>
 						</Nav.Link>
-						<Nav.Link as={Link} to="/staff" className="d-flex align-items-center gap-1" style={isActive("/staff") ? activeStyle : undefined}>
+						<Nav.Link
+							as={Link}
+							to="/staff"
+							className="d-flex align-items-center gap-1"
+							style={isActive("/staff") ? activeStyle : undefined}
+						>
 							<MdPeople size={18} style={isActive("/staff") ? activeStyle : undefined} />
 							<span style={isActive("/staff") ? activeStyle : undefined}>Staff</span>
 						</Nav.Link>
@@ -129,14 +156,27 @@ export default function NavBar() {
 							<>
 								{/* Not Logged In */}
 								<Nav className="me-2">
-									<Nav.Link as={Link} to="/login" className="d-flex align-items-center gap-1" style={isActive("/login") ? activeStyle : undefined}>
+									<Nav.Link
+										as={Link}
+										to="/login"
+										className="d-flex align-items-center gap-1"
+										style={isActive("/login") ? activeStyle : undefined}
+									>
 										<MdLogin size={18} style={isActive("/login") ? activeStyle : undefined} />
 										<span style={isActive("/login") ? activeStyle : undefined}>Login</span>
 									</Nav.Link>
 								</Nav>
 								<Nav>
-									<Nav.Link as={Link} to="/register" className="d-flex align-items-center gap-1" style={isActive("/register") ? activeStyle : undefined}>
-										<MdPersonAdd size={18} style={isActive("/register") ? activeStyle : undefined} />
+									<Nav.Link
+										as={Link}
+										to="/register"
+										className="d-flex align-items-center gap-1"
+										style={isActive("/register") ? activeStyle : undefined}
+									>
+										<MdPersonAdd
+											size={18}
+											style={isActive("/register") ? activeStyle : undefined}
+										/>
 										<span style={isActive("/register") ? activeStyle : undefined}>Register</span>
 									</Nav.Link>
 								</Nav>
@@ -144,9 +184,15 @@ export default function NavBar() {
 						) : (
 							<>
 								{/* Logged In User Info */}
-								<div className="d-flex align-items-center gap-2 px-2 py-1 rounded" style={{ backgroundColor: "rgba(247, 168, 184, 0.1)" }}>
+								<div
+									className="d-flex align-items-center gap-2 px-2 py-1 rounded"
+									style={{ backgroundColor: "rgba(247, 168, 184, 0.1)" }}
+								>
 									<MdAccountCircle size={20} className="text-primary" />
-									<span className="small fw-medium d-none d-md-inline" style={{ fontSize: "0.875rem" }}>
+									<span
+										className="small fw-medium d-none d-md-inline"
+										style={{ fontSize: "0.875rem" }}
+									>
 										{email ?? "User"}
 									</span>
 									{role === "admin" && (
@@ -158,9 +204,20 @@ export default function NavBar() {
 
 								{/* User Navigation */}
 								<Nav>
-									<Nav.Link as={Link} to="/favorites" className="d-flex align-items-center gap-1 position-relative" style={isActive("/favorites") ? activeStyle : undefined}>
-										<MdFavorite size={18} style={isActive("/favorites") ? activeStyle : undefined} />
-										<span className="d-none d-lg-inline" style={isActive("/favorites") ? activeStyle : undefined}>
+									<Nav.Link
+										as={Link}
+										to="/favorites"
+										className="d-flex align-items-center gap-1 position-relative"
+										style={isActive("/favorites") ? activeStyle : undefined}
+									>
+										<MdFavorite
+											size={18}
+											style={isActive("/favorites") ? activeStyle : undefined}
+										/>
+										<span
+											className="d-none d-lg-inline"
+											style={isActive("/favorites") ? activeStyle : undefined}
+										>
 											Favorites
 										</span>
 										{favorites.length > 0 && (
@@ -199,25 +256,52 @@ export default function NavBar() {
 										</div>
 									</NavDropdown.Header>
 									<NavDropdown.Divider />
-									<NavDropdown.Item as={Link} to="/profile" className="d-flex align-items-center gap-2" active={isActive("/profile")}>
-										<MdAccountCircle size={18} style={isActive("/profile") ? activeStyle : undefined} />
+									<NavDropdown.Item
+										as={Link}
+										to="/profile"
+										className="d-flex align-items-center gap-2"
+										active={isActive("/profile")}
+									>
+										<MdAccountCircle
+											size={18}
+											style={isActive("/profile") ? activeStyle : undefined}
+										/>
 										<span style={isActive("/profile") ? activeStyle : undefined}>Profile</span>
 									</NavDropdown.Item>
-									<NavDropdown.Item as={Link} to="/settings" className="d-flex align-items-center gap-2" active={isActive("/settings")}>
+									<NavDropdown.Item
+										as={Link}
+										to="/settings"
+										className="d-flex align-items-center gap-2"
+										active={isActive("/settings")}
+									>
 										<MdSettings size={18} style={isActive("/settings") ? activeStyle : undefined} />
 										<span style={isActive("/settings") ? activeStyle : undefined}>Settings</span>
 									</NavDropdown.Item>
 									{role === "admin" && (
 										<>
 											<NavDropdown.Divider />
-											<NavDropdown.Item as={Link} to="/admin" className="d-flex align-items-center gap-2" active={isActive("/admin")}>
-												<MdAdminPanelSettings size={18} style={isActive("/admin") ? activeStyle : undefined} />
-												<span style={isActive("/admin") ? activeStyle : undefined}>Admin Dashboard</span>
+											<NavDropdown.Item
+												as={Link}
+												to="/admin"
+												className="d-flex align-items-center gap-2"
+												active={isActive("/admin")}
+											>
+												<MdAdminPanelSettings
+													size={18}
+													style={isActive("/admin") ? activeStyle : undefined}
+												/>
+												<span style={isActive("/admin") ? activeStyle : undefined}>
+													Admin Dashboard
+												</span>
 											</NavDropdown.Item>
 										</>
 									)}
 									<NavDropdown.Divider />
-									<NavDropdown.Item onClick={onLogout} disabled={loggingOut} className="d-flex align-items-center gap-2">
+									<NavDropdown.Item
+										onClick={onLogout}
+										disabled={loggingOut}
+										className="d-flex align-items-center gap-2"
+									>
 										{loggingOut ? (
 											<>
 												<Spinner size="sm" animation="border" role="status" aria-hidden="true" />
@@ -237,9 +321,20 @@ export default function NavBar() {
 						{/* Admin Link - Separate if logged in */}
 						{accessToken && role === "admin" && (
 							<Nav>
-								<Nav.Link as={Link} to="/admin" className="d-flex align-items-center gap-1" style={isActive("/admin") ? activeStyle : undefined}>
-									<MdAdminPanelSettings size={18} style={isActive("/admin") ? activeStyle : undefined} />
-									<span className="d-none d-lg-inline" style={isActive("/admin") ? activeStyle : undefined}>
+								<Nav.Link
+									as={Link}
+									to="/admin"
+									className="d-flex align-items-center gap-1"
+									style={isActive("/admin") ? activeStyle : undefined}
+								>
+									<MdAdminPanelSettings
+										size={18}
+										style={isActive("/admin") ? activeStyle : undefined}
+									/>
+									<span
+										className="d-none d-lg-inline"
+										style={isActive("/admin") ? activeStyle : undefined}
+									>
 										Admin
 									</span>
 								</Nav.Link>

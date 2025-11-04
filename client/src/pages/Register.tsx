@@ -4,14 +4,14 @@
  * @version 2.0.0
  */
 
-import { useState } from "react";
 import { motion } from "framer-motion";
-import { Button, Card, Col, Form, Row, Alert, InputGroup } from "react-bootstrap";
+import { useState } from "react";
+import { Alert, Button, Card, Col, Form, InputGroup, Row } from "react-bootstrap";
+import { MdEmail, MdLock, MdLogin, MdPersonAdd } from "react-icons/md";
 import { Link, useNavigate } from "react-router-dom";
+import { useToast } from "../components/ui/ToastProvider";
 import { useAuth } from "../hooks/useAuth";
 import { registerSchema } from "../lib/validation";
-import { useToast } from "../components/ui/ToastProvider";
-import { MdPersonAdd, MdEmail, MdLock, MdLogin } from "react-icons/md";
 import { formatErrorMessage } from "../utils/errorFormatter";
 
 export default function Register() {
@@ -109,10 +109,7 @@ export default function Register() {
 
 								{/* Error Alert */}
 								{err && (
-									<motion.div
-										initial={{ opacity: 0, y: -10 }}
-										animate={{ opacity: 1, y: 0 }}
-									>
+									<motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
 										<Alert variant="danger" className="mb-4">
 											{err}
 										</Alert>
@@ -142,7 +139,12 @@ export default function Register() {
 											/>
 										</InputGroup>
 										{fieldErrors.email && (
-											<Form.Control.Feedback type="invalid" className="d-block" id="register-email-error" role="alert">
+											<Form.Control.Feedback
+												type="invalid"
+												className="d-block"
+												id="register-email-error"
+												role="alert"
+											>
 												{fieldErrors.email}
 											</Form.Control.Feedback>
 										)}
@@ -172,7 +174,12 @@ export default function Register() {
 											/>
 										</InputGroup>
 										{fieldErrors.password && (
-											<Form.Control.Feedback type="invalid" className="d-block" id="register-password-error" role="alert">
+											<Form.Control.Feedback
+												type="invalid"
+												className="d-block"
+												id="register-password-error"
+												role="alert"
+											>
 												{fieldErrors.password}
 											</Form.Control.Feedback>
 										)}
@@ -181,10 +188,7 @@ export default function Register() {
 										</Form.Text>
 									</Form.Group>
 
-									<motion.div
-										whileHover={{ scale: 1.02 }}
-										whileTap={{ scale: 0.98 }}
-									>
+									<motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
 										<Button
 											type="submit"
 											variant="primary"
@@ -201,7 +205,10 @@ export default function Register() {
 								<div className="text-center mt-4 pt-3 border-top">
 									<p className="text-muted mb-2">Already have an account?</p>
 									<Link to="/login" className="text-decoration-none">
-										<Button variant="outline-secondary" className="d-inline-flex align-items-center gap-2">
+										<Button
+											variant="outline-secondary"
+											className="d-inline-flex align-items-center gap-2"
+										>
 											<MdLogin />
 											Sign In
 										</Button>

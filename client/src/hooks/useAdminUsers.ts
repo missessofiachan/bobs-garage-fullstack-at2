@@ -4,7 +4,7 @@
  * @version 2.0.0 (Refactored with generic hooks)
  */
 
-import type { AdminUserDTO, AdminUserCreateDTO, AdminUserUpdateDTO } from "../api/types";
+import type { AdminUserCreateDTO, AdminUserDTO, AdminUserUpdateDTO } from "../api/types";
 import { createResourceHooks } from "./useResourceQuery";
 
 // Create admin users hooks using the generic factory

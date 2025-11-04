@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button, Form, Table } from "react-bootstrap";
-import { useAdminUsers, useCreateAdminUser, useDeleteAdminUser } from "../../hooks/useAdminUsers";
 import Loading from "../../components/ui/Loading";
+import { useAdminUsers, useCreateAdminUser, useDeleteAdminUser } from "../../hooks/useAdminUsers";
 import usePageTitle from "../../hooks/usePageTitle";
 
 export default function UsersAdmin() {

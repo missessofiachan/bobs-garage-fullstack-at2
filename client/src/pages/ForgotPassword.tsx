@@ -4,13 +4,13 @@
  * @version 1.0.0
  */
 
-import { useState } from "react";
 import { motion } from "framer-motion";
-import { Button, Card, Col, Form, Row, Alert, InputGroup } from "react-bootstrap";
+import { useState } from "react";
+import { Alert, Button, Card, Col, Form, InputGroup, Row } from "react-bootstrap";
+import { MdArrowBack, MdCheckCircle, MdEmail, MdLockReset } from "react-icons/md";
 import { Link } from "react-router-dom";
-import { useToast } from "../components/ui/ToastProvider";
-import { MdLockReset, MdEmail, MdArrowBack, MdCheckCircle } from "react-icons/md";
 import api from "../api/axios";
+import { useToast } from "../components/ui/ToastProvider";
 import usePageTitle from "../hooks/usePageTitle";
 
 export default function ForgotPassword() {
@@ -52,7 +52,9 @@ export default function ForgotPassword() {
 			});
 		} catch (error: any) {
 			const errorMessage =
-				error?.response?.data?.message || error?.message || "Failed to send reset email. Please try again.";
+				error?.response?.data?.message ||
+				error?.message ||
+				"Failed to send reset email. Please try again.";
 			setErr(errorMessage);
 			notify({ body: errorMessage, variant: "danger" });
 		} finally {
@@ -86,7 +88,9 @@ export default function ForgotPassword() {
 										<MdLockReset size={64} className="text-primary mb-3" />
 									</motion.div>
 									<h1 className="mb-2">Reset Password</h1>
-									<p className="text-muted">Enter your email address and we'll send you reset instructions</p>
+									<p className="text-muted">
+										Enter your email address and we'll send you reset instructions
+									</p>
 								</div>
 
 								{/* YouTube Video Embed */}
@@ -121,15 +125,18 @@ export default function ForgotPassword() {
 											>
 												<h5 style={{ color: "#55CDFC" }}>Check your email</h5>
 												<p className="mb-0">
-													If an account exists with <strong>{email}</strong>, you'll receive password reset
-													instructions shortly.
+													If an account exists with <strong>{email}</strong>, you'll receive
+													password reset instructions shortly.
 												</p>
 											</Alert>
 										</motion.div>
 
 										<div className="text-center mt-4">
 											<Link to="/login" className="text-decoration-none">
-												<Button variant="primary" className="d-inline-flex align-items-center gap-2">
+												<Button
+													variant="primary"
+													className="d-inline-flex align-items-center gap-2"
+												>
 													<MdArrowBack />
 													Back to Login
 												</Button>
@@ -140,10 +147,7 @@ export default function ForgotPassword() {
 									<>
 										{/* Error Alert */}
 										{err && (
-											<motion.div
-												initial={{ opacity: 0, y: -10 }}
-												animate={{ opacity: 1, y: 0 }}
-											>
+											<motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
 												<Alert variant="danger" className="mb-4">
 													{err}
 												</Alert>
@@ -155,9 +159,9 @@ export default function ForgotPassword() {
 											<Form.Group className="mb-4">
 												<Form.Label htmlFor="forgot-password-email">Email Address</Form.Label>
 												<InputGroup>
-											<InputGroup.Text aria-hidden="true">
-												<MdEmail />
-											</InputGroup.Text>
+													<InputGroup.Text aria-hidden="true">
+														<MdEmail />
+													</InputGroup.Text>
 													<Form.Control
 														id="forgot-password-email"
 														value={email}
@@ -174,10 +178,7 @@ export default function ForgotPassword() {
 												</Form.Text>
 											</Form.Group>
 
-											<motion.div
-												whileHover={{ scale: 1.02 }}
-												whileTap={{ scale: 0.98 }}
-											>
+											<motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
 												<Button
 													type="submit"
 													variant="primary"
@@ -193,7 +194,10 @@ export default function ForgotPassword() {
 										{/* Back to Login Link */}
 										<div className="text-center mt-4 pt-3 border-top">
 											<Link to="/login" className="text-decoration-none">
-												<Button variant="outline-secondary" className="d-inline-flex align-items-center gap-2">
+												<Button
+													variant="outline-secondary"
+													className="d-inline-flex align-items-center gap-2"
+												>
 													<MdArrowBack />
 													Back to Login
 												</Button>
@@ -209,4 +213,3 @@ export default function ForgotPassword() {
 		</motion.div>
 	);
 }
-

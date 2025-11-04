@@ -1,5 +1,5 @@
-import { Form } from "react-bootstrap";
 import type { InputHTMLAttributes, ReactNode } from "react";
+import { Form } from "react-bootstrap";
 
 type Props = InputHTMLAttributes<HTMLInputElement> & {
 	label: ReactNode;

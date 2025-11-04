@@ -4,15 +4,15 @@
  * @version 1.0.0
  */
 
-import React from "react";
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { renderHook, waitFor, act } from "@testing-library/react";
-import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
-import { useAuth } from "./useAuth";
-import authReducer from "../slices/auth.slice";
-import api, { setAccessToken, clearAccessToken } from "../api/axios";
+import { act, renderHook, waitFor } from "@testing-library/react";
+import React from "react";
+import { Provider } from "react-redux";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import api, { clearAccessToken, setAccessToken } from "../api/axios";
 import { decodeJwt } from "../api/jwt";
+import authReducer from "../slices/auth.slice";
+import { useAuth } from "./useAuth";
 
 const mockPost = api.post as any;
 const mockSetAccessToken = setAccessToken as any;

@@ -5,8 +5,8 @@
  * @version 1.0.0
  */
 
-import { useEffect, useState } from "react";
 import axios from "axios";
+import { useEffect, useState } from "react";
 
 interface ConnectionStatus {
 	api: "connected" | "disconnected" | "checking";

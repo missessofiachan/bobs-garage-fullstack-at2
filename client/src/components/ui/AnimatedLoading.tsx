@@ -12,7 +12,10 @@ interface AnimatedLoadingProps {
 	variant?: "border" | "grow" | "trans-pride";
 }
 
-export default function AnimatedLoading({ message, variant = "trans-pride" }: AnimatedLoadingProps) {
+export default function AnimatedLoading({
+	message,
+	variant = "trans-pride",
+}: AnimatedLoadingProps) {
 	return (
 		<motion.div
 			initial={{ opacity: 0 }}
@@ -27,7 +30,11 @@ export default function AnimatedLoading({ message, variant = "trans-pride" }: An
 					<span className="visually-hidden">Loading...</span>
 				</div>
 			) : (
-				<div className={`spinner-${variant === "border" ? "border" : "grow"}`} role="status" aria-hidden="true">
+				<div
+					className={`spinner-${variant === "border" ? "border" : "grow"}`}
+					role="status"
+					aria-hidden="true"
+				>
 					<span className="visually-hidden">Loading...</span>
 				</div>
 			)}

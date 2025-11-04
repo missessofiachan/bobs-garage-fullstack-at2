@@ -5,8 +5,8 @@
  */
 
 import * as Dialog from "@radix-ui/react-dialog";
+import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "react-bootstrap";
-import { motion, AnimatePresence } from "framer-motion";
 
 interface ConfirmDialogProps {
 	open: boolean;

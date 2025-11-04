@@ -36,20 +36,22 @@ export function createResourceHooks<
 	};
 
 	return {
-				/**
+		/**
 		 * List all resources
 		 */
 		useList: (options?: any) => {
 			return useQuery<DTO[], unknown, DTO[], any>({
 				queryKey: queryKey.all,
 				queryFn: async (): Promise<DTO[]> => {
-					const { data } = await api.get<DTO[] | { data: DTO[]; pagination?: any }>(config.basePath); 
+					const { data } = await api.get<DTO[] | { data: DTO[]; pagination?: any }>(
+						config.basePath,
+					);
 					// Handle both array responses and object responses with { data: [...], pagination: {...} }
 					if (Array.isArray(data)) {
 						return data;
 					}
 					// If it's an object with a data property, extract the array
-					if (data && typeof data === 'object' && 'data' in data && Array.isArray(data.data)) {
+					if (data && typeof data === "object" && "data" in data && Array.isArray(data.data)) {
 						return data.data;
 					}
 					// Fallback to empty array if structure is unexpected

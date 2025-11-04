@@ -4,8 +4,8 @@
  * @version 1.0.0
  */
 
-import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 import AnimatedLoading from "./AnimatedLoading";
 
 // Mock framer-motion to avoid animation delays in tests

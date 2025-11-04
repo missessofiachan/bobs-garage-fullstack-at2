@@ -4,7 +4,7 @@
  * @version 1.0.0
  */
 
-import { defineProperties, createSprinkles } from "@vanilla-extract/sprinkles";
+import { createSprinkles, defineProperties } from "@vanilla-extract/sprinkles";
 import { tokens } from "./tokens.css";
 
 const spaceProperties = defineProperties({

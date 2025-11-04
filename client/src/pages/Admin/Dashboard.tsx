@@ -20,7 +20,11 @@ interface Metrics {
 export default function Dashboard() {
 	usePageTitle("Admin Dashboard");
 
-	const { data: metrics, isLoading, error } = useQuery<Metrics>({
+	const {
+		data: metrics,
+		isLoading,
+		error,
+	} = useQuery<Metrics>({
 		queryKey: ["admin", "metrics"],
 		queryFn: async () => {
 			const { data } = await api.get<Metrics>("/admin/metrics");
@@ -44,7 +48,9 @@ export default function Dashboard() {
 						<Card.Body>
 							<div className="d-flex justify-content-between align-items-start">
 								<div>
-									<Card.Title className="text-muted small text-uppercase mb-2">Total Users</Card.Title>
+									<Card.Title className="text-muted small text-uppercase mb-2">
+										Total Users
+									</Card.Title>
 									<h3 className="mb-0">{metrics?.users ?? 0}</h3>
 								</div>
 								<div className="fs-1 text-primary opacity-25">👥</div>
@@ -62,7 +68,9 @@ export default function Dashboard() {
 						<Card.Body>
 							<div className="d-flex justify-content-between align-items-start">
 								<div>
-									<Card.Title className="text-muted small text-uppercase mb-2">Total Services</Card.Title>
+									<Card.Title className="text-muted small text-uppercase mb-2">
+										Total Services
+									</Card.Title>
 									<h3 className="mb-0">{metrics?.services ?? 0}</h3>
 								</div>
 								<div className="fs-1 text-success opacity-25">🔧</div>
@@ -80,7 +88,9 @@ export default function Dashboard() {
 						<Card.Body>
 							<div className="d-flex justify-content-between align-items-start">
 								<div>
-									<Card.Title className="text-muted small text-uppercase mb-2">Total Staff</Card.Title>
+									<Card.Title className="text-muted small text-uppercase mb-2">
+										Total Staff
+									</Card.Title>
 									<h3 className="mb-0">{metrics?.staff ?? 0}</h3>
 								</div>
 								<div className="fs-1 text-info opacity-25">👔</div>

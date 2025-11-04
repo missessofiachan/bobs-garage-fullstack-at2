@@ -12,11 +12,7 @@ type ToastCtx = { notify: (msg: Omit<ToastMsg, "id">) => void };
 
 const Ctx = createContext<ToastCtx | null>(null);
 
-export default function ToastProvider({
-	children,
-}: {
-	children: React.ReactNode;
-}) {
+export default function ToastProvider({ children }: { children: React.ReactNode }) {
 	const [items, setItems] = useState<ToastMsg[]>([]);
 	const notify = useCallback((msg: Omit<ToastMsg, "id">) => {
 		setItems((arr) => [...arr, { id: Date.now() + Math.random(), ...msg }]);

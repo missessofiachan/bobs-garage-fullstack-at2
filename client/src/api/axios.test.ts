@@ -4,8 +4,8 @@
  * @version 1.0.0
  */
 
-import { describe, it, expect, beforeEach } from "vitest";
-import { setAccessToken, clearAccessToken, getAccessToken, api } from "./axios";
+import { beforeEach, describe, expect, it } from "vitest";
+import { api, clearAccessToken, getAccessToken, setAccessToken } from "./axios";
 
 describe("axios API client - Token management", () => {
 	beforeEach(() => {

@@ -5,16 +5,25 @@
  */
 
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Card, Col, Image, Row } from "react-bootstrap";
+import {
+	MdBuild,
+	MdCheckCircle,
+	MdEmail,
+	MdLocalPhone,
+	MdLocationOn,
+	MdPeople,
+	MdSchedule,
+	MdStar,
+} from "react-icons/md";
 import { useSelector } from "react-redux";
-import { Card, Col, Row, Image } from "react-bootstrap";
+import { Link } from "react-router-dom";
+import Loading from "../components/ui/Loading";
 import { useServices } from "../hooks/useServices";
 import { useStaffList } from "../hooks/useStaff";
-import { formatCurrency } from "../utils/formatters";
 import { getImageBaseUrl } from "../utils/api";
+import { formatCurrency } from "../utils/formatters";
 import { getImageSrc } from "../utils/imagePlaceholder";
-import { MdBuild, MdPeople, MdLocalPhone, MdEmail, MdSchedule, MdLocationOn, MdStar, MdCheckCircle } from "react-icons/md";
-import Loading from "../components/ui/Loading";
 
 const fadeInUp = {
 	initial: { opacity: 0, y: 20 },
@@ -36,9 +45,7 @@ export default function Home() {
 	const { data: services, isLoading: servicesLoading } = useServices();
 	const { data: staff, isLoading: staffLoading } = useStaffList();
 
-	const featuredServices = (services ?? [])
-		.filter((s) => s.published !== false)
-		.slice(0, 4);
+	const featuredServices = (services ?? []).filter((s) => s.published !== false).slice(0, 4);
 
 	const featuredStaff = (staff ?? []).filter((m) => m.active !== false).slice(0, 3);
 
@@ -110,7 +117,9 @@ export default function Home() {
 					<Col xs={6} md={3}>
 						<Card className="text-center h-100">
 							<Card.Body>
-								<div className="display-4 fw-bold text-primary" aria-label="15 plus years">15+</div>
+								<div className="display-4 fw-bold text-primary" aria-label="15 plus years">
+									15+
+								</div>
 								<div className="text-muted">Years Experience</div>
 							</Card.Body>
 						</Card>
@@ -118,7 +127,12 @@ export default function Home() {
 					<Col xs={6} md={3}>
 						<Card className="text-center h-100">
 							<Card.Body>
-								<div className="display-4 fw-bold text-primary" aria-label="5000 plus happy customers">5000+</div>
+								<div
+									className="display-4 fw-bold text-primary"
+									aria-label="5000 plus happy customers"
+								>
+									5000+
+								</div>
 								<div className="text-muted">Happy Customers</div>
 							</Card.Body>
 						</Card>
@@ -126,7 +140,12 @@ export default function Home() {
 					<Col xs={6} md={3}>
 						<Card className="text-center h-100">
 							<Card.Body>
-								<div className="display-4 fw-bold text-primary" aria-label="1000 plus services completed">1000+</div>
+								<div
+									className="display-4 fw-bold text-primary"
+									aria-label="1000 plus services completed"
+								>
+									1000+
+								</div>
 								<div className="text-muted">Services Completed</div>
 							</Card.Body>
 						</Card>
@@ -134,7 +153,9 @@ export default function Home() {
 					<Col xs={6} md={3}>
 						<Card className="text-center h-100">
 							<Card.Body>
-								<div className="display-4 fw-bold text-primary" aria-label="24/7 support available">24/7</div>
+								<div className="display-4 fw-bold text-primary" aria-label="24/7 support available">
+									24/7
+								</div>
 								<div className="text-muted">Support Available</div>
 							</Card.Body>
 						</Card>
@@ -143,11 +164,7 @@ export default function Home() {
 			</motion.section>
 
 			{/* Why Choose Us Section */}
-			<motion.section
-				className="mb-5"
-				{...fadeInUp}
-				transition={{ delay: 0.7 }}
-			>
+			<motion.section className="mb-5" {...fadeInUp} transition={{ delay: 0.7 }}>
 				<h2 className="mb-4">Why Choose Us</h2>
 				<Row className="g-3">
 					<Col md={6} lg={3}>
@@ -190,11 +207,7 @@ export default function Home() {
 			</motion.section>
 
 			{/* Featured Services Section */}
-			<motion.section
-				className="mb-5"
-				{...fadeInUp}
-				transition={{ delay: 0.8 }}
-			>
+			<motion.section className="mb-5" {...fadeInUp} transition={{ delay: 0.8 }}>
 				<div className="d-flex justify-content-between align-items-center mb-4">
 					<h2>Featured Services</h2>
 					<Link to="/services" className="btn btn-outline-primary">
@@ -204,11 +217,7 @@ export default function Home() {
 				{servicesLoading ? (
 					<Loading message="Loading services…" />
 				) : featuredServices.length > 0 ? (
-					<motion.div
-						variants={staggerContainer}
-						initial="initial"
-						animate="animate"
-					>
+					<motion.div variants={staggerContainer} initial="initial" animate="animate">
 						<Row className="g-3">
 							{featuredServices.map((service) => {
 								const imageSrc = getImageSrc(service.imageUrl, getImageBaseUrl());
@@ -256,11 +265,7 @@ export default function Home() {
 			</motion.section>
 
 			{/* Meet the Team Section */}
-			<motion.section
-				className="mb-5"
-				{...fadeInUp}
-				transition={{ delay: 0.9 }}
-			>
+			<motion.section className="mb-5" {...fadeInUp} transition={{ delay: 0.9 }}>
 				<div className="d-flex justify-content-between align-items-center mb-4">
 					<h2>Meet the Team</h2>
 					<Link to="/staff" className="btn btn-outline-primary">
@@ -270,11 +275,7 @@ export default function Home() {
 				{staffLoading ? (
 					<Loading message="Loading staff…" />
 				) : featuredStaff.length > 0 ? (
-					<motion.div
-						variants={staggerContainer}
-						initial="initial"
-						animate="animate"
-					>
+					<motion.div variants={staggerContainer} initial="initial" animate="animate">
 						<Row className="g-3">
 							{featuredStaff.map((member) => {
 								const photoSrc = getImageSrc(member.photoUrl, getImageBaseUrl());
@@ -301,9 +302,7 @@ export default function Home() {
 												/>
 												<Card.Body>
 													<Card.Title>{member.name}</Card.Title>
-													{member.role && (
-														<div className="text-muted mb-2">{member.role}</div>
-													)}
+													{member.role && <div className="text-muted mb-2">{member.role}</div>}
 													{member.bio && (
 														<Card.Text className="small">
 															{member.bio.substring(0, 100)}
@@ -324,11 +323,7 @@ export default function Home() {
 			</motion.section>
 
 			{/* Testimonials Section */}
-			<motion.section
-				className="mb-5"
-				{...fadeInUp}
-				transition={{ delay: 1.0 }}
-			>
+			<motion.section className="mb-5" {...fadeInUp} transition={{ delay: 1.0 }}>
 				<h2 className="mb-4">What Our Customers Say</h2>
 				<Row className="g-3">
 					<Col md={4}>
@@ -388,11 +383,7 @@ export default function Home() {
 			</motion.section>
 
 			{/* CTA & Contact Section */}
-			<motion.section
-				className="mb-5"
-				{...fadeInUp}
-				transition={{ delay: 1.1 }}
-			>
+			<motion.section className="mb-5" {...fadeInUp} transition={{ delay: 1.1 }}>
 				<Card className="bg-body-secondary">
 					<Card.Body className="p-4 p-md-5">
 						<Row>

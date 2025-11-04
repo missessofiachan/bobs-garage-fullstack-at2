@@ -5,27 +5,27 @@
  */
 
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
 import { Card, Col, Row } from "react-bootstrap";
-import Staff from "./Staff";
 import {
+	MdAccessTime,
 	MdBuild,
-	MdPeople,
-	MdLocalPhone,
-	MdEmail,
-	MdSchedule,
-	MdLocationOn,
 	MdCheckCircle,
-	MdStar,
-	MdHistory,
-	MdWorkspacePremium,
+	MdEmail,
 	MdGroups,
 	MdHandshake,
-	MdSecurity,
-	MdAccessTime,
+	MdHistory,
+	MdLocalPhone,
+	MdLocationOn,
+	MdPeople,
 	MdPriceCheck,
+	MdSchedule,
+	MdSecurity,
+	MdStar,
 	MdVerified,
+	MdWorkspacePremium,
 } from "react-icons/md";
+import { Link } from "react-router-dom";
+import Staff from "./Staff";
 
 const fadeInUp = {
 	initial: { opacity: 0, y: 20 },
@@ -80,11 +80,7 @@ export default function About() {
 			</motion.div>
 
 			{/* Statistics Section */}
-			<motion.section
-				className="mb-5"
-				{...fadeInUp}
-				transition={{ delay: 0.5 }}
-			>
+			<motion.section className="mb-5" {...fadeInUp} transition={{ delay: 0.5 }}>
 				<Row className="g-3">
 					<Col xs={6} md={3}>
 						<Card className="text-center h-100 border-0 shadow-sm">
@@ -122,11 +118,7 @@ export default function About() {
 			</motion.section>
 
 			{/* Our Story Section */}
-			<motion.section
-				className="mb-5"
-				{...fadeInUp}
-				transition={{ delay: 0.6 }}
-			>
+			<motion.section className="mb-5" {...fadeInUp} transition={{ delay: 0.6 }}>
 				<h2 className="mb-4">
 					<MdHistory className="me-2 text-primary" />
 					Our Story
@@ -162,8 +154,8 @@ export default function About() {
 								<h4 className="text-primary mb-3">Community Leaders (2016-2020)</h4>
 								<p>
 									We became deeply involved in our community, sponsoring local events and supporting
-									local charities. Our commitment to environmental responsibility led us to implement
-									eco-friendly practices and recycling programs.
+									local charities. Our commitment to environmental responsibility led us to
+									implement eco-friendly practices and recycling programs.
 								</p>
 							</Card.Body>
 						</Card>
@@ -184,11 +176,7 @@ export default function About() {
 			</motion.section>
 
 			{/* Mission & Values Section */}
-			<motion.section
-				className="mb-5"
-				{...fadeInUp}
-				transition={{ delay: 0.7 }}
-			>
+			<motion.section className="mb-5" {...fadeInUp} transition={{ delay: 0.7 }}>
 				<Row className="g-4">
 					<Col md={6}>
 						<Card className="h-100 bg-body-secondary">
@@ -196,8 +184,8 @@ export default function About() {
 								<h2 className="mb-4">Our Mission</h2>
 								<p className="fs-5">
 									To provide exceptional automotive services that keep our customers' vehicles safe,
-									reliable, and performing at their best, while treating every customer with respect,
-									honesty, and integrity.
+									reliable, and performing at their best, while treating every customer with
+									respect, honesty, and integrity.
 								</p>
 							</Card.Body>
 						</Card>
@@ -239,17 +227,9 @@ export default function About() {
 			</motion.section>
 
 			{/* What Makes Us Different Section */}
-			<motion.section
-				className="mb-5"
-				{...fadeInUp}
-				transition={{ delay: 0.8 }}
-			>
+			<motion.section className="mb-5" {...fadeInUp} transition={{ delay: 0.8 }}>
 				<h2 className="mb-4">What Makes Us Different</h2>
-				<motion.div
-					variants={staggerContainer}
-					initial="initial"
-					animate="animate"
-				>
+				<motion.div variants={staggerContainer} initial="initial" animate="animate">
 					<Row className="g-3">
 						<Col md={6} lg={4}>
 							<motion.div variants={fadeInUp}>
@@ -337,11 +317,7 @@ export default function About() {
 			</motion.section>
 
 			{/* Our Commitment Section */}
-			<motion.section
-				className="mb-5"
-				{...fadeInUp}
-				transition={{ delay: 0.9 }}
-			>
+			<motion.section className="mb-5" {...fadeInUp} transition={{ delay: 0.9 }}>
 				<Card className="bg-body-secondary">
 					<Card.Body className="p-4 p-md-5">
 						<h2 className="mb-4">Our Commitment to You</h2>
@@ -352,8 +328,8 @@ export default function About() {
 									<div>
 										<h5>Honest Communication</h5>
 										<p className="mb-0">
-											We'll always explain what needs to be done and why, in terms you can understand.
-											No technical jargon, just straight talk.
+											We'll always explain what needs to be done and why, in terms you can
+											understand. No technical jargon, just straight talk.
 										</p>
 									</div>
 								</div>
@@ -400,11 +376,7 @@ export default function About() {
 			</motion.section>
 
 			{/* Certifications Section */}
-			<motion.section
-				className="mb-5"
-				{...fadeInUp}
-				transition={{ delay: 1.0 }}
-			>
+			<motion.section className="mb-5" {...fadeInUp} transition={{ delay: 1.0 }}>
 				<h2 className="mb-4">
 					<MdWorkspacePremium className="me-2 text-primary" />
 					Certifications & Credentials
@@ -447,11 +419,7 @@ export default function About() {
 			</motion.section>
 
 			{/* Community Involvement Section */}
-			<motion.section
-				className="mb-5"
-				{...fadeInUp}
-				transition={{ delay: 1.1 }}
-			>
+			<motion.section className="mb-5" {...fadeInUp} transition={{ delay: 1.1 }}>
 				<h2 className="mb-4">
 					<MdGroups className="me-2 text-primary" />
 					Community Involvement
@@ -493,11 +461,7 @@ export default function About() {
 			</motion.section>
 
 			{/* Our Team Section */}
-			<motion.section
-				className="mb-5"
-				{...fadeInUp}
-				transition={{ delay: 1.2 }}
-			>
+			<motion.section className="mb-5" {...fadeInUp} transition={{ delay: 1.2 }}>
 				<h2 className="mb-4">Meet Our Team</h2>
 				<p className="lead mb-4">
 					Our experienced and friendly team is here to help you with all your automotive needs.
@@ -506,11 +470,7 @@ export default function About() {
 			</motion.section>
 
 			{/* CTA & Location Section */}
-			<motion.section
-				className="mb-5"
-				{...fadeInUp}
-				transition={{ delay: 1.3 }}
-			>
+			<motion.section className="mb-5" {...fadeInUp} transition={{ delay: 1.3 }}>
 				<Card className="bg-body-secondary">
 					<Card.Body className="p-4 p-md-5">
 						<Row>

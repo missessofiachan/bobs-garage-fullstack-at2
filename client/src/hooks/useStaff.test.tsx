@@ -4,11 +4,11 @@
  * @version 1.0.0
  */
 
-import React from "react";
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { renderHook, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useStaffList, useStaff } from "./useStaff";
+import { renderHook, waitFor } from "@testing-library/react";
+import React from "react";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { useStaff, useStaffList } from "./useStaff";
 
 // Mock the API - must define inside factory due to hoisting
 vi.mock("../api/axios", () => ({
@@ -54,6 +54,7 @@ vi.mock("../api/axios", () => ({
 }));
 
 import api from "../api/axios";
+
 const mockGet = api.get as any;
 
 describe("useStaff hooks", () => {
