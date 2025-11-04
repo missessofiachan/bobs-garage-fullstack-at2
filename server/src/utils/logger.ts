@@ -4,4 +4,4 @@
  * @version 2.0.0 - Migrated from Pino to Winston + Morgan
  */
 
-export { winstonLogger as logger, apiLogger } from '../config/winston.js';
+export { winstonLogger as logger, apiLogger } from "../config/winston.js";

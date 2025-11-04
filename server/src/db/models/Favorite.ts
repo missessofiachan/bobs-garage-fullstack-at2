@@ -5,55 +5,54 @@
  */
 
 import {
-  Table,
-  Column,
-  Model,
-  DataType,
-  ForeignKey,
-  BelongsTo,
-  PrimaryKey,
-  AutoIncrement,
-  AllowNull,
-  Unique,
-  CreatedAt,
-} from 'sequelize-typescript';
-import { User } from './User.js';
-import { Service } from './Service.js';
+	AllowNull,
+	AutoIncrement,
+	BelongsTo,
+	Column,
+	CreatedAt,
+	DataType,
+	ForeignKey,
+	Model,
+	PrimaryKey,
+	Table,
+	Unique,
+} from "sequelize-typescript";
+import { Service } from "./Service.js";
+import { User } from "./User.js";
 
-@Table({ 
-  tableName: 'favorites',
-  indexes: [
-    {
-      unique: true,
-      fields: ['userId', 'serviceId']
-    }
-  ]
+@Table({
+	tableName: "favorites",
+	indexes: [
+		{
+			unique: true,
+			fields: ["userId", "serviceId"],
+		},
+	],
 })
 export class Favorite extends Model {
-  @PrimaryKey
-  @AutoIncrement
-  @Column(DataType.INTEGER)
-  declare id: number;
+	@PrimaryKey
+	@AutoIncrement
+	@Column(DataType.INTEGER)
+	declare id: number;
 
-  @ForeignKey(() => User)
-  @AllowNull(false)
-  @Column(DataType.INTEGER)
-  declare userId: number;
+	@ForeignKey(() => User)
+	@AllowNull(false)
+	@Column(DataType.INTEGER)
+	declare userId: number;
 
-  @ForeignKey(() => Service)
-  @AllowNull(false)
-  @Column(DataType.INTEGER)
-  declare serviceId: number;
+	@ForeignKey(() => Service)
+	@AllowNull(false)
+	@Column(DataType.INTEGER)
+	declare serviceId: number;
 
-  @CreatedAt
-  @Column(DataType.DATE)
-  declare createdAt: Date;
+	@CreatedAt
+	@Column(DataType.DATE)
+	declare createdAt: Date;
 
-  // Relationships
-  @BelongsTo(() => User)
-  declare user: User;
+	// Relationships
+	@BelongsTo(() => User)
+	declare user: User;
 
-  @BelongsTo(() => Service)
-  declare service: Service;
+	@BelongsTo(() => Service)
+	declare service: Service;
 }
-

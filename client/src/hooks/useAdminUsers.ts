@@ -4,14 +4,14 @@
  * @version 2.0.0 (Refactored with generic hooks)
  */
 
-import type { AdminUserDTO, AdminUserCreateDTO, AdminUserUpdateDTO } from '../api/types';
-import { createResourceHooks } from './useResourceQuery';
+import type { AdminUserDTO, AdminUserCreateDTO, AdminUserUpdateDTO } from "../api/types";
+import { createResourceHooks } from "./useResourceQuery";
 
 // Create admin users hooks using the generic factory
 const adminUsersHooks = createResourceHooks<AdminUserDTO, AdminUserCreateDTO, AdminUserUpdateDTO>({
-  resource: 'admin.users',
-  basePath: '/admin/users',
-  staleTime: 0, // Admin data should always be fresh
+	resource: "admin.users",
+	basePath: "/admin/users",
+	staleTime: 0, // Admin data should always be fresh
 });
 
 // Export with renamed functions for backward compatibility

@@ -4,10 +4,10 @@
  * @version 2.0.0 (Expanded)
  */
 
-import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor, act } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import React from 'react';
 
 // Mock axios before importing
 vi.mock('../api/axios', () => ({
