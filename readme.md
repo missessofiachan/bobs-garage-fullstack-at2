@@ -479,6 +479,23 @@ If deploying to Vercel:
 - [Client README](client/README.md)
 - [CI/CD Configuration](.github/workflows/ci.yml)
 
+## 🆕 Recent Updates
+
+### Version 2.0.0 Features
+
+- ✨ **Enhanced Homepage**: Comprehensive landing page with hero, stats, featured services, team preview, testimonials, and CTA sections
+- ✨ **Improved About Page**: Detailed company story, mission, values, certifications, and community involvement
+- ✨ **Enhanced Services Page**: Grid/list view toggle, advanced filtering, sorting, and animations
+- ✨ **Improved Staff Page**: Better image handling, animations, and error states
+- ✨ **Forgot Password**: Password reset flow with email input and YouTube video embed
+- ✨ **Legal Pages**: Privacy Policy, Terms of Service, and Accessibility Statement
+- ✨ **Enhanced Footer**: Multi-column layout with contact info, quick links, social media, and system status
+- ♿ **Accessibility Improvements**: Skip links, ARIA landmarks, proper focus indicators, screen reader support
+- 🎨 **Theme Consistency**: All error/warning colors use trans pride pink (#F7A8B8)
+- 🎨 **Improved Forms**: Better error handling, field-specific validation, user-friendly messages
+- 🎨 **Animations**: Smooth Framer Motion animations throughout the application
+- 🔧 **Build Fixes**: Resolved TypeScript errors, replaced missing dependencies, improved build compatibility
+
 ## 👥 Support
 
 For issues and questions, please open an issue on the repository.
