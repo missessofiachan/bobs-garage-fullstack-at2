@@ -8,6 +8,7 @@ import {
 	useUploadServiceImage,
 } from "../../hooks/useServices";
 import Loading from "../../components/ui/Loading";
+import { getImageSrc } from "../../utils/imagePlaceholder";
 
 export default function ServicesAdmin() {
 	const { data, isLoading, error } = useServices();
@@ -52,13 +53,14 @@ export default function ServicesAdmin() {
 					</tr>
 				</thead>
 				<tbody>
-					{(data ?? []).map((s) => (
-						<tr key={s.id}>
-							<td>{s.id}</td>
-							<td style={{ width: 160 }}>
-								{s.imageUrl ? (
+					{(data ?? []).map((s) => {
+						const imageSrc = getImageSrc(s.imageUrl);
+						return (
+							<tr key={s.id}>
+								<td>{s.id}</td>
+								<td style={{ width: 160 }}>
 									<Image
-										src={s.imageUrl}
+										src={imageSrc}
 										alt={s.name}
 										thumbnail
 										style={{
@@ -66,11 +68,10 @@ export default function ServicesAdmin() {
 											maxHeight: 120,
 											objectFit: "cover",
 										}}
-										onError={(e) => ((e.currentTarget as HTMLImageElement).style.display = "none")}
+										onError={(e) => {
+											(e.currentTarget as HTMLImageElement).src = imageSrc;
+										}}
 									/>
-								) : (
-									<div className="text-muted small">No image</div>
-								)}
 								{preview[s.id] && (
 									<div className="mt-1">
 										<Image
@@ -85,58 +86,59 @@ export default function ServicesAdmin() {
 										/>
 									</div>
 								)}
-								<div className="mt-1">
-									<input
-										className="form-control form-control-sm"
-										type="file"
-										accept="image/*"
-										aria-label={`Upload image for ${s.name}`}
-										onChange={async (e) => {
-											const file = (e.currentTarget as HTMLInputElement).files?.[0];
-											if (file) {
-												const url = URL.createObjectURL(file);
-												setPreview((p) => ({ ...p, [s.id]: url }));
-												setProgress((p) => ({ ...p, [s.id]: 0 }));
-												await uploadImage.mutateAsync({
-													id: s.id,
-													file,
-													onProgress: (pct) => setProgress((p) => ({ ...p, [s.id]: pct })),
-												});
-												setProgress((p) => ({ ...p, [s.id]: 0 }));
-												URL.revokeObjectURL(url);
-												setPreview(({ [s.id]: _omit, ...rest }) => rest);
-											}
-											(e.currentTarget as HTMLInputElement).value = "";
-										}}
+									<div className="mt-1">
+										<input
+											className="form-control form-control-sm"
+											type="file"
+											accept="image/*"
+											aria-label={`Upload image for ${s.name}`}
+											onChange={async (e) => {
+												const file = (e.currentTarget as HTMLInputElement).files?.[0];
+												if (file) {
+													const url = URL.createObjectURL(file);
+													setPreview((p) => ({ ...p, [s.id]: url }));
+													setProgress((p) => ({ ...p, [s.id]: 0 }));
+													await uploadImage.mutateAsync({
+														id: s.id,
+														file,
+														onProgress: (pct) => setProgress((p) => ({ ...p, [s.id]: pct })),
+													});
+													setProgress((p) => ({ ...p, [s.id]: 0 }));
+													URL.revokeObjectURL(url);
+													setPreview(({ [s.id]: _omit, ...rest }) => rest);
+												}
+												(e.currentTarget as HTMLInputElement).value = "";
+											}}
+										/>
+										{progress[s.id] ? (
+											<div className="small text-muted">{progress[s.id]}%</div>
+										) : null}
+									</div>
+								</td>
+								<td>{s.name}</td>
+								<td>${s.price}</td>
+								<td>
+									<Form.Check
+										type="switch"
+										id={`pub-${s.id}`}
+										checked={!!s.published}
+										onChange={(e) =>
+											updateService.mutate({
+												id: s.id,
+												published: e.target.checked,
+											})
+										}
+										aria-label={`Toggle published for ${s.name}`}
 									/>
-									{progress[s.id] ? (
-										<div className="small text-muted">{progress[s.id]}%</div>
-									) : null}
-								</div>
-							</td>
-							<td>{s.name}</td>
-							<td>${s.price}</td>
-							<td>
-								<Form.Check
-									type="switch"
-									id={`pub-${s.id}`}
-									checked={!!s.published}
-									onChange={(e) =>
-										updateService.mutate({
-											id: s.id,
-											published: e.target.checked,
-										})
-									}
-									aria-label={`Toggle published for ${s.name}`}
-								/>
-							</td>
-							<td className="d-flex gap-2">
-								<Button size="sm" variant="danger" onClick={() => deleteService.mutate(s.id)}>
-									Delete
-								</Button>
-							</td>
-						</tr>
-					))}
+								</td>
+								<td className="d-flex gap-2">
+									<Button size="sm" variant="danger" onClick={() => deleteService.mutate(s.id)}>
+										Delete
+									</Button>
+								</td>
+							</tr>
+						);
+					})}
 				</tbody>
 			</Table>
 

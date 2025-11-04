@@ -49,7 +49,7 @@ export const tokens = {
 		// Semantic colors
 		success: "#10b981",
 		error: "#ef4444",
-		warning: "#f59e0b",
+		warning: "#F7A8B8", // Trans pride pink
 		info: "#3b82f6",
 	},
 	radius: {

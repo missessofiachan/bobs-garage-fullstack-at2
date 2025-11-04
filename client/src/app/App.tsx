@@ -9,7 +9,7 @@
 
 import { Suspense, lazy, useState, useEffect } from "react";
 import { Container } from "react-bootstrap";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import type { RootState } from "../store/store";
 import ProtectedRoute, { AdminRoute } from "../routes/ProtectedRoute";
@@ -36,7 +36,6 @@ const Services = lazy(() => import("../pages/Services"));
 const Staff = lazy(() => import("../pages/Staff"));
 const Login = lazy(() => import("../pages/Login"));
 const Register = lazy(() => import("../pages/Register"));
-const Admin = lazy(() => import("../pages/Admin"));
 const Dashboard = lazy(() => import("../pages/Admin/Dashboard"));
 const ServicesAdmin = lazy(() => import("../pages/Admin/ServicesAdmin"));
 const StaffAdmin = lazy(() => import("../pages/Admin/StaffAdmin"));
@@ -44,6 +43,10 @@ const UsersAdmin = lazy(() => import("../pages/Admin/UsersAdmin"));
 const Profile = lazy(() => import("../pages/Profile"));
 const Settings = lazy(() => import("../pages/Settings"));
 const Favorites = lazy(() => import("../pages/Favorites"));
+const PrivacyPolicy = lazy(() => import("../pages/PrivacyPolicy"));
+const TermsOfService = lazy(() => import("../pages/TermsOfService"));
+const Accessibility = lazy(() => import("../pages/Accessibility"));
+const ForgotPassword = lazy(() => import("../pages/ForgotPassword"));
 const NotFound = lazy(() => import("../pages/NotFound"));
 
 export default function App() {
@@ -119,10 +122,20 @@ export default function App() {
 				minHeight: "100vh",
 			}}
 		>
+			{/* Skip to main content link for keyboard navigation */}
+			<a
+				href="#main-content"
+				className="visually-hidden-focusable position-absolute top-0 start-0 p-3 bg-primary text-white text-decoration-none"
+				style={{ zIndex: 9999 }}
+				onFocus={(e) => e.currentTarget.classList.remove("visually-hidden-focusable")}
+				onBlur={(e) => e.currentTarget.classList.add("visually-hidden-focusable")}
+			>
+				Skip to main content
+			</a>
 			<NavBar />
 			<ErrorBoundary>
 				<ScrollToTop />
-				<Container className="py-4" style={{ flex: 1 }}>
+				<Container id="main-content" className="py-4" style={{ flex: 1 }} role="main">
 					<Suspense fallback={<Loading message="Loading page…" />}>
 						<Routes>
 							<Route path="/" element={<Home />} />
@@ -131,11 +144,12 @@ export default function App() {
 							<Route path="/staff" element={<Staff />} />
 							<Route path="/login" element={<Login />} />
 							<Route path="/register" element={<Register />} />
+							<Route path="/forgot-password" element={<ForgotPassword />} />
 							<Route
 								path="/admin"
 								element={
 									<AdminRoute>
-										<Admin />
+										<Navigate to="/admin/dashboard" replace />
 									</AdminRoute>
 								}
 							/>
@@ -195,6 +209,9 @@ export default function App() {
 									</AdminRoute>
 								}
 							/>
+							<Route path="/privacy-policy" element={<PrivacyPolicy />} />
+							<Route path="/terms-of-service" element={<TermsOfService />} />
+							<Route path="/accessibility" element={<Accessibility />} />
 							<Route path="*" element={<NotFound />} />
 						</Routes>
 					</Suspense>

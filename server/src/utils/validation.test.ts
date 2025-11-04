@@ -58,7 +58,7 @@ describe("parseIdParam", () => {
 	});
 
 	it("should return null and send 400 for undefined", () => {
-		mockReq = { params: { id: undefined } };
+		mockReq = { params: { id: undefined as unknown as string } };
 
 		const result = parseIdParam(mockReq as Request, mockRes as Response);
 

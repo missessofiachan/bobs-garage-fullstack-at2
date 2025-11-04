@@ -68,7 +68,7 @@ export default function NavBar() {
 	};
 
 	return (
-		<Navbar bg={theme} data-bs-theme={theme} expand="lg" className="shadow-sm">
+		<Navbar bg={theme} data-bs-theme={theme} expand="lg" className="shadow-sm" role="navigation" aria-label="Main navigation">
 			<Container>
 				<Navbar.Brand
 					as={Link}

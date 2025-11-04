@@ -25,7 +25,7 @@ export default function ToastProvider({
 	return (
 		<Ctx.Provider value={{ notify }}>
 			{children}
-			<ToastContainer position="bottom-end" className="p-3">
+			<ToastContainer position="bottom-end" className="p-3" aria-live="polite" aria-atomic="true">
 				{items.map((t) => (
 					<Toast
 						key={t.id}
@@ -33,6 +33,8 @@ export default function ToastProvider({
 						onClose={() => onClose(t.id)}
 						delay={3000}
 						autohide
+						role="alert"
+						aria-live={t.variant === "danger" ? "assertive" : "polite"}
 					>
 						{t.title && (
 							<Toast.Header closeButton>

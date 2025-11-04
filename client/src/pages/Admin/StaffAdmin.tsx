@@ -7,6 +7,7 @@ import {
 	useUploadStaffPhoto,
 } from "../../hooks/useStaff";
 import Loading from "../../components/ui/Loading";
+import { getImageSrc } from "../../utils/imagePlaceholder";
 
 export default function StaffAdmin() {
 	const { data, isLoading, error } = useStaffList();
@@ -40,13 +41,14 @@ export default function StaffAdmin() {
 					</tr>
 				</thead>
 				<tbody>
-					{(data ?? []).map((m) => (
-						<tr key={m.id}>
-							<td>{m.id}</td>
-							<td style={{ width: 140 }}>
-								{m.photoUrl ? (
+					{(data ?? []).map((m) => {
+						const photoSrc = getImageSrc(m.photoUrl);
+						return (
+							<tr key={m.id}>
+								<td>{m.id}</td>
+								<td style={{ width: 140 }}>
 									<Image
-										src={m.photoUrl}
+										src={photoSrc}
 										alt={m.name}
 										thumbnail
 										style={{
@@ -54,40 +56,41 @@ export default function StaffAdmin() {
 											maxHeight: 120,
 											objectFit: "cover",
 										}}
-									/>
-								) : (
-									<div className="text-muted small">No photo</div>
-								)}
-								<div className="mt-1">
-									<input
-										className="form-control form-control-sm"
-										type="file"
-										accept="image/*"
-										onChange={async (e) => {
-											const file = (e.currentTarget as HTMLInputElement).files?.[0];
-											setUploadError(null);
-											if (file) {
-												try {
-													await uploadPhoto.mutateAsync({ id: m.id, file });
-												} catch {
-													setUploadError("Failed to upload photo. Please try again.");
-												}
-											}
-											(e.currentTarget as HTMLInputElement).value = "";
+										onError={(e) => {
+											(e.currentTarget as HTMLImageElement).src = photoSrc;
 										}}
-									/>
-								</div>
-								{uploadError && <div className="text-danger small mt-1">{uploadError}</div>}
-							</td>
+																		/>
+									<div className="mt-1">
+										<input
+											className="form-control form-control-sm"
+											type="file"
+											accept="image/*"
+											onChange={async (e) => {
+												const file = (e.currentTarget as HTMLInputElement).files?.[0];
+												setUploadError(null);
+												if (file) {
+													try {
+														await uploadPhoto.mutateAsync({ id: m.id, file });
+													} catch {
+														setUploadError("Failed to upload photo. Please try again.");
+													}
+												}
+												(e.currentTarget as HTMLInputElement).value = "";
+											}}
+										/>
+									</div>
+									{uploadError && <div className="text-danger small mt-1">{uploadError}</div>}
+								</td>
 							<td>{m.name}</td>
 							<td>{m.role}</td>
 							<td className="d-flex gap-2">
 								<Button size="sm" variant="danger" onClick={() => deleteStaff.mutate(m.id)}>
 									Delete
 								</Button>
-							</td>
-						</tr>
-					))}
+															</td>
+							</tr>
+						);
+					})}
 				</tbody>
 			</Table>
 

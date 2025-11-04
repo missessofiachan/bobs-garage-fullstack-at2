@@ -27,6 +27,10 @@ html[data-bs-theme="light"] body {
 	--bs-link-hover-color: #3bb5e8;
 	--bs-info: #55cdfc; /* Use trans blue for info */
 	--bs-info-rgb: 85, 205, 252;
+	--bs-warning: #F7A8B8; /* Trans pride flag pink */
+	--bs-warning-rgb: 247, 168, 184;
+	--bs-danger: #F7A8B8; /* Trans pride flag pink */
+	--bs-danger-rgb: 247, 168, 184;
 }
 
 html[data-bs-theme="light"] .btn-primary {
@@ -59,6 +63,8 @@ html[data-bs-theme="light"] .form-control:focus,
 html[data-bs-theme="light"] .form-select:focus {
 	border-color: #55cdfc;
 	box-shadow: 0 0 0 0.25rem rgba(85, 205, 252, 0.25);
+	outline: 2px solid #55cdfc;
+	outline-offset: 2px;
 }
 
 html[data-bs-theme="light"] .spinner-border {
@@ -142,6 +148,83 @@ html[data-bs-theme="light"] .text-secondary {
 	color: #F7A8B8 !important;
 }
 
+/* Warning styles - Trans pride pink */
+html[data-bs-theme="light"] .alert-warning {
+	background-color: rgba(247, 168, 184, 0.15) !important;
+	border-color: #F7A8B8 !important;
+	color: #111827 !important;
+}
+
+html[data-bs-theme="light"] .text-warning {
+	color: #F7A8B8 !important;
+}
+
+html[data-bs-theme="light"] .btn-warning {
+	background-color: #F7A8B8 !important;
+	border-color: #F7A8B8 !important;
+	color: #0a0a0a !important;
+	font-weight: 600;
+}
+
+html[data-bs-theme="light"] .btn-warning:hover {
+	background-color: #f59bb0 !important;
+	border-color: #f59bb0 !important;
+	color: #0a0a0a !important;
+}
+
+html[data-bs-theme="light"] .btn-outline-warning {
+	border-color: #F7A8B8 !important;
+	color: #F7A8B8 !important;
+	background-color: transparent;
+}
+
+html[data-bs-theme="light"] .btn-outline-warning:hover {
+	background-color: #F7A8B8 !important;
+	border-color: #F7A8B8 !important;
+	color: #0a0a0a !important;
+}
+
+/* Danger styles - Trans pride pink */
+html[data-bs-theme="light"] .alert-danger {
+	background-color: rgba(247, 168, 184, 0.15) !important;
+	border-color: #F7A8B8 !important;
+	color: #111827 !important;
+}
+
+html[data-bs-theme="light"] .text-danger {
+	color: #F7A8B8 !important;
+}
+
+html[data-bs-theme="light"] .btn-danger {
+	background-color: #F7A8B8 !important;
+	border-color: #F7A8B8 !important;
+	color: #0a0a0a !important;
+	font-weight: 600;
+}
+
+html[data-bs-theme="light"] .btn-danger:hover {
+	background-color: #f59bb0 !important;
+	border-color: #f59bb0 !important;
+	color: #0a0a0a !important;
+}
+
+html[data-bs-theme="light"] .btn-outline-danger {
+	border-color: #F7A8B8 !important;
+	color: #F7A8B8 !important;
+	background-color: transparent;
+}
+
+html[data-bs-theme="light"] .btn-outline-danger:hover {
+	background-color: #F7A8B8 !important;
+	border-color: #F7A8B8 !important;
+	color: #0a0a0a !important;
+}
+
+html[data-bs-theme="light"] .badge.bg-danger {
+	background-color: #F7A8B8 !important;
+	color: #0a0a0a;
+}
+
 /* Bootstrap Dark Mode Overrides - Trans Pride Theme */
 
 html[data-bs-theme="dark"],
@@ -170,6 +253,8 @@ html[data-bs-theme="dark"] body {
 	--bs-link-hover-color: #93daff;
 	--bs-info: #7dd3fc; /* Use trans blue for info */
 	--bs-info-rgb: 125, 211, 252;
+	--bs-warning: #F7A8B8; /* Trans pride flag pink */
+	--bs-warning-rgb: 247, 168, 184;
 }
 
 html[data-bs-theme="dark"] .card {
@@ -199,6 +284,8 @@ html[data-bs-theme="dark"] .form-select:focus {
 	border-color: #7dd3fc; /* lighter trans flag blue for better contrast */
 	color: #f3f4f6;
 	box-shadow: 0 0 0 0.25rem rgba(125, 211, 252, 0.25);
+	outline: 2px solid #7dd3fc;
+	outline-offset: 2px;
 }
 
 html[data-bs-theme="dark"] .list-group-item {
@@ -364,15 +451,145 @@ html[data-bs-theme="dark"] .text-secondary {
 	color: #F7A8B8 !important;
 }
 
+/* Warning styles - Trans pride pink */
+html[data-bs-theme="dark"] .alert-warning {
+	background-color: rgba(247, 168, 184, 0.15) !important;
+	border-color: #F7A8B8 !important;
+	color: #f3f4f6 !important;
+}
+
+html[data-bs-theme="dark"] .text-warning {
+	color: #F7A8B8 !important;
+}
+
+html[data-bs-theme="dark"] .btn-warning {
+	background-color: #F7A8B8 !important;
+	border-color: #F7A8B8 !important;
+	color: #0a0a0a !important;
+	font-weight: 600;
+}
+
+html[data-bs-theme="dark"] .btn-warning:hover {
+	background-color: #f9b0c2 !important;
+	border-color: #f9b0c2 !important;
+	color: #0a0a0a !important;
+}
+
+html[data-bs-theme="dark"] .btn-outline-warning {
+	border-color: #F7A8B8 !important;
+	color: #F7A8B8 !important;
+	background-color: transparent;
+}
+
+html[data-bs-theme="dark"] .btn-outline-warning:hover {
+	background-color: #F7A8B8 !important;
+	border-color: #F7A8B8 !important;
+	color: #0a0a0a !important;
+}
+
+/* Danger styles - Trans pride pink */
+html[data-bs-theme="dark"] .alert-danger {
+	background-color: rgba(247, 168, 184, 0.15) !important;
+	border-color: #F7A8B8 !important;
+	color: #f3f4f6 !important;
+}
+
+html[data-bs-theme="dark"] .text-danger {
+	color: #F7A8B8 !important;
+}
+
+html[data-bs-theme="dark"] .btn-danger {
+	background-color: #F7A8B8 !important;
+	border-color: #F7A8B8 !important;
+	color: #0a0a0a !important;
+	font-weight: 600;
+}
+
+html[data-bs-theme="dark"] .btn-danger:hover {
+	background-color: #f9b0c2 !important;
+	border-color: #f9b0c2 !important;
+	color: #0a0a0a !important;
+}
+
+html[data-bs-theme="dark"] .btn-outline-danger {
+	border-color: #F7A8B8 !important;
+	color: #F7A8B8 !important;
+	background-color: transparent;
+}
+
+html[data-bs-theme="dark"] .btn-outline-danger:hover {
+	background-color: #F7A8B8 !important;
+	border-color: #F7A8B8 !important;
+	color: #0a0a0a !important;
+}
+
+html[data-bs-theme="dark"] .badge.bg-danger {
+	background-color: #F7A8B8 !important;
+	color: #0a0a0a;
+}
 
 
-/* Remove outline/box from navbar brand */
+
+/* Improve focus visibility for navbar brand while keeping colors */
 .navbar-brand:focus,
-.navbar-brand:focus-visible,
-.navbar-brand:active {
-	outline: none !important;
-	box-shadow: none !important;
-	border: none !important;
+.navbar-brand:focus-visible {
+	outline: 2px solid #55cdfc !important;
+	outline-offset: 2px !important;
+	border-radius: 4px !important;
+}
+
+html[data-bs-theme="dark"] .navbar-brand:focus,
+html[data-bs-theme="dark"] .navbar-brand:focus-visible {
+	outline: 2px solid #7dd3fc !important;
+}
+
+/* Toast styling with Trans Pride colors */
+/* Blue (#55CDFC) for success - good messages */
+.toast.bg-success {
+	background-color: #55cdfc !important;
+	color: #ffffff !important;
+}
+
+.toast.bg-success .toast-header {
+	background-color: rgba(85, 205, 252, 0.9) !important;
+	color: #ffffff !important;
+	border-bottom-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.toast.bg-success .btn-close {
+	filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+/* Pink (#F7A8B8) for danger/error - bad messages */
+.toast.bg-danger {
+	background-color: #f7a8b8 !important;
+	color: #ffffff !important;
+}
+
+.toast.bg-danger .toast-header {
+	background-color: rgba(247, 168, 184, 0.9) !important;
+	color: #ffffff !important;
+	border-bottom-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.toast.bg-danger .btn-close {
+	filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+/* Pink (#F7A8B8) for warning - warning messages */
+.toast.bg-warning {
+	background-color: #f7a8b8 !important;
+	color: #ffffff !important;
+}
+
+.toast.bg-warning .toast-header {
+	background-color: rgba(247, 168, 184, 0.9) !important;
+	color: #ffffff !important;
+	border-bottom-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.toast.bg-warning .btn-close {
+	filter: invert(1) grayscale(100%) brightness(200%);
 }
 
 /* Pink hover highlight for navigation links */
@@ -385,9 +602,10 @@ html[data-bs-theme="dark"] .text-secondary {
 
 .navbar-nav .nav-link:focus,
 .navbar-nav .nav-link:focus-visible {
-	outline: 2px solid #f7a8b8 !important;
+	outline: 3px solid #f7a8b8 !important;
 	outline-offset: 2px;
 	border-radius: 4px;
+	background-color: rgba(247, 168, 184, 0.2) !important;
 }
 
 /* Ensure text remains visible on hover */
