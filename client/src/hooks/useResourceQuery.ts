@@ -121,15 +121,67 @@ export function createResourceHooks<
 		 */
 		useDelete: (options?: any) => {
 			const qc = useQueryClient();
-			return useMutation({
+			const configDeleteOptions = config.options?.mutations?.delete || {};
+			
+			return useMutation<
+				void,
+				unknown,
+				number,
+				{ previousData: DTO[] | undefined }
+			>({
 				mutationFn: async (id: number): Promise<void> => {
 					await api.delete(`${config.basePath}/${id}`);
 				},
-				onSuccess: () => {
-					qc.invalidateQueries({ queryKey: queryKey.all });
+				onMutate: async (id: number) => {
+					// Call config onMutate if provided
+					const configContext = await configDeleteOptions.onMutate?.(id);
+					
+					// Cancel any outgoing refetches to avoid overwriting our optimistic update
+					await qc.cancelQueries({ queryKey: queryKey.all });
+
+					// Snapshot the previous value
+					const previousData = qc.getQueryData<DTO[]>(queryKey.all);
+
+					// Optimistically remove the item from cache
+					if (previousData) {
+						qc.setQueryData<DTO[]>(
+							queryKey.all,
+							previousData.filter((item) => {
+								const itemWithId = item as unknown as { id: number };
+								return itemWithId.id !== id;
+							}),
+						);
+					}
+
+					// Return context with the previous value (merge with config context if any)
+					return { previousData, ...configContext };
 				},
-				...config.options?.mutations?.delete,
-				...options,
+				onError: (_err, _id, context) => {
+					// If the mutation fails, roll back to the previous value
+					if (context?.previousData) {
+						qc.setQueryData(queryKey.all, context.previousData);
+					}
+					// Call config error handler if provided
+					configDeleteOptions.onError?.(_err, _id, context);
+					// Call user's error handler if provided
+					options?.onError?.(_err, _id, context);
+				},
+				onSuccess: (_data, id, _context) => {
+					// Invalidate to refetch and ensure consistency
+					qc.invalidateQueries({ queryKey: queryKey.all });
+					// Also remove the detail query for this specific item
+					qc.removeQueries({ queryKey: queryKey.detail(id) });
+					// Call config success handler if provided
+					configDeleteOptions.onSuccess?.(_data, id, _context);
+					// Call user's success handler if provided
+					options?.onSuccess?.(_data, id, _context);
+				},
+				// Spread other config options (excluding callbacks we've already handled)
+				...Object.fromEntries(
+					Object.entries(configDeleteOptions).filter(
+						([key]) => !["onMutate", "onError", "onSuccess"].includes(key),
+					),
+				),
 			});
 		},
 

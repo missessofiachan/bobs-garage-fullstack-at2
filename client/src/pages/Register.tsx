@@ -12,7 +12,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "../components/ui/ToastProvider";
 import { useAuth } from "../hooks/useAuth";
 import { registerSchema } from "../lib/validation";
-import { formatErrorMessage } from "../utils/errorFormatter";
+import { formatErrorMessageWithId } from "../utils/errorFormatter";
 
 export default function Register() {
 	const [email, setEmail] = useState("");
@@ -66,12 +66,12 @@ export default function Register() {
 				notify({ body: "Please check the form for errors", variant: "danger" });
 			} else {
 				// Handle server errors
-				const errorMessage = formatError(error);
+				const { message: errorMessage, requestId } = formatErrorMessageWithId(error);
 				setErr(errorMessage);
 				const fieldErrs = extractFieldErrors(error);
 				setFieldErrors(fieldErrs);
 				// Show formatted error in toast
-				notify({ body: errorMessage, variant: "danger" });
+				notify({ body: errorMessage, variant: "danger", requestId });
 			}
 		} finally {
 			setLoading(false);

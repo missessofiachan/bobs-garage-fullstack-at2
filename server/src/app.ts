@@ -63,7 +63,15 @@ export function createApp(): Application {
 	// Apply ETag for conditional requests
 	applyETag(app);
 
-	app.use(express.json({ limit: env.BODY_PARSER_LIMIT }));
+	// JSON body parser - skip for multipart/form-data (handled by multer)
+	app.use((req, res, next) => {
+		const contentType = req.get("content-type") || "";
+		// Skip JSON parsing for multipart/form-data requests (file uploads)
+		if (contentType.includes("multipart/form-data")) {
+			return next();
+		}
+		express.json({ limit: env.BODY_PARSER_LIMIT })(req, res, next);
+	});
 
 	// Input sanitization middleware - sanitize all user inputs to prevent XSS
 	// Must be after body parser but before routes

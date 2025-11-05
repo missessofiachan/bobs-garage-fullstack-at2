@@ -12,7 +12,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "../components/ui/ToastProvider";
 import { useAuth } from "../hooks/useAuth";
 import { loginSchema } from "../lib/validation";
-import { formatErrorMessage } from "../utils/errorFormatter";
+import { formatErrorMessageWithId } from "../utils/errorFormatter";
 
 export default function Login() {
 	const [email, setEmail] = useState("");
@@ -39,9 +39,9 @@ export default function Login() {
 			});
 			nav("/");
 		} catch (error: any) {
-			const errorMessage = formatErrorMessage(error);
+			const { message: errorMessage, requestId } = formatErrorMessageWithId(error);
 			setErr(errorMessage);
-			notify({ body: errorMessage, variant: "danger" });
+			notify({ body: errorMessage, variant: "danger", requestId });
 		} finally {
 			setLoading(false);
 		}

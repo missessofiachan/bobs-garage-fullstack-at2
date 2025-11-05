@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Button, Form, Image, Table } from "react-bootstrap";
 import Loading from "../../components/ui/Loading";
+import ConfirmDialog from "../../components/ui/ConfirmDialog";
+import { useToast } from "../../components/ui/ToastProvider";
 import {
 	useCreateService,
 	useDeleteService,
@@ -9,11 +11,31 @@ import {
 	useUploadServiceImage,
 } from "../../hooks/useServices";
 import { getImageSrc } from "../../utils/imagePlaceholder";
+import { getImageBaseUrl } from "../../utils/api";
+import { formatErrorMessageWithId } from "../../utils/errorFormatter";
 
 export default function ServicesAdmin() {
 	const { data, isLoading, error } = useServices();
+	const { notify } = useToast();
 	const createService = useCreateService();
-	const deleteService = useDeleteService();
+	const deleteService = useDeleteService({
+		onSuccess: () => {
+			notify({
+				title: "Success",
+				body: "Service deleted successfully",
+				variant: "success",
+			});
+		},
+		onError: (err) => {
+			const { message, requestId } = formatErrorMessageWithId(err);
+			notify({
+				title: "Delete Failed",
+				body: message,
+				variant: "danger",
+				requestId,
+			});
+		},
+	});
 	const updateService = useUpdateService();
 	const uploadImage = useUploadServiceImage();
 	const [name, setName] = useState("");
@@ -21,6 +43,7 @@ export default function ServicesAdmin() {
 	const [description, setDescription] = useState("");
 	const [progress, setProgress] = useState<Record<number, number>>({});
 	const [preview, setPreview] = useState<Record<number, string>>({});
+	const [deleteConfirm, setDeleteConfirm] = useState<{ id: number; name: string } | null>(null);
 
 	const onCreate = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -33,6 +56,17 @@ export default function ServicesAdmin() {
 		setName("");
 		setPrice(0);
 		setDescription("");
+	};
+
+	const handleDeleteClick = (id: number, serviceName: string) => {
+		setDeleteConfirm({ id, name: serviceName });
+	};
+
+	const handleDeleteConfirm = () => {
+		if (deleteConfirm) {
+			deleteService.mutate(deleteConfirm.id);
+			setDeleteConfirm(null);
+		}
 	};
 
 	if (isLoading) return <Loading message="Loading services…" />;
@@ -54,7 +88,7 @@ export default function ServicesAdmin() {
 				</thead>
 				<tbody>
 					{(data ?? []).map((s) => {
-						const imageSrc = getImageSrc(s.imageUrl);
+						const imageSrc = getImageSrc(s.imageUrl, getImageBaseUrl());
 						return (
 							<tr key={s.id}>
 								<td>{s.id}</td>
@@ -132,8 +166,13 @@ export default function ServicesAdmin() {
 									/>
 								</td>
 								<td className="d-flex gap-2">
-									<Button size="sm" variant="danger" onClick={() => deleteService.mutate(s.id)}>
-										Delete
+									<Button
+										size="sm"
+										variant="danger"
+										onClick={() => handleDeleteClick(s.id, s.name)}
+										disabled={deleteService.isPending}
+									>
+										{deleteService.isPending ? "Deleting..." : "Delete"}
 									</Button>
 								</td>
 							</tr>
@@ -175,6 +214,21 @@ export default function ServicesAdmin() {
 				</Form.Group>
 				<Button type="submit">Create</Button>
 			</Form>
+
+			<ConfirmDialog
+				open={deleteConfirm !== null}
+				onOpenChange={(open) => {
+					if (!open) {
+						setDeleteConfirm(null);
+					}
+				}}
+				title="Delete Service"
+				description={`Are you sure you want to delete "${deleteConfirm?.name}"? This action cannot be undone.`}
+				confirmLabel="Delete"
+				cancelLabel="Cancel"
+				variant="danger"
+				onConfirm={handleDeleteConfirm}
+			/>
 		</div>
 	);
 }

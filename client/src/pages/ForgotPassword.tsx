@@ -12,6 +12,7 @@ import { Link } from "react-router-dom";
 import api from "../api/axios";
 import { useToast } from "../components/ui/ToastProvider";
 import usePageTitle from "../hooks/usePageTitle";
+import { formatErrorMessageWithId } from "../utils/errorFormatter";
 
 export default function ForgotPassword() {
 	usePageTitle("Forgot Password");
@@ -51,12 +52,11 @@ export default function ForgotPassword() {
 				variant: "success",
 			});
 		} catch (error: any) {
-			const errorMessage =
-				error?.response?.data?.message ||
-				error?.message ||
-				"Failed to send reset email. Please try again.";
+			const { message: errorMessage, requestId } = formatErrorMessageWithId(
+				error || new Error("Failed to send reset email. Please try again."),
+			);
 			setErr(errorMessage);
-			notify({ body: errorMessage, variant: "danger" });
+			notify({ body: errorMessage, variant: "danger", requestId });
 		} finally {
 			setLoading(false);
 		}

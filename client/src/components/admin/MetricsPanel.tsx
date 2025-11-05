@@ -19,6 +19,12 @@ function formatPercentage(num: number): string {
 	return `${(num * 100).toFixed(1)}%`;
 }
 
+function formatDuration(seconds: number): string {
+	if (seconds < 0.001) return `${(seconds * 1000).toFixed(2)}ms`;
+	if (seconds < 1) return `${(seconds * 1000).toFixed(0)}ms`;
+	return `${seconds.toFixed(3)}s`;
+}
+
 export default function MetricsPanel() {
 	const { data: metrics, isLoading, error } = useMetrics();
 
@@ -124,6 +130,118 @@ export default function MetricsPanel() {
 							</div>
 						</div>
 					</Col>
+
+					{/* HTTP Response Times */}
+					{metrics.httpRequestDuration.average > 0 && (
+						<Col md={6}>
+							<div className="mb-3">
+								<strong className="d-block mb-2">Response Times</strong>
+								<div className="mb-2">
+									<div className="d-flex justify-content-between">
+										<span>Average</span>
+										<strong>{formatDuration(metrics.httpRequestDuration.average)}</strong>
+									</div>
+								</div>
+								<div className="mb-2">
+									<div className="d-flex justify-content-between">
+										<span>P95</span>
+										<strong className={
+											metrics.httpRequestDuration.p95 > 1 ? "text-danger" :
+											metrics.httpRequestDuration.p95 > 0.5 ? "text-warning" :
+											"text-success"
+										}>
+											{formatDuration(metrics.httpRequestDuration.p95)}
+										</strong>
+									</div>
+								</div>
+								<div className="mb-2">
+									<div className="d-flex justify-content-between">
+										<span>P99</span>
+										<strong className={
+											metrics.httpRequestDuration.p99 > 1 ? "text-danger" :
+											metrics.httpRequestDuration.p99 > 0.5 ? "text-warning" :
+											"text-success"
+										}>
+											{formatDuration(metrics.httpRequestDuration.p99)}
+										</strong>
+									</div>
+								</div>
+							</div>
+						</Col>
+					)}
+
+					{/* Database Metrics */}
+					{metrics.database.totalQueries > 0 && (
+						<Col md={6}>
+							<div className="mb-3">
+								<strong className="d-block mb-2">Database Queries</strong>
+								<div className="mb-2">
+									<div className="d-flex justify-content-between">
+										<span>Total Queries</span>
+										<strong>{formatNumber(metrics.database.totalQueries)}</strong>
+									</div>
+								</div>
+								{metrics.database.averageDuration > 0 && (
+									<div className="mb-2">
+										<div className="d-flex justify-content-between">
+											<span>Avg Duration</span>
+											<strong className={
+												metrics.database.averageDuration > 1 ? "text-danger" :
+												metrics.database.averageDuration > 0.5 ? "text-warning" :
+												"text-success"
+											}>
+												{formatDuration(metrics.database.averageDuration)}
+											</strong>
+										</div>
+									</div>
+								)}
+								{metrics.database.slowQueryCount > 0 && (
+									<div className="mb-2">
+										<div className="d-flex justify-content-between">
+											<span>Slow Queries (&gt;1s)</span>
+											<strong className="text-danger">
+												{formatNumber(metrics.database.slowQueryCount)}
+											</strong>
+										</div>
+									</div>
+								)}
+								{Object.keys(metrics.database.byOperation).length > 0 && (
+									<div className="mb-2">
+										<small className="text-muted d-block mb-1">By Operation:</small>
+										<div className="d-flex flex-wrap gap-1">
+											{Object.entries(metrics.database.byOperation)
+												.sort(([, a], [, b]) => b - a)
+												.slice(0, 3)
+												.map(([op, count]) => (
+													<span key={op} className="badge bg-secondary">
+														{op}: {formatNumber(count)}
+													</span>
+												))}
+										</div>
+									</div>
+								)}
+							</div>
+						</Col>
+					)}
+
+					{/* HTTP Methods */}
+					{Object.keys(metrics.httpRequests.byMethod).length > 0 && (
+						<Col xs={12}>
+							<strong className="d-block mb-2">HTTP Methods</strong>
+							<Row className="g-2">
+								{Object.entries(metrics.httpRequests.byMethod)
+									.sort(([, a], [, b]) => b - a)
+									.map(([method, count]) => (
+										<Col xs={6} sm={4} md={2} key={method}>
+											<div className="text-center p-2 border rounded">
+												<div className="h6 mb-0">{method}</div>
+												<small className="text-muted">{formatNumber(count)}</small>
+											</div>
+										</Col>
+									))}
+							</Row>
+						</Col>
+					)}
 
 					{/* Status Codes */}
 					{Object.keys(metrics.httpRequests.byStatus).length > 0 && (

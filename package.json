@@ -44,7 +44,6 @@
 		"test:watch": "concurrently \"yarn workspace server test:watch\" \"yarn workspace client test:watch\"",
 		"seed": "yarn workspace server seed",
 		"clean": "yarn workspace server clean && yarn workspace client clean || true",
-		"prepare": "husky",
 		"update:dependencies": "yarn upgrade-interactive --latest"
 	},
 	"devDependencies": {
@@ -62,7 +61,6 @@
 		]
 	},
 	"dependencies": {
-		"@types/dompurify": "^3.0.5",
 		"dompurify": "^3.3.0",
 		"express-validator": "^7.3.0",
 		"jsdom": "^27.0.1"

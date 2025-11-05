@@ -12,6 +12,7 @@ import api from "../api/axios";
 import type { UserMeDTO } from "../api/types";
 import Loading from "../components/ui/Loading";
 import { useToast } from "../components/ui/ToastProvider";
+import { formatErrorMessageWithId } from "../utils/errorFormatter";
 import { useFavorites } from "../hooks/useFavorites";
 import usePageTitle from "../hooks/usePageTitle";
 
@@ -45,8 +46,8 @@ export default function Profile() {
 			setMe(data);
 			notify({ title: "Success", body: "Profile updated successfully", variant: "success" });
 		} catch (err: any) {
-			const message = err.response?.data?.message || err.message || "Failed to update profile";
-			notify({ body: message, variant: "danger" });
+			const { message, requestId } = formatErrorMessageWithId(err);
+			notify({ body: message, variant: "danger", requestId });
 		} finally {
 			setSaving(false);
 		}

@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 import { Button } from "react-bootstrap";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { useToast } from "../components/ui/ToastProvider";
+import { formatErrorMessageWithId } from "../utils/errorFormatter";
 import { useFavorites } from "../hooks/useFavorites";
 
 export default function FavouriteButton({ id }: { id: number }) {
@@ -25,8 +26,8 @@ export default function FavouriteButton({ id }: { id: number }) {
 				notify({ body: "Added to favorites", variant: "success" });
 			}
 		} catch (err: any) {
-			const message = err.response?.data?.message || "Failed to update favorite";
-			notify({ body: message, variant: "danger" });
+			const { message, requestId } = formatErrorMessageWithId(err);
+			notify({ body: message, variant: "danger", requestId });
 		}
 	};
 

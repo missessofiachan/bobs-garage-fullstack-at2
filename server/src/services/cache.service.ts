@@ -254,12 +254,17 @@ class CacheService {
 	 */
 	async invalidateResource(type: string, id?: string | number): Promise<void> {
 		if (!this.backend) return;
-		if (id) {
-			await this.del(`${type}:${id}`);
-			await this.delPattern(`${type}:list:*`);
-		} else {
-			await this.delPattern(`${type}:*`);
+
+		const tasks: Promise<void>[] = [];
+		if (typeof id !== "undefined") {
+			tasks.push(this.del(`${type}:${id}`));
+			tasks.push(this.del(`${type}:/${id}`));
 		}
+
+		tasks.push(this.delPattern(`${type}:list:*`));
+		tasks.push(this.delPattern(`${type}:/*`));
+
+		await Promise.all(tasks);
 	}
 
 	async flush(): Promise<void> {

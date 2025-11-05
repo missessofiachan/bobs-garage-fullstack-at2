@@ -6,6 +6,7 @@ export type ToastMsg = {
 	title?: string;
 	body: string;
 	variant?: string;
+	requestId?: string;
 };
 
 type ToastCtx = { notify: (msg: Omit<ToastMsg, "id">) => void };
@@ -37,7 +38,25 @@ export default function ToastProvider({ children }: { children: React.ReactNode 
 								<strong className="me-auto">{t.title}</strong>
 							</Toast.Header>
 						)}
-						<Toast.Body>{t.body}</Toast.Body>
+						<Toast.Body>
+							{t.body}
+							{t.requestId && (
+								<div className="mt-2">
+									<small className="text-muted d-flex align-items-center gap-2">
+										<span>Request ID: <code className="small">{t.requestId.substring(0, 8)}...</code></span>
+										<button
+											className="btn btn-link btn-sm p-0 text-decoration-none"
+											onClick={async () => {
+												await navigator.clipboard.writeText(t.requestId!);
+											}}
+											title="Copy full request ID"
+										>
+											📋
+										</button>
+									</small>
+								</div>
+							)}
+						</Toast.Body>
 					</Toast>
 				))}
 			</ToastContainer>

@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Button, Form, Image, Table } from "react-bootstrap";
 import Loading from "../../components/ui/Loading";
+import ConfirmDialog from "../../components/ui/ConfirmDialog";
+import { useToast } from "../../components/ui/ToastProvider";
 import {
 	useCreateStaff,
 	useDeleteStaff,
@@ -8,21 +10,53 @@ import {
 	useUploadStaffPhoto,
 } from "../../hooks/useStaff";
 import { getImageSrc } from "../../utils/imagePlaceholder";
+import { getImageBaseUrl } from "../../utils/api";
+import { formatErrorMessageWithId } from "../../utils/errorFormatter";
 
 export default function StaffAdmin() {
 	const { data, isLoading, error } = useStaffList();
+	const { notify } = useToast();
 	const createStaff = useCreateStaff();
-	const deleteStaff = useDeleteStaff();
+	const deleteStaff = useDeleteStaff({
+		onSuccess: () => {
+			notify({
+				title: "Success",
+				body: "Staff member deleted successfully",
+				variant: "success",
+			});
+		},
+		onError: (err) => {
+			const { message, requestId } = formatErrorMessageWithId(err);
+			notify({
+				title: "Delete Failed",
+				body: message,
+				variant: "danger",
+				requestId,
+			});
+		},
+	});
 	const uploadPhoto = useUploadStaffPhoto();
 	const [name, setName] = useState("");
 	const [role, setRole] = useState("Staff");
 	const [uploadError, setUploadError] = useState<string | null>(null);
+	const [deleteConfirm, setDeleteConfirm] = useState<{ id: number; name: string } | null>(null);
 
 	const onCreate = async (e: React.FormEvent) => {
 		e.preventDefault();
 		await createStaff.mutateAsync({ name, role, active: true });
 		setName("");
 		setRole("Staff");
+	};
+
+	const handleDeleteClick = (id: number, staffName: string) => {
+		setDeleteConfirm({ id, name: staffName });
+	};
+
+	const handleDeleteConfirm = () => {
+		if (deleteConfirm) {
+			deleteStaff.mutate(deleteConfirm.id);
+			setDeleteConfirm(null);
+		}
 	};
 
 	if (isLoading) return <Loading message="Loading staff…" />;
@@ -42,7 +76,7 @@ export default function StaffAdmin() {
 				</thead>
 				<tbody>
 					{(data ?? []).map((m) => {
-						const photoSrc = getImageSrc(m.photoUrl);
+						const photoSrc = getImageSrc(m.photoUrl, getImageBaseUrl());
 						return (
 							<tr key={m.id}>
 								<td>{m.id}</td>
@@ -84,8 +118,13 @@ export default function StaffAdmin() {
 								<td>{m.name}</td>
 								<td>{m.role}</td>
 								<td className="d-flex gap-2">
-									<Button size="sm" variant="danger" onClick={() => deleteStaff.mutate(m.id)}>
-										Delete
+									<Button
+										size="sm"
+										variant="danger"
+										onClick={() => handleDeleteClick(m.id, m.name)}
+										disabled={deleteStaff.isPending}
+									>
+										{deleteStaff.isPending ? "Deleting..." : "Delete"}
 									</Button>
 								</td>
 							</tr>
@@ -111,6 +150,21 @@ export default function StaffAdmin() {
 				</Form.Group>
 				<Button type="submit">Create</Button>
 			</Form>
+
+			<ConfirmDialog
+				open={deleteConfirm !== null}
+				onOpenChange={(open) => {
+					if (!open) {
+						setDeleteConfirm(null);
+					}
+				}}
+				title="Delete Staff Member"
+				description={`Are you sure you want to delete "${deleteConfirm?.name}"? This action cannot be undone.`}
+				confirmLabel="Delete"
+				cancelLabel="Cancel"
+				variant="danger"
+				onConfirm={handleDeleteConfirm}
+			/>
 		</div>
 	);
 }

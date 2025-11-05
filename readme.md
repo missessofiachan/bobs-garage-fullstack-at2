@@ -594,6 +594,7 @@ ISC
 - [Postman Collection Documentation](server/postman/README.md)
 - [Client README](client/README.md)
 - [CI/CD Configuration](.github/workflows/ci.yml)
+- [Frontend/Backend Features Integration](FRONTEND_BACKEND_FEATURES.md) - Status of backend features integrated into the frontend
 
 ## 👥 Support
 
