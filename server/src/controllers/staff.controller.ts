@@ -8,6 +8,7 @@ import type { Request, Response } from "express";
 import { z } from "zod";
 import { Staff } from "../db/models/Staff.js";
 import { invalidateCache } from "../middleware/cache.js";
+import { logCreate, logDelete, logUpdate, logUpload } from "../services/audit.service.js";
 import {
 	deleteOldUpload,
 	generatePublicUrl,
@@ -137,6 +138,9 @@ export async function createStaff(req: Request, res: Response) {
 		// Invalidate cache for staff list
 		await invalidateCache("staff");
 
+		// Log audit event
+		await logCreate(req, "staff", s.id, `Created staff member: ${s.name}`, s.toJSON());
+
 		res.status(201).json(s);
 	} catch (err) {
 		handleControllerError(err, res, {
@@ -168,10 +172,15 @@ export async function updateStaff(req: Request, res: Response) {
 		const s = await Staff.findByPk(id);
 		if (!s) return sendNotFound(res);
 
+		const previousState = s.toJSON();
 		await s.update(body);
+		const newState = s.toJSON();
 
 		// Invalidate cache for this staff member and list
 		await invalidateCache("staff", id);
+
+		// Log audit event
+		await logUpdate(req, "staff", id, `Updated staff member: ${s.name}`, previousState, newState);
 
 		res.json(s);
 	} catch (err) {
@@ -202,10 +211,14 @@ export async function deleteStaff(req: Request, res: Response) {
 		const s = await Staff.findByPk(id);
 		if (!s) return sendNotFound(res);
 
+		const previousState = s.toJSON();
 		await s.destroy();
 
 		// Invalidate cache for this staff member and list
 		await invalidateCache("staff", id);
+
+		// Log audit event
+		await logDelete(req, "staff", id, `Deleted staff member: ${s.name}`, previousState);
 
 		res.status(204).send();
 	} catch (err) {
@@ -257,6 +270,9 @@ export async function uploadStaffPhoto(req: Request, res: Response) {
 
 		// Invalidate cache for this staff member
 		await invalidateCache("staff", id);
+
+		// Log audit event
+		await logUpload(req, "staff", id, `Uploaded photo for staff member: ${s.name}`);
 
 		res.status(200).json({ id: s.id, photoUrl: publicUrl });
 	} catch (err) {

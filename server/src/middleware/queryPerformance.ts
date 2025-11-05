@@ -78,7 +78,10 @@ export function requestPerformanceMiddleware(
 		}
 
 		// Call original end
-		return originalEnd(chunk, encoding, cb);
+		if (encoding !== undefined) {
+			return originalEnd(chunk, encoding as BufferEncoding, cb);
+		}
+		return originalEnd(chunk, cb);
 	};
 
 	// Log response time when response finishes (for logging only, not header setting)

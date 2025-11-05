@@ -12,6 +12,7 @@ import { Op } from "sequelize";
 import { z } from "zod";
 import { Service } from "../db/models/Service.js";
 import { invalidateCache } from "../middleware/cache.js";
+import { logCreate, logDelete, logUpdate, logUpload } from "../services/audit.service.js";
 import {
 	deleteOldUpload,
 	generatePublicUrl,
@@ -79,7 +80,17 @@ export async function listServices(req: Request, res: Response) {
 		const where: Record<string, unknown> = {};
 		if (typeof active !== "undefined")
 			where.published = ["1", "true", "yes"].includes(String(active).toLowerCase());
-		if (q) where.name = { [Op.like]: `%${q}%` };
+
+		// Full-text search if query provided
+		// Uses LIKE for fuzzy matching (full-text index available via migration for better performance)
+		if (q) {
+			const searchQuery = String(q).trim();
+			(where as Record<string | symbol, unknown>)[Op.or] = [
+				{ name: { [Op.like]: `%${searchQuery}%` } },
+				{ description: { [Op.like]: `%${searchQuery}%` } },
+			];
+		}
+
 		if (minPrice || maxPrice) {
 			const priceWhere: Record<string, unknown> = {};
 			if (minPrice) priceWhere[Op.gte as unknown as string] = Number(minPrice);
@@ -169,6 +180,9 @@ export async function createService(req: Request, res: Response) {
 		// Invalidate cache for services list
 		await invalidateCache("services");
 
+		// Log audit event
+		await logCreate(req, "service", s.id, `Created service: ${s.name}`, s.toJSON());
+
 		res.status(201).json(s);
 	} catch (err) {
 		handleControllerError(err, res, {
@@ -200,10 +214,15 @@ export async function updateService(req: Request, res: Response) {
 		const s = await Service.findByPk(id);
 		if (!s) return sendNotFound(res);
 
+		const previousState = s.toJSON();
 		await s.update(body);
+		const newState = s.toJSON();
 
 		// Invalidate cache for this service and list
 		await invalidateCache("services", id);
+
+		// Log audit event
+		await logUpdate(req, "service", id, `Updated service: ${s.name}`, previousState, newState);
 
 		res.json(s);
 	} catch (err) {
@@ -234,10 +253,14 @@ export async function deleteService(req: Request, res: Response) {
 		const s = await Service.findByPk(id);
 		if (!s) return sendNotFound(res);
 
+		const previousState = s.toJSON();
 		await s.destroy();
 
 		// Invalidate cache for this service and list
 		await invalidateCache("services", id);
+
+		// Log audit event
+		await logDelete(req, "service", id, `Deleted service: ${s.name}`, previousState);
 
 		res.status(204).send();
 	} catch (err) {
@@ -289,6 +312,9 @@ export async function uploadServiceImage(req: Request, res: Response) {
 
 		// Invalidate cache for this service
 		await invalidateCache("services", id);
+
+		// Log audit event
+		await logUpload(req, "service", id, `Uploaded image for service: ${s.name}`);
 
 		res.status(200).json({ id: s.id, imageUrl: publicUrl });
 	} catch (err) {

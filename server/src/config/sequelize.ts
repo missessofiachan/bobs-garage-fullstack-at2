@@ -6,6 +6,7 @@
 
 // Sequelize initialization with error handling and dynamic model loading
 import { Sequelize } from "sequelize-typescript";
+import { AuditLog } from "../db/models/AuditLog.js";
 import { Favorite } from "../db/models/Favorite.js";
 import { Service } from "../db/models/Service.js";
 import { Staff } from "../db/models/Staff.js";
@@ -26,7 +27,7 @@ export function createSequelizeInstance() {
 		host: env.DATABASE_HOST || "localhost",
 		port: env.DATABASE_PORT || 3306,
 		dialect: "mysql",
-		models: [User, Service, Staff, Favorite], // Explicit model registration
+		models: [User, Service, Staff, Favorite, AuditLog], // Explicit model registration
 		logging: env.NODE_ENV === "development" ? console.log : false,
 		pool: {
 			min: env.DATABASE_POOL_MIN || 0,

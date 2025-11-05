@@ -22,9 +22,10 @@ import {
 	requestPerformanceMiddleware,
 	setupQueryPerformanceMonitoring,
 } from "./middleware/queryPerformance.js";
-import { apiLimiter } from "./middleware/rateLimit.js";
+import { perUserLimiter } from "./middleware/rateLimit.js";
 import { requestIdMiddleware } from "./middleware/requestId.js";
 import { requestResponseLoggingMiddleware } from "./middleware/requestResponseLogging.js";
+import { sanitizeInput } from "./middleware/sanitize.js";
 import { applySecurity } from "./middleware/security.js";
 import { ROOT_UPLOAD_DIR_ABS, UPLOADS_PUBLIC_PATH } from "./middleware/upload.js";
 import v1Routes from "./routes/v1/index.js";
@@ -64,6 +65,10 @@ export function createApp(): Application {
 
 	app.use(express.json({ limit: env.BODY_PARSER_LIMIT }));
 
+	// Input sanitization middleware - sanitize all user inputs to prevent XSS
+	// Must be after body parser but before routes
+	app.use(sanitizeInput);
+
 	// Serve uploaded files as static content
 	app.use(
 		UPLOADS_PUBLIC_PATH,
@@ -99,11 +104,12 @@ export function createApp(): Application {
 	}
 
 	// API versioning - v1 routes (primary)
-	app.use("/api/v1", apiLimiter, v1Routes);
+	// Use per-user rate limiting: authenticated users get higher limits, unauthenticated users use IP-based limits
+	app.use("/api/v1", perUserLimiter, v1Routes);
 
 	// Legacy API routes (backward compatibility - mount same routes at /api)
 	// This ensures /api/* still works for existing frontend clients
-	app.use("/api", apiLimiter, v1Routes);
+	app.use("/api", perUserLimiter, v1Routes);
 
 	app.get("/db-status", async (_req, res) => {
 		try {

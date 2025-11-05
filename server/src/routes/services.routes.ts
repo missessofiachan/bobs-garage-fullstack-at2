@@ -8,7 +8,7 @@ import { Router, type Router as RouterType } from "express";
 import * as Svc from "../controllers/service.controller.js";
 import { requireAdmin, requireAuth } from "../middleware/auth.js";
 import { cacheMiddleware } from "../middleware/cache.js";
-import { serviceImageUpload } from "../middleware/upload.js";
+import { serviceImageUpload, validateFileContent } from "../middleware/upload.js";
 import { validateBody } from "../middleware/validate.js";
 import servicesSchemas from "../validation/services.schemas.js";
 
@@ -37,6 +37,7 @@ r.post(
 	requireAuth,
 	requireAdmin,
 	serviceImageUpload.single("image"),
+	validateFileContent,
 	Svc.uploadServiceImage,
 );
 

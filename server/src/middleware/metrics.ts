@@ -37,7 +37,10 @@ export function metricsMiddleware(req: Request, res: Response, next: NextFunctio
 			httpErrorsTotal.inc({ method, route, status_code: statusCode });
 		}
 
-		return originalEnd(chunk, encoding, cb);
+		if (encoding !== undefined) {
+			return originalEnd(chunk, encoding as BufferEncoding, cb);
+		}
+		return originalEnd(chunk, cb);
 	};
 
 	next();

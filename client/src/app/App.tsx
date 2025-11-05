@@ -40,6 +40,7 @@ const Dashboard = lazy(() => import("../pages/Admin/Dashboard"));
 const ServicesAdmin = lazy(() => import("../pages/Admin/ServicesAdmin"));
 const StaffAdmin = lazy(() => import("../pages/Admin/StaffAdmin"));
 const UsersAdmin = lazy(() => import("../pages/Admin/UsersAdmin"));
+const AuditLogs = lazy(() => import("../pages/Admin/AuditLogs"));
 const Profile = lazy(() => import("../pages/Profile"));
 const Settings = lazy(() => import("../pages/Settings"));
 const Favorites = lazy(() => import("../pages/Favorites"));
@@ -206,6 +207,14 @@ export default function App() {
 								element={
 									<AdminRoute>
 										<UsersAdmin />
+									</AdminRoute>
+								}
+							/>
+							<Route
+								path="/admin/audit-logs"
+								element={
+									<AdminRoute>
+										<AuditLogs />
 									</AdminRoute>
 								}
 							/>

@@ -18,6 +18,7 @@ import { setServicesSort, setServicesView } from "../slices/preferences.slice";
 import { getImageBaseUrl } from "../utils/api";
 import { formatCurrency } from "../utils/formatters";
 import { getImageSrc, IMAGE_PLACEHOLDER } from "../utils/imagePlaceholder";
+import { highlightSearch } from "../utils/searchHighlight";
 
 const fadeInUp = {
 	initial: { opacity: 0, y: 20 },
@@ -98,10 +99,10 @@ export default function Services() {
 								<MdSearch />
 							</InputGroup.Text>
 							<Form.Control
-								placeholder="Search by name..."
+								placeholder="Search by name or description..."
 								value={q}
 								onChange={(e) => setQ(e.target.value)}
-								aria-label="Filter services by name"
+								aria-label="Search services by name or description"
 							/>
 						</InputGroup>
 					</Col>
@@ -213,7 +214,9 @@ export default function Services() {
 													</div>
 												</div>
 												<Card.Body>
-													<Card.Title className="mb-2">{service.name}</Card.Title>
+													<Card.Title className="mb-2">
+														{q ? highlightSearch(service.name, q) : service.name}
+													</Card.Title>
 													<div className="fw-bold text-primary fs-5 mb-2">
 														{formatCurrency(service.price)}
 													</div>
@@ -227,7 +230,7 @@ export default function Services() {
 																overflow: "hidden",
 															}}
 														>
-															{service.description}
+															{q ? highlightSearch(service.description, q) : service.description}
 														</Card.Text>
 													)}
 												</Card.Body>
@@ -280,10 +283,12 @@ export default function Services() {
 													/>
 												</td>
 												<td>
-													<strong>{service.name}</strong>
+													<strong>{q ? highlightSearch(service.name, q) : service.name}</strong>
 												</td>
 												<td className="fw-bold text-primary">{formatCurrency(service.price)}</td>
-												<td className="text-muted">{service.description}</td>
+												<td className="text-muted">
+													{q ? highlightSearch(service.description || "", q) : service.description}
+												</td>
 												<td className="text-center">
 													<FavouriteButton id={service.id} />
 												</td>

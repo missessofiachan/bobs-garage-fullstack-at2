@@ -51,10 +51,10 @@ export function sendErrorResponse(
 		error: {
 			code,
 			message,
-			requestId,
+			...(requestId !== undefined ? { requestId } : {}),
 			timestamp: new Date().toISOString(),
-			path: res.req?.path,
-			...(details && { details }),
+			...(res.req?.path !== undefined ? { path: res.req.path } : {}),
+			...(details !== undefined ? { details } : {}),
 		},
 	};
 

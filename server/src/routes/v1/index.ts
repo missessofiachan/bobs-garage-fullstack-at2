@@ -6,6 +6,7 @@
 
 import { Router } from "express";
 import * as Admin from "../../controllers/admin.controller.js";
+import * as Audit from "../../controllers/audit.controller.js";
 import * as Auth from "../../controllers/auth.controller.js";
 import * as Staff from "../../controllers/staff.controller.js";
 import * as AdminUsers from "../../controllers/users.admin.controller.js";
@@ -41,6 +42,7 @@ r.use("/users/me/favorites", favoritesRouter);
 
 // Admin (with caching for metrics)
 r.get("/admin/metrics", requireAuth, requireAdmin, cacheMiddleware(60, "admin"), Admin.getMetrics);
+r.get("/admin/audit-logs", requireAuth, requireAdmin, Audit.getAuditLogs);
 r.get("/admin/users", requireAuth, requireAdmin, AdminUsers.listUsers);
 r.get("/admin/users/:id", requireAuth, requireAdmin, AdminUsers.getUserById);
 r.post("/admin/users", requireAuth, requireAdmin, AdminUsers.createUser);

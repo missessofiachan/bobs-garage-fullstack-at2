@@ -49,9 +49,10 @@ export const EnvSchema = z.object({
 
 	// Rate limiting
 	RATE_LIMIT_WINDOW_MS: z.coerce.number().default(60000), // 60 seconds
-	RATE_LIMIT_MAX: z.coerce.number().default(200), // Max requests per window (increased from 100)
+	RATE_LIMIT_MAX: z.coerce.number().default(200), // Max requests per window for unauthenticated users
 	RATE_LIMIT_AUTH_WINDOW_MS: z.coerce.number().default(60000), // Auth window (stricter)
 	RATE_LIMIT_AUTH_MAX: z.coerce.number().default(10), // Auth max requests (increased from 5)
+	RATE_LIMIT_AUTHENTICATED_MAX: z.coerce.number().default(500), // Max requests per window for authenticated users (higher limit)
 
 	// File uploads
 	UPLOAD_DIR: z.string().default("uploads"), // Root upload directory

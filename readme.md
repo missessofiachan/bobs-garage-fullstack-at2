@@ -1,26 +1,39 @@
 # Bob's Garage - Full Stack Application
 
-A modern full-stack web application for managing an auto repair shop, featuring user authentication, service management, staff profiles, favorites, and an admin dashboard. Built with React, TypeScript, Node.js, Express, and MySQL.
+A modern full-stack web application for managing an auto repair shop, featuring user authentication, service management, staff profiles, favorites, and an admin dashboard. Includes advanced features like audit logging, full-text search, Prometheus metrics, input sanitization, and comprehensive monitoring. Built with React, TypeScript, Node.js, Express, and MySQL.
 
 ## 🚀 Features
 
 ### Frontend (React + TypeScript)
 - **Public Pages**: Home, About, Services (with filtering and sorting)
+- **Advanced Search**: Full-text search with search term highlighting
 - **Authentication**: Login, Register with validation
 - **User Features**: Profile management, favorites system
-- **Admin Dashboard**: Comprehensive overview with metrics
+- **Admin Dashboard**: Comprehensive overview with metrics and system health
 - **Admin Management**: CRUD operations for Services, Staff, and Users
+- **Audit Logs**: View and filter admin action logs with search and date filtering
 - **Media Uploads**: Image uploads for services and staff photos
 - **Theme Support**: Light/Dark mode with trans pride color scheme
 - **Accessibility**: WCAG AA compliant with proper contrast ratios
 
 ### Backend (Node.js + Express)
-- **RESTful API**: Complete CRUD operations
+- **RESTful API**: Complete CRUD operations with API versioning (`/api/v1/`)
 - **Authentication**: JWT-based auth with refresh tokens (HttpOnly cookies)
-- **Database**: MySQL with Sequelize ORM
-- **File Uploads**: Multer-based image uploads with validation
-- **Security**: Helmet, CORS, rate limiting, input validation (Zod)
-- **Error Handling**: Comprehensive error handling and logging
+- **Database**: MySQL with Sequelize ORM and migrations
+- **Full-Text Search**: MySQL full-text indexes for fast service search
+- **File Uploads**: Multer-based image uploads with enhanced validation (magic bytes, MIME type checking)
+- **Security**: 
+  - Helmet, CORS, per-user rate limiting
+  - Input sanitization (XSS protection with DOMPurify)
+  - Structured error responses with request IDs
+  - Request ID tracking for distributed tracing
+- **Monitoring & Observability**:
+  - Prometheus metrics endpoint (`/metrics`)
+  - Query performance monitoring (slow query detection)
+  - Request/response logging (sanitized, configurable)
+  - Enhanced health checks with database, memory, and uptime status
+- **Audit Logging**: Comprehensive tracking of admin actions for compliance
+- **Error Handling**: Comprehensive error handling with error codes and timestamps
 
 ## 📋 Prerequisites
 
@@ -46,12 +59,18 @@ bobs-garage-fullstack-at2/
 ├── server/                 # Node.js backend application
 │   ├── src/
 │   │   ├── config/        # Configuration files
-│   │   ├── controllers/   # Route controllers
+│   │   ├── controllers/   # Route controllers (including audit.controller.ts)
 │   │   ├── db/            # Database models & migrations
+│   │   │   ├── models/    # Sequelize models (including AuditLog.ts)
+│   │   │   └── migrations/ # Database migrations
 │   │   ├── middleware/    # Express middleware
-│   │   ├── routes/        # API routes
-│   │   ├── services/      # Business logic
-│   │   ├── utils/         # Utility functions
+│   │   │   ├── sanitize.ts      # Input sanitization
+│   │   │   ├── metrics.ts       # Prometheus metrics
+│   │   │   ├── queryPerformance.ts # Query monitoring
+│   │   │   └── rateLimit.ts     # Per-user rate limiting
+│   │   ├── routes/        # API routes (v1 versioned)
+│   │   ├── services/      # Business logic (including audit.service.ts, metrics.service.ts)
+│   │   ├── utils/         # Utility functions (including sanitize.ts)
 │   │   └── validation/    # Zod schemas
 │   ├── docker-compose.yml # MySQL container setup
 │   └── package.json
@@ -143,6 +162,17 @@ BASE_URL=http://localhost:4000
 # File Uploads
 UPLOAD_DIR=uploads
 UPLOAD_MAX_SIZE=2097152
+
+# Monitoring & Observability
+METRICS_ENABLED=true              # Enable Prometheus metrics endpoint
+SLOW_QUERY_THRESHOLD_MS=1000     # Log queries slower than this (ms)
+DETAILED_LOGGING_ENABLED=false   # Enable detailed request/response logging
+LOG_LEVEL=info                    # Log level: error, warn, info, debug
+
+# Rate Limiting (Per-User)
+RATE_LIMIT_MAX=200                # Max requests per window for unauthenticated users
+RATE_LIMIT_AUTHENTICATED_MAX=500  # Max requests per window for authenticated users
+RATE_LIMIT_WINDOW_MS=60000        # Rate limit window in milliseconds
 ```
 
 #### Client Configuration
@@ -212,6 +242,10 @@ yarn workspace client dev
 - `yarn workspace server build` - Compile TypeScript to JavaScript
 - `yarn workspace server start` - Start production server
 - `yarn workspace server seed` - Seed the database
+- `yarn workspace server migrate` - Run pending database migrations
+- `yarn workspace server migrate:undo` - Rollback last migration
+- `yarn workspace server migrate:undo:all` - Rollback all migrations
+- `yarn workspace server migrate:status` - Check migration status
 - `yarn workspace server typecheck` - Type check only
 - `yarn workspace server test` - Run server tests
 
@@ -219,7 +253,8 @@ yarn workspace client dev
 
 ### Base URL
 
-- Development: `http://localhost:4000/api`
+- Development: `http://localhost:4000/api/v1` (or `/api` for backward compatibility)
+- All endpoints are versioned under `/api/v1/` with backward compatibility at `/api/`
 
 ### Authentication
 
@@ -233,48 +268,57 @@ The refresh token is stored in an HttpOnly cookie and is automatically sent with
 
 ### Endpoints
 
-#### Auth
-- `POST /api/auth/register` - Register a new user (first user becomes admin)
-- `POST /api/auth/login` - Login and receive access token
-- `POST /api/auth/refresh` - Refresh access token
+> **Note**: All endpoints are available at both `/api/v1/` (versioned) and `/api/` (backward compatibility). The documentation shows the versioned paths.
 
-#### Services
-- `GET /api/services` - List all services (public)
-- `GET /api/services/:id` - Get service by ID (public)
-- `POST /api/services` - Create service (admin only)
-- `PUT /api/services/:id` - Update service (admin only)
-- `DELETE /api/services/:id` - Delete service (admin only)
-- `POST /api/services/:id/image` - Upload service image (admin only)
+#### Auth
+- `POST /api/v1/auth/register` - Register a new user (first user becomes admin)
+- `POST /api/v1/auth/login` - Login and receive access token
+- `POST /api/v1/auth/refresh` - Refresh access token
+- `POST /api/v1/auth/logout` - Logout (clears refresh token cookie)
+
+#### Services (Enhanced Search)
+- `GET /api/v1/services` - List all services (public)
+  - Query params: `search` (full-text search), `published`, `sort`, `order`
+  - Full-text search uses MySQL full-text indexes for fast, relevant results
+- `GET /api/v1/services/:id` - Get service by ID (public)
+- `POST /api/v1/services` - Create service (admin only)
+- `PUT /api/v1/services/:id` - Update service (admin only)
+- `DELETE /api/v1/services/:id` - Delete service (admin only)
+- `POST /api/v1/services/:id/image` - Upload service image (admin only)
 
 #### Staff
-- `GET /api/staff` - List all staff (public)
-- `GET /api/staff/:id` - Get staff by ID (public)
-- `POST /api/staff` - Create staff member (admin only)
-- `PUT /api/staff/:id` - Update staff member (admin only)
-- `DELETE /api/staff/:id` - Delete staff member (admin only)
-- `POST /api/staff/:id/image` - Upload staff photo (admin only)
+- `GET /api/v1/staff` - List all staff (public)
+- `GET /api/v1/staff/:id` - Get staff by ID (public)
+- `POST /api/v1/staff` - Create staff member (admin only)
+- `PUT /api/v1/staff/:id` - Update staff member (admin only)
+- `DELETE /api/v1/staff/:id` - Delete staff member (admin only)
+- `POST /api/v1/staff/:id/image` - Upload staff photo (admin only)
 
 #### User Profile
-- `GET /api/users/me` - Get current user profile (auth required)
-- `PUT /api/users/me` - Update current user profile (auth required)
+- `GET /api/v1/users/me` - Get current user profile (auth required)
+- `PUT /api/v1/users/me` - Update current user profile (auth required)
 
 #### Favorites
-- `GET /api/users/me/favorites` - List user's favorites (auth required)
-- `POST /api/users/me/favorites/:serviceId` - Add favorite (auth required)
-- `GET /api/users/me/favorites/:serviceId` - Check if favorited (auth required)
-- `DELETE /api/users/me/favorites/:serviceId` - Remove favorite (auth required)
+- `GET /api/v1/users/me/favorites` - List user's favorites (auth required)
+- `POST /api/v1/users/me/favorites/:serviceId` - Add favorite (auth required)
+- `GET /api/v1/users/me/favorites/:serviceId` - Check if favorited (auth required)
+- `DELETE /api/v1/users/me/favorites/:serviceId` - Remove favorite (auth required)
 
 #### Admin
-- `GET /api/admin/metrics` - Get dashboard metrics (admin only)
-- `GET /api/admin/users` - List all users (admin only)
-- `GET /api/admin/users/:id` - Get user by ID (admin only)
-- `POST /api/admin/users` - Create user (admin only)
-- `PUT /api/admin/users/:id` - Update user (admin only)
-- `DELETE /api/admin/users/:id` - Delete user (admin only)
+- `GET /api/v1/admin/metrics` - Get dashboard metrics (admin only, cached)
+- `GET /api/v1/admin/audit-logs` - Get audit logs with filtering (admin only)
+  - Query params: `page`, `limit`, `userId`, `action`, `resource`, `startDate`, `endDate`
+- `GET /api/v1/admin/users` - List all users (admin only)
+- `GET /api/v1/admin/users/:id` - Get user by ID (admin only)
+- `POST /api/v1/admin/users` - Create user (admin only)
+- `PUT /api/v1/admin/users/:id` - Update user (admin only)
+- `DELETE /api/v1/admin/users/:id` - Delete user (admin only)
 
-#### Health
-- `GET /api/health` - API health check
+#### Health & Monitoring
+- `GET /health` - Enhanced health check with database, memory, cache, and uptime status
 - `GET /db-status` - Database connection status
+- `GET /metrics` - Prometheus metrics endpoint (when `METRICS_ENABLED=true`)
+  - Includes: HTTP request metrics, error rates, cache hit/miss rates, database query metrics
 
 ### Postman Collection
 
@@ -299,6 +343,100 @@ The application supports light and dark themes with a trans pride color scheme:
 - **Accessibility**: All colors meet WCAG AA contrast ratio requirements
 
 Theme preference is persisted in localStorage and can be toggled from the navigation bar.
+
+## 🔒 Security Features
+
+### Input Sanitization
+- **XSS Protection**: All user inputs are sanitized using DOMPurify (server-side)
+- **HTML Sanitization**: Removes dangerous HTML tags while preserving safe formatting
+- **File Upload Validation**: 
+  - Magic bytes (file signature) validation
+  - Strict MIME type checking
+  - File extension validation
+  - Content validation middleware
+
+### Rate Limiting
+- **Per-User Rate Limiting**: Different limits for authenticated vs unauthenticated users
+  - Authenticated users: 500 requests/minute (default)
+  - Unauthenticated users: 200 requests/minute (default)
+- **Auth Endpoint Protection**: Stricter limits on login/register endpoints (10 requests/minute)
+
+### Audit Logging
+- **Comprehensive Tracking**: All admin actions are logged with:
+  - User ID and email
+  - Action type (create, update, delete, upload, etc.)
+  - Resource type and ID
+  - Previous and new state (for updates)
+  - IP address and user agent
+  - Request ID for tracing
+- **Admin Audit Logs Endpoint**: View and filter audit logs with pagination and date filtering
+
+### Request Tracing
+- **Request ID**: Every request receives a unique `X-Request-ID` header
+- **Distributed Tracing**: Request IDs included in logs and error responses
+- **Performance Headers**: Response time included in `X-Response-Time` header
+
+## 📊 Monitoring & Observability
+
+### Prometheus Metrics
+When `METRICS_ENABLED=true`, the `/metrics` endpoint provides:
+- **HTTP Metrics**: Request counts, durations, error rates
+- **Cache Metrics**: Hit/miss rates by cache type
+- **Database Metrics**: Query counts and durations by operation/table
+- **System Metrics**: Memory usage, uptime
+
+### Query Performance Monitoring
+- **Slow Query Detection**: Logs queries taking longer than threshold (default: 1000ms)
+- **Request Performance**: Tracks and logs slow requests (>1s)
+- **Response Time Headers**: `X-Response-Time` header on all responses
+
+### Enhanced Logging
+- **Request/Response Logging**: Optional detailed logging with sensitive field redaction
+- **Structured Logging**: Winston logger with configurable log levels
+- **Production-Safe**: Detailed logging disabled by default, configurable via `DETAILED_LOGGING_ENABLED`
+
+### Health Checks
+- **Enhanced Health Endpoint**: `/health` provides:
+  - Database connection status
+  - Memory usage
+  - Cache status
+  - Uptime
+  - System information
+
+## 🗄️ Database Migrations
+
+The project uses Sequelize migrations for database schema management:
+
+### Running Migrations
+
+```bash
+# Run pending migrations
+yarn workspace server migrate
+
+# Rollback last migration
+yarn workspace server migrate:undo
+
+# Rollback all migrations
+yarn workspace server migrate:undo:all
+
+# Check migration status
+yarn workspace server migrate:status
+```
+
+### Migration Files
+
+- `20240101000001-create-audit-logs.js` - Creates audit_logs table
+- `20240101000002-add-fulltext-index-services.js` - Adds full-text search index on services
+
+Migrations are automatically run when the server starts in development mode.
+
+## 🔍 Full-Text Search
+
+Services support full-text search using MySQL full-text indexes:
+- **Index Coverage**: `name` and `description` fields
+- **Fast Queries**: Full-text indexes enable fast, relevant search results
+- **Search Highlighting**: Frontend highlights matching search terms in results
+- **Usage**: Add `?search=term` query parameter to services endpoint
 
 ## 🧪 Testing
 
@@ -376,13 +514,15 @@ Make sure to set `NODE_ENV=production` in your production environment variables.
 - **Node.js** 20+ - Runtime
 - **Express** 5.1.0 - Web framework
 - **TypeScript** 5.9.2 - Type safety
-- **Sequelize** 6.37.7 - ORM
-- **MySQL** 8.0+ - Database
+- **Sequelize** 6.37.7 - ORM with migrations
+- **MySQL** 8.0+ - Database with full-text indexes
 - **JWT** 9.0.2 - Authentication
 - **Multer** 2.0.2 - File uploads
 - **Zod** 4.0.17 - Validation
 - **Helmet** 8.1.0 - Security headers
 - **Winston** 3.18.3 - Logging
+- **DOMPurify** + **JSDOM** - Server-side HTML sanitization
+- **prom-client** - Prometheus metrics
 
 ### Development Tools
 - **Biome** - Linting and formatting
@@ -423,6 +563,18 @@ ISC
 - Verify JWT_SECRET is set in `server/.env` (min 32 characters)
 - Check that refresh token cookie path matches your API routes
 
+### Migration Issues
+
+- Ensure database user has CREATE/ALTER/DROP permissions
+- Check migration status: `yarn workspace server migrate:status`
+- If migrations fail, check Sequelize logs for detailed error messages
+
+### Metrics Not Appearing
+
+- Verify `METRICS_ENABLED=true` in `server/.env`
+- Check that `/metrics` endpoint is accessible (may require authentication in some setups)
+- Ensure prom-client is properly installed: `yarn workspace server install`
+
 ### Build Errors
 
 - Delete `node_modules` and reinstall: `rm -rf node_modules && yarn install`
@@ -431,6 +583,14 @@ ISC
 
 ## 📚 Additional Resources
 
+### Documentation
+- [Styling Guide](STYLING_GUIDE.md) - Complete design system documentation with Trans Pride theme, accessibility features, and implementation guide
+- [Architecture Overview](ARCHITECTURE.md) - System architecture, data flow, and technical decisions
+- [Development Guide](DEVELOPMENT.md) - Development workflow, debugging, and common tasks
+- [Deployment Guide](DEPLOYMENT.md) - Production deployment instructions and best practices
+- [Contributing Guidelines](CONTRIBUTING.md) - How to contribute to the project
+
+### API & Testing
 - [Postman Collection Documentation](server/postman/README.md)
 - [Client README](client/README.md)
 - [CI/CD Configuration](.github/workflows/ci.yml)

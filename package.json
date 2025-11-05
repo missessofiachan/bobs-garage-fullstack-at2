@@ -60,5 +60,11 @@
 		"*.{js,jsx,ts,tsx,json,md,css,scss}": [
 			"biome check --write"
 		]
+	},
+	"dependencies": {
+		"@types/dompurify": "^3.0.5",
+		"dompurify": "^3.3.0",
+		"express-validator": "^7.3.0",
+		"jsdom": "^27.0.1"
 	}
 }

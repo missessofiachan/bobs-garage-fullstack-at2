@@ -282,6 +282,19 @@ export default function Dashboard() {
 							</Link>
 						</Col>
 						<Col md={6} lg={3}>
+							<Link to="/admin/audit-logs" className="text-decoration-none">
+								<Card className="h-100 text-center border-success">
+									<Card.Body>
+										<div className="fs-2 mb-2">📋</div>
+										<Card.Title className="h6">Audit Logs</Card.Title>
+										<small className="text-muted">View admin actions and changes</small>
+									</Card.Body>
+								</Card>
+							</Link>
+						</Col>
+					</Row>
+					<Row className="g-3 mt-2">
+						<Col md={6} lg={3}>
 							<Link to="/" className="text-decoration-none">
 								<Card className="h-100 text-center border-secondary">
 									<Card.Body>
