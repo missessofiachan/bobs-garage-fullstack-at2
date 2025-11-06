@@ -5,16 +5,16 @@ A modern full-stack web application for managing an auto repair shop, featuring 
 ## 🚀 Features
 
 ### Frontend (React + TypeScript)
-- **Public Pages**: Home, About, Services (with filtering and sorting)
+- **Public Pages**: Home, About, Services (with filtering and sorting), Staff, Contact, Accessibility, Privacy Policy, Terms of Service
 - **Advanced Search**: Full-text search with search term highlighting
-- **Authentication**: Login, Register with validation
-- **User Features**: Profile management, favorites system
+- **Authentication**: Login, Register, Forgot Password with validation
+- **User Features**: Profile management, favorites system, settings (theme, accessibility preferences)
 - **Admin Dashboard**: Comprehensive overview with metrics and system health
 - **Admin Management**: CRUD operations for Services, Staff, and Users
 - **Audit Logs**: View and filter admin action logs with search and date filtering
 - **Media Uploads**: Image uploads for services and staff photos
 - **Theme Support**: Light/Dark mode with trans pride color scheme
-- **Accessibility**: WCAG AA compliant with proper contrast ratios
+- **Accessibility**: WCAG AA compliant with proper contrast ratios, scroll-to-top functionality
 
 ### Backend (Node.js + Express)
 - **RESTful API**: Complete CRUD operations with API versioning (`/api/v1/`)
@@ -106,18 +106,13 @@ This will install dependencies for all workspaces (root, client, and server).
 
 #### Option A: Using Docker (Recommended)
 
-**Simple Setup (from root):**
+Create a `docker-compose.yml` file in the project root (see Docker section below for example), then:
+
 ```bash
-docker-compose -f docker/docker-compose.yml up -d
+docker-compose up -d
 ```
 
-**Production Setup (from server directory):**
-```bash
-cd server
-docker-compose -f ../docker/docker-compose.mysql.yml up -d
-```
-
-This starts a MySQL container. The database will be automatically created based on your `.env` configuration.
+This starts a MySQL container. The database will be automatically created based on your container configuration. Update your `server/.env` file to match the container settings.
 
 #### Option B: Local MySQL Installation
 
@@ -182,19 +177,22 @@ cd client
 cp .env.example .env
 ```
 
-Edit `client/.env`:
+Edit `client/.env` (if `.env.example` exists, otherwise create it):
 
 ```env
 VITE_API_URL=http://localhost:4000/api
 ```
 
+**Note**: If `.env.example` files don't exist, you can create `.env` files manually based on the configuration examples above.
+
 ### 6. Seed the Database (Optional)
 
 ```bash
-yarn seed
+cd server
+tsx src/db/seeders/index.ts
 ```
 
-This populates the database with initial data for testing.
+This populates the database with initial data for testing (services, staff, and users).
 
 ### 7. Start Development Servers
 
@@ -222,32 +220,75 @@ yarn workspace client dev
 
 - `yarn dev` - Start both client and server in development mode
 - `yarn build` - Build both client and server for production
+- `yarn start` - Start production server
 - `yarn lint` - Lint all workspaces
+- `yarn lint:fix` - Fix linting issues automatically
 - `yarn format` - Format code using Biome
+- `yarn format:check` - Check formatting without fixing
 - `yarn typecheck` - Type check all TypeScript files
-- `yarn test` - Run tests in all workspaces
-- `yarn seed` - Seed the database
+- `yarn test` - Run tests in all workspaces (when test scripts are configured)
+- `yarn test:watch` - Run tests in watch mode
+- `yarn clean` - Clean build artifacts
+- `yarn update:dependencies` - Update dependencies interactively
 
 ### Client Scripts
 
-- `yarn workspace client dev` - Start Vite dev server
+- `yarn workspace client dev` - Start Vite dev server (port 5173)
 - `yarn workspace client build` - Build for production
 - `yarn workspace client preview` - Preview production build
 - `yarn workspace client typecheck` - Type check only
-- `yarn workspace client test` - Run client tests
+- `yarn workspace client clean` - Clean build artifacts
+- `yarn workspace client test` - Run client tests with Vitest (if configured)
 
 ### Server Scripts
 
-- `yarn workspace server dev` - Start server with hot reload
+- `yarn workspace server dev` - Start server with hot reload (nodemon + tsx)
 - `yarn workspace server build` - Compile TypeScript to JavaScript
-- `yarn workspace server start` - Start production server
-- `yarn workspace server seed` - Seed the database
-- `yarn workspace server migrate` - Run pending database migrations
-- `yarn workspace server migrate:undo` - Rollback last migration
-- `yarn workspace server migrate:undo:all` - Rollback all migrations
-- `yarn workspace server migrate:status` - Check migration status
+- `yarn workspace server start` - Start production server (runs `node dist/server.js`)
 - `yarn workspace server typecheck` - Type check only
-- `yarn workspace server test` - Run server tests
+- `yarn workspace server clean` - Clean build artifacts
+
+### Database Scripts
+
+**Migrations** (using Sequelize CLI):
+```bash
+# Run migrations (from server directory)
+cd server
+npx sequelize-cli db:migrate
+
+# Rollback last migration
+npx sequelize-cli db:migrate:undo
+
+# Rollback all migrations
+npx sequelize-cli db:migrate:undo:all
+
+# Check migration status
+npx sequelize-cli db:migrate:status
+```
+
+**Seeding**:
+```bash
+# Run seeders (from server directory)
+cd server
+tsx src/db/seeders/index.ts
+```
+
+**Testing** (using Vitest directly):
+```bash
+# Run server tests
+cd server
+npx vitest
+
+# Run client tests
+cd client
+npx vitest
+
+# Run tests in watch mode
+npx vitest --watch
+
+# Run tests with coverage
+npx vitest --coverage
+```
 
 ## 🌐 API Documentation
 
@@ -405,22 +446,28 @@ When `METRICS_ENABLED=true`, the `/metrics` endpoint provides:
 
 ## 🗄️ Database Migrations
 
-The project uses Sequelize migrations for database schema management:
+The project uses **Sequelize migrations** for database schema management. Migrations are located in `server/src/db/migrations/`.
 
 ### Running Migrations
 
 ```bash
+# Navigate to server directory
+cd server
+
 # Run pending migrations
-yarn workspace server migrate
+npx sequelize-cli db:migrate
 
 # Rollback last migration
-yarn workspace server migrate:undo
+npx sequelize-cli db:migrate:undo
 
 # Rollback all migrations
-yarn workspace server migrate:undo:all
+npx sequelize-cli db:migrate:undo:all
 
 # Check migration status
-yarn workspace server migrate:status
+npx sequelize-cli db:migrate:status
+
+# Create a new migration
+npx sequelize-cli migration:generate --name migration-name
 ```
 
 ### Migration Files
@@ -428,7 +475,21 @@ yarn workspace server migrate:status
 - `20240101000001-create-audit-logs.js` - Creates audit_logs table
 - `20240101000002-add-fulltext-index-services.js` - Adds full-text search index on services
 
-Migrations are automatically run when the server starts in development mode.
+### Database Seeding
+
+Seeders are located in `server/src/db/seeders/` and can be run with:
+
+```bash
+cd server
+tsx src/db/seeders/index.ts
+```
+
+This will seed:
+- Users (including an admin user)
+- Staff members
+- Services
+
+**Note**: In development mode, the database is automatically synced when using `sequelize.sync()`. In production, migrations should be run manually before starting the server.
 
 ## 🔍 Full-Text Search
 
@@ -440,45 +501,79 @@ Services support full-text search using MySQL full-text indexes:
 
 ## 🧪 Testing
 
+The project uses **Vitest** for testing. Test scripts can be run directly using the Vitest CLI.
+
 ### Running Tests
 
 ```bash
-# Run all tests
-yarn test
+# Run server tests
+cd server
+npx vitest
 
 # Run client tests
-yarn workspace client test
+cd client
+npx vitest
 
-# Run server tests
-yarn workspace server test
+# Run tests in watch mode
+npx vitest --watch
 
-# Watch mode
-yarn workspace client test:watch
-yarn workspace server test:watch
+# Run tests with coverage
+npx vitest --coverage
+
+# Run specific test file
+npx vitest tests/auth.integration.test.ts
 ```
+
+### Test Configuration
+
+- **Server**: Tests are configured in `server/vitest.config.ts` with Node.js environment
+- **Client**: Tests are configured in `client/vitest.config.ts` with jsdom environment
+- **Coverage**: Both configurations include coverage reporting (v8 provider)
+- **Setup Files**: 
+  - Server: `server/tests/setup.ts`
+  - Client: `client/src/tests/setupTests.ts`
+
+### Test Structure
+
+- **Integration Tests**: Located in `server/tests/` (auth, admin, resources, etc.)
+- **Unit Tests**: Component and utility tests in `client/src/` and `server/src/`
 
 ## 🐳 Docker
 
 ### Database Container
 
-The MySQL database can be run in a Docker container:
+While Docker configuration files are not currently included in the repository, you can set up a MySQL container using Docker Compose. Create a `docker-compose.yml` file in the project root:
 
-**From root directory:**
-```bash
-docker-compose -f docker/docker-compose.yml up -d      # Start database
-docker-compose -f docker/docker-compose.yml down        # Stop database
-docker-compose -f docker/docker-compose.yml logs -f     # View logs
-docker-compose -f docker/docker-compose.yml down -v     # Stop and remove data volumes
+```yaml
+version: '3.8'
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: bobs-garage-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: your_password_here
+      MYSQL_DATABASE: bobs_garage
+      MYSQL_USER: bobs_garage
+      MYSQL_PASSWORD: your_password_here
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    restart: unless-stopped
+
+volumes:
+  mysql_data:
 ```
 
-**From server directory (production setup):**
+Then run:
 ```bash
-cd server
-docker-compose -f ../docker/docker-compose.mysql.yml up -d
-docker-compose -f ../docker/docker-compose.mysql.yml down
+docker-compose up -d      # Start database
+docker-compose down        # Stop database
+docker-compose logs -f     # View logs
+docker-compose down -v     # Stop and remove data volumes
 ```
 
-The container uses environment variables from `server/.env` for configuration.
+Alternatively, use a local MySQL installation as described in the setup instructions.
 
 ## 📦 Building for Production
 
@@ -503,10 +598,14 @@ Make sure to set `NODE_ENV=production` in your production environment variables.
 - **TypeScript** 5.8.3 - Type safety
 - **Vite** 7.1.2 - Build tool and dev server
 - **React Router** 7.8.1 - Client-side routing
-- **Redux Toolkit** 2.8.2 - State management
-- **React Query** 5.85.3 - Server state management
+- **Redux Toolkit** 2.10.0 - State management
+- **React Query** (TanStack Query) 5.90.6 - Server state management
 - **Bootstrap** 5.3.7 - UI components
+- **React Bootstrap** 2.10.10 - Bootstrap components for React
+- **Framer Motion** 12.23.24 - Animation library
 - **Vanilla-Extract** - CSS-in-JS theming
+- **Radix UI** - Accessible UI primitives (Dialog)
+- **React Icons** 5.3.0 - Icon library
 - **Axios** 1.11.0 - HTTP client
 - **Zod** 4.0.17 - Schema validation
 
@@ -515,20 +614,34 @@ Make sure to set `NODE_ENV=production` in your production environment variables.
 - **Express** 5.1.0 - Web framework
 - **TypeScript** 5.9.2 - Type safety
 - **Sequelize** 6.37.7 - ORM with migrations
-- **MySQL** 8.0+ - Database with full-text indexes
-- **JWT** 9.0.2 - Authentication
+- **Sequelize TypeScript** 2.1.6 - TypeScript support for Sequelize
+- **MySQL** 8.0+ (mysql2 3.14.3) - Database with full-text indexes
+- **JWT** (jsonwebtoken 9.0.2) - Authentication
+- **Bcrypt** 6.0.0 - Password hashing
 - **Multer** 2.0.2 - File uploads
 - **Zod** 4.0.17 - Validation
 - **Helmet** 8.1.0 - Security headers
+- **CORS** 2.8.5 - Cross-origin resource sharing
+- **Cookie Parser** 1.4.7 - Cookie parsing
+- **Compression** 1.7.4 - Response compression
+- **Morgan** 1.10.1 - HTTP request logger
 - **Winston** 3.18.3 - Logging
-- **DOMPurify** + **JSDOM** - Server-side HTML sanitization
-- **prom-client** - Prometheus metrics
+- **Express Rate Limit** 8.2.1 - Rate limiting
+- **ioredis** 5.4.1 - Redis client (for caching/rate limiting)
+- **DOMPurify** 3.3.0 + **JSDOM** 27.0.1 - Server-side HTML sanitization
+- **prom-client** 15.1.0 - Prometheus metrics
+- **Reflect Metadata** 0.2.2 - Metadata reflection
 
 ### Development Tools
-- **Biome** - Linting and formatting
-- **Vitest** - Testing framework
-- **Husky** - Git hooks
-- **Docker** - Containerization
+- **Biome** 2.3.3 - Linting and formatting
+- **Vitest** 3.2.4 - Testing framework
+- **Husky** 9.1.5 - Git hooks
+- **Commitlint** 20.1.0 - Commit message linting
+- **Lint-staged** 16.2.6 - Pre-commit linting
+- **Concurrently** 9.1.2 - Run multiple commands
+- **Nodemon** 3.1.0 - Server auto-reload
+- **TSX** 4.20.4 - TypeScript execution
+- **Supertest** 7.1.4 - HTTP assertion library
 
 ## 🤝 Contributing
 
@@ -580,6 +693,13 @@ ISC
 - Delete `node_modules` and reinstall: `rm -rf node_modules && yarn install`
 - Clear TypeScript build cache: `rm -rf server/dist client/dist`
 - Ensure all environment variables are set correctly
+- Run clean scripts: `yarn clean` or `yarn workspace server clean && yarn workspace client clean`
+
+### Test Scripts Not Found
+
+- Tests are configured with Vitest but may not have npm scripts defined
+- Run tests directly: `npx vitest` from the `server` or `client` directory
+- Check `vitest.config.ts` files for test configuration
 
 ## 📚 Additional Resources
 
@@ -591,10 +711,14 @@ ISC
 - [Contributing Guidelines](CONTRIBUTING.md) - How to contribute to the project
 
 ### API & Testing
-- [Postman Collection Documentation](server/postman/README.md)
-- [Client README](client/README.md)
-- [CI/CD Configuration](.github/workflows/ci.yml)
-- [Frontend/Backend Features Integration](FRONTEND_BACKEND_FEATURES.md) - Status of backend features integrated into the frontend
+- [Postman Collection Documentation](server/postman/README.md) - API testing with Postman
+- [Database Migrations README](server/src/db/migrations/README.md) - Migration documentation
+
+### Project Structure Notes
+- **ScrollToTop Component**: Automatically scrolls to top on route changes
+- **Error Boundary**: Global error handling for React components
+- **Lazy Loading**: Pages are lazy-loaded for better performance
+- **Accessibility**: WCAG AA compliant with settings page for user preferences
 
 ## 👥 Support
 
