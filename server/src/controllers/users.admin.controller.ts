@@ -8,7 +8,8 @@ import type { Request, Response } from "express";
 import { z } from "zod";
 import { User } from "../db/models/User.js";
 import type { CreateUserRequest, UpdateUserRequest, UserQueryParams } from "../types/requests.js";
-import { handleControllerError, sendNotFound } from "../utils/errors.js";
+import { handleControllerError } from "../utils/errors.js";
+import { sendNotFoundError } from "../utils/errorResponse.js";
 import { hashPassword } from "../utils/hash.js";
 import { calculatePaginationParams } from "../utils/pagination.js";
 import { createPaginationResponse } from "../utils/responses.js";
@@ -182,7 +183,7 @@ export async function updateUser(req: Request, res: Response) {
 
 		const payload = updateSchema.parse(req.body) as UpdateUserRequest;
 		const user = await User.findByPk(id);
-		if (!user) return sendNotFound(res);
+		if (!user) return sendNotFoundError(res);
 
 		if (payload.password) {
 			const passwordHash = await hashPassword(payload.password);
@@ -227,7 +228,7 @@ export async function deleteUser(req: Request, res: Response) {
 		if (id === null) return; // Error response already sent
 
 		const user = await User.findByPk(id);
-		if (!user) return sendNotFound(res);
+		if (!user) return sendNotFoundError(res);
 
 		await user.destroy();
 		res.status(204).send();

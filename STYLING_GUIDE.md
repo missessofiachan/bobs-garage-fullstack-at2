@@ -78,6 +78,7 @@ This design system uses:
 - **Warning**: `#F7A8B8` (Trans pride pink)
 - **Info**: `#55CDFC` (Trans pride blue)
 
+
 ### Gray Scale
 
 ```typescript

@@ -33,24 +33,6 @@ export function sanitizeHtml(html: string): string {
 }
 
 /**
- * Sanitize plain text by escaping HTML entities
- * Use this for fields that should never contain HTML
- */
-export function sanitizeText(text: string): string {
-	if (typeof text !== "string") {
-		return text;
-	}
-
-	// Escape HTML entities
-	return text
-		.replace(/&/g, "&amp;")
-		.replace(/</g, "&lt;")
-		.replace(/>/g, "&gt;")
-		.replace(/"/g, "&quot;")
-		.replace(/'/g, "&#x27;");
-}
-
-/**
  * Recursively sanitize all string values in an object
  * Sanitizes HTML in string fields to prevent XSS
  */

@@ -23,7 +23,8 @@ import type {
 	ServiceQueryParams,
 	UpdateServiceRequest,
 } from "../types/requests.js";
-import { handleControllerError, sendBadRequest, sendNotFound } from "../utils/errors.js";
+import { handleControllerError } from "../utils/errors.js";
+import { sendNotFoundError, sendValidationError } from "../utils/errorResponse.js";
 import { createPaginationResponse } from "../utils/responses.js";
 import { findByIdOr404, parseIdParam } from "../utils/validation.js";
 
@@ -163,12 +164,12 @@ export async function updateService(req: Request, res: Response) {
 
 		// Get previous state before update
 		const existingService = await serviceService.getServiceById(id);
-		if (!existingService) return sendNotFound(res);
+		if (!existingService) return sendNotFoundError(res);
 		const previousState = existingService.toJSON();
 
 		const body = req.body as UpdateServiceRequest;
 		const s = await serviceService.updateService(id, body);
-		if (!s) return sendNotFound(res);
+		if (!s) return sendNotFoundError(res);
 
 		// Reload to get updated state
 		await s.reload();
@@ -208,7 +209,7 @@ export async function deleteService(req: Request, res: Response) {
 
 		// Get service before deletion for audit log
 		const s = await serviceService.getServiceById(id);
-		if (!s) return sendNotFound(res);
+		if (!s) return sendNotFoundError(res);
 
 		const previousState = s.toJSON();
 
@@ -257,11 +258,11 @@ export async function uploadServiceImage(req: Request, res: Response) {
 
 		const filename = getUploadedFilename((req as unknown as FileUploadRequest).file);
 		if (!filename) {
-			return sendBadRequest(res, "No file uploaded");
+			return sendValidationError(res, "No file uploaded");
 		}
 
 		const s = await serviceService.getServiceById(id);
-		if (!s) return sendNotFound(res);
+		if (!s) return sendNotFoundError(res);
 
 		// Delete old image if it exists
 		await deleteOldUpload(s.imageUrl);

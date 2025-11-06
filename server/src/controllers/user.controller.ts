@@ -8,7 +8,8 @@ import type { Request, Response } from "express";
 import { z } from "zod";
 import { User } from "../db/models/User.js";
 import type { UpdateProfileRequest } from "../types/requests.js";
-import { handleControllerError, sendNotFound, sendUnauthorized } from "../utils/errors.js";
+import { handleControllerError } from "../utils/errors.js";
+import { sendNotFoundError, sendUnauthorizedError } from "../utils/errorResponse.js";
 import { getUserIdFromRequest } from "../utils/validation.js";
 
 /**
@@ -35,12 +36,12 @@ import { getUserIdFromRequest } from "../utils/validation.js";
 export async function getMyProfile(req: Request, res: Response) {
 	try {
 		const userId = getUserIdFromRequest(req);
-		if (!userId) return sendUnauthorized(res);
+		if (!userId) return sendUnauthorizedError(res);
 
 		const user = await User.findByPk(userId, {
 			attributes: ["id", "email", "role", "active", "createdAt"],
 		});
-		if (!user) return sendNotFound(res, "User not found");
+		if (!user) return sendNotFoundError(res, "User not found");
 
 		res.json(user);
 	} catch (err) {
@@ -86,11 +87,11 @@ const updateSchema = z.object({
 export async function updateProfile(req: Request, res: Response) {
 	try {
 		const userId = getUserIdFromRequest(req);
-		if (!userId) return sendUnauthorized(res);
+		if (!userId) return sendUnauthorizedError(res);
 
 		const payload = updateSchema.parse(req.body);
 		const user = await User.findByPk(userId);
-		if (!user) return sendNotFound(res, "User not found");
+		if (!user) return sendNotFoundError(res, "User not found");
 
 		await user.update(payload);
 		res.json({

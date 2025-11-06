@@ -7,7 +7,8 @@
 import type { Request, Response } from "express";
 import { Favorite } from "../db/models/Favorite.js";
 import { Service } from "../db/models/Service.js";
-import { handleControllerError, sendConflict, sendNotFound } from "../utils/errors.js";
+import { handleControllerError } from "../utils/errors.js";
+import { sendConflictError, sendNotFoundError } from "../utils/errorResponse.js";
 import { requireAuth } from "../utils/validation.js";
 
 /**
@@ -91,7 +92,7 @@ export async function addFavorite(req: Request, res: Response) {
 		// Verify service exists
 		const service = await Service.findByPk(serviceId);
 		if (!service) {
-			return sendNotFound(res, "Service not found");
+			return sendNotFoundError(res, "Service not found");
 		}
 
 		// Check if already favorited
@@ -100,7 +101,7 @@ export async function addFavorite(req: Request, res: Response) {
 		});
 
 		if (existing) {
-			return sendConflict(res, "Service already in favorites");
+			return sendConflictError(res, "Service already in favorites");
 		}
 
 		// Create favorite
@@ -150,7 +151,7 @@ export async function removeFavorite(req: Request, res: Response) {
 		});
 
 		if (!favorite) {
-			return sendNotFound(res, "Favorite not found");
+			return sendNotFoundError(res, "Favorite not found");
 		}
 
 		await favorite.destroy();

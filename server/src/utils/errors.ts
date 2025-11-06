@@ -10,7 +10,7 @@ import {
 	ErrorCode,
 	sendConflictError,
 	sendErrorResponse,
-	sendInternalError as sendInternalErrorResponse,
+	sendInternalError,
 	sendNotFoundError,
 	sendUnauthorizedError,
 	sendValidationError,
@@ -68,43 +68,8 @@ export function handleControllerError(
 			String((err as any)?.message ?? err),
 		);
 	} else {
-		sendInternalErrorResponse(res);
+		sendInternalError(res);
 	}
 
 	return true;
-}
-
-/**
- * Send a 500 internal server error response
- */
-export function sendInternalError(res: Response): void {
-	sendInternalErrorResponse(res);
-}
-
-/**
- * Send a 400 bad request response with a message
- */
-export function sendBadRequest(res: Response, message: string): void {
-	sendValidationError(res, message);
-}
-
-/**
- * Send a 404 not found response
- */
-export function sendNotFound(res: Response, message: string = "Not found"): void {
-	sendNotFoundError(res, message);
-}
-
-/**
- * Send a 401 unauthorized response
- */
-export function sendUnauthorized(res: Response, message: string = "Unauthorized"): void {
-	sendUnauthorizedError(res, message);
-}
-
-/**
- * Send a 409 conflict response
- */
-export function sendConflict(res: Response, message: string = "Conflict"): void {
-	sendConflictError(res, message);
 }

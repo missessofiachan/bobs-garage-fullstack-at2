@@ -5,7 +5,7 @@
  */
 
 import type { Request, Response } from "express";
-import { sendNotFound } from "./errors.js";
+import { sendNotFoundError } from "./errorResponse.js";
 
 /**
  * Parse and validate an ID parameter from the request
@@ -80,7 +80,7 @@ export async function findByIdOr404<T>(
 
 	const instance = await findFn(id);
 	if (!instance) {
-		sendNotFound(res, notFoundMessage);
+		sendNotFoundError(res, notFoundMessage);
 		return null;
 	}
 
