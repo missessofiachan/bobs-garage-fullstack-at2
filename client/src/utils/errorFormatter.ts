@@ -22,17 +22,43 @@ export interface StructuredError {
 }
 
 /**
+ * Helper: Extract response data from AxiosError (Law of Demeter)
+ */
+function getResponseData(error: AxiosError): unknown {
+	return error.response?.data;
+}
+
+/**
+ * Helper: Extract response headers from AxiosError (Law of Demeter)
+ */
+function getResponseHeaders(error: AxiosError): Record<string, unknown> | undefined {
+	return error.response?.headers;
+}
+
+/**
+ * Helper: Extract structured error from response data (Law of Demeter)
+ */
+function getStructuredError(data: unknown): StructuredError["error"] | undefined {
+	if (data && typeof data === "object" && "error" in data) {
+		return (data as StructuredError).error;
+	}
+	return undefined;
+}
+
+/**
  * Extract request ID from error response
  */
 export function getRequestId(error: unknown): string | undefined {
 	if (error instanceof AxiosError) {
 		// Try to get from structured error response
-		const data = error.response?.data as StructuredError | undefined;
-		if (data?.error?.requestId) {
-			return data.error.requestId;
+		const data = getResponseData(error);
+		const errorInfo = getStructuredError(data);
+		if (errorInfo?.requestId) {
+			return errorInfo.requestId;
 		}
 		// Try to get from response headers
-		const requestId = error.response?.headers?.["x-request-id"];
+		const headers = getResponseHeaders(error);
+		const requestId = headers?.["x-request-id"];
 		if (typeof requestId === "string") {
 			return requestId;
 		}
@@ -45,8 +71,9 @@ export function getRequestId(error: unknown): string | undefined {
  */
 export function getErrorCode(error: unknown): string | undefined {
 	if (error instanceof AxiosError) {
-		const data = error.response?.data as StructuredError | undefined;
-		return data?.error?.code;
+		const data = getResponseData(error);
+		const errorInfo = getStructuredError(data);
+		return errorInfo?.code;
 	}
 	return undefined;
 }
@@ -56,8 +83,9 @@ export function getErrorCode(error: unknown): string | undefined {
  */
 export function getErrorDetails(error: unknown): unknown {
 	if (error instanceof AxiosError) {
-		const data = error.response?.data as StructuredError | undefined;
-		return data?.error?.details;
+		const data = getResponseData(error);
+		const errorInfo = getStructuredError(data);
+		return errorInfo?.details;
 	}
 	return undefined;
 }
@@ -77,19 +105,26 @@ const ERROR_CODE_MESSAGES: Record<string, string> = {
 };
 
 /**
+ * Helper: Extract response status from AxiosError (Law of Demeter)
+ */
+function getResponseStatus(error: AxiosError): number | undefined {
+	return error.response?.status;
+}
+
+/**
  * Formats an error into a user-friendly message
  */
 export function formatErrorMessage(error: unknown): string {
 	// Handle Axios errors
 	if (error instanceof AxiosError) {
-		const status = error.response?.status;
-		const data = error.response?.data;
+		const status = getResponseStatus(error);
+		const data = getResponseData(error);
 
 		// Handle structured error response (new format)
-		if (data && typeof data === "object" && "error" in data) {
-			const structuredError = data as StructuredError;
-			const errorCode = structuredError.error.code;
-			const errorMessage = structuredError.error.message;
+		const errorInfo = getStructuredError(data);
+		if (errorInfo) {
+			const errorCode = errorInfo.code;
+			const errorMessage = errorInfo.message;
 
 			// Use code-based message if available, otherwise use provided message
 			if (errorCode && ERROR_CODE_MESSAGES[errorCode]) {
@@ -116,9 +151,10 @@ export function formatErrorMessage(error: unknown): string {
 		}
 
 		// Handle validation errors (Zod-style)
-		if (data?.errors && Array.isArray(data.errors)) {
-			const messages = data.errors
-				.map((issue: any) => {
+		const validationErrors = getValidationErrors(data);
+		if (validationErrors) {
+			const messages = validationErrors
+				.map((issue) => {
 					if (issue.message) return issue.message;
 					const field = issue.path?.join(".") || "field";
 					return `${field}: Invalid value`;
@@ -177,13 +213,26 @@ interface ValidationIssue {
 	message: string;
 }
 
+/**
+ * Helper: Extract validation errors from response data (Law of Demeter)
+ */
+function getValidationErrors(data: unknown): ValidationIssue[] | undefined {
+	if (data && typeof data === "object" && "errors" in data) {
+		const errors = (data as { errors: unknown }).errors;
+		return Array.isArray(errors) ? errors : undefined;
+	}
+	return undefined;
+}
+
 function isAxiosErrorWithValidationErrors(
 	error: unknown,
 ): error is AxiosError<{ errors: ValidationIssue[] }> {
-	return (
-		error instanceof AxiosError &&
-		Array.isArray((error.response?.data as { errors?: ValidationIssue[] })?.errors)
-	);
+	if (error instanceof AxiosError) {
+		const data = getResponseData(error);
+		const errors = getValidationErrors(data);
+		return Array.isArray(errors);
+	}
+	return false;
 }
 
 function isZodError(error: unknown): error is { issues: ValidationIssue[] } {
@@ -215,12 +264,16 @@ export function extractFieldErrors(error: unknown): Record<string, string> {
 
 	// Handle Axios errors with response.data.errors
 	if (isAxiosErrorWithValidationErrors(error)) {
-		(error.response?.data as { errors: ValidationIssue[] }).errors.forEach((issue) => {
-			if (isValidationIssue(issue)) {
-				const field = issue.path[0] || "general";
-				errors[field] = issue.message;
-			}
-		});
+		const data = getResponseData(error);
+		const validationErrors = getValidationErrors(data);
+		if (validationErrors) {
+			validationErrors.forEach((issue) => {
+				if (isValidationIssue(issue)) {
+					const field = issue.path[0] || "general";
+					errors[field] = issue.message;
+				}
+			});
+		}
 	}
 
 	// Handle Zod validation errors (direct issues array)

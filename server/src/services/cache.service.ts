@@ -18,6 +18,7 @@ interface CacheBackend {
 	delPattern(pattern: string): Promise<void>;
 	flush(): Promise<void>;
 	disconnect(): Promise<void>;
+	connect?(): Promise<void>; // Optional: some backends may need explicit connection
 }
 
 /**
@@ -199,16 +200,17 @@ class CacheService {
 				this.backend = new MemoryCacheBackend();
 			} else {
 				this.backend = new RedisCacheBackend();
-				// Try to connect, but don't fail if Redis is unavailable
-				if (this.backend instanceof RedisCacheBackend) {
-					this.backend.connect().catch(() => {
-						winstonLogger.warn("Redis connection failed, using degraded mode");
-					});
-				}
 			}
 		} else {
 			this.backend = new MemoryCacheBackend();
 			winstonLogger.info("Using in-memory cache");
+		}
+
+		// Connect backend if it supports connection (composition over instanceof check)
+		if (this.backend && typeof this.backend.connect === "function") {
+			this.backend.connect().catch(() => {
+				winstonLogger.warn("Backend connection failed, using degraded mode");
+			});
 		}
 	}
 
