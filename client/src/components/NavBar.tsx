@@ -183,10 +183,7 @@ export default function NavBar() {
 										className="d-flex align-items-center gap-1"
 										style={isActive("/register") ? activeStyle : undefined}
 									>
-										<MdPersonAdd
-											size={18}
-											style={isActive("/register") ? activeStyle : undefined}
-										/>
+										<MdPersonAdd size={18} style={isActive("/register") ? activeStyle : undefined} />
 										<span style={isActive("/register") ? activeStyle : undefined}>Register</span>
 									</Nav.Link>
 								</Nav>
@@ -199,10 +196,7 @@ export default function NavBar() {
 									style={{ backgroundColor: "rgba(247, 168, 184, 0.1)" }}
 								>
 									<MdAccountCircle size={20} className="text-primary" />
-									<span
-										className="small fw-medium d-none d-md-inline"
-										style={{ fontSize: "0.875rem" }}
-									>
+									<span className="small fw-medium d-none d-md-inline" style={{ fontSize: "0.875rem" }}>
 										{email ?? "User"}
 									</span>
 									{role === "admin" && (
@@ -220,10 +214,7 @@ export default function NavBar() {
 										className="d-flex align-items-center gap-1 position-relative"
 										style={isActive("/favorites") ? activeStyle : undefined}
 									>
-										<MdFavorite
-											size={18}
-											style={isActive("/favorites") ? activeStyle : undefined}
-										/>
+										<MdFavorite size={18} style={isActive("/favorites") ? activeStyle : undefined} />
 										<span
 											className="d-none d-lg-inline"
 											style={isActive("/favorites") ? activeStyle : undefined}
@@ -272,10 +263,7 @@ export default function NavBar() {
 										className="d-flex align-items-center gap-2"
 										active={isActive("/profile")}
 									>
-										<MdAccountCircle
-											size={18}
-											style={isActive("/profile") ? activeStyle : undefined}
-										/>
+										<MdAccountCircle size={18} style={isActive("/profile") ? activeStyle : undefined} />
 										<span style={isActive("/profile") ? activeStyle : undefined}>Profile</span>
 									</NavDropdown.Item>
 									<NavDropdown.Item
@@ -296,13 +284,8 @@ export default function NavBar() {
 												className="d-flex align-items-center gap-2"
 												active={isActive("/admin")}
 											>
-												<MdAdminPanelSettings
-													size={18}
-													style={isActive("/admin") ? activeStyle : undefined}
-												/>
-												<span style={isActive("/admin") ? activeStyle : undefined}>
-													Admin Dashboard
-												</span>
+												<MdAdminPanelSettings size={18} style={isActive("/admin") ? activeStyle : undefined} />
+												<span style={isActive("/admin") ? activeStyle : undefined}>Admin Dashboard</span>
 											</NavDropdown.Item>
 										</>
 									)}
@@ -337,14 +320,8 @@ export default function NavBar() {
 									className="d-flex align-items-center gap-1"
 									style={isActive("/admin") ? activeStyle : undefined}
 								>
-									<MdAdminPanelSettings
-										size={18}
-										style={isActive("/admin") ? activeStyle : undefined}
-									/>
-									<span
-										className="d-none d-lg-inline"
-										style={isActive("/admin") ? activeStyle : undefined}
-									>
+									<MdAdminPanelSettings size={18} style={isActive("/admin") ? activeStyle : undefined} />
+									<span className="d-none d-lg-inline" style={isActive("/admin") ? activeStyle : undefined}>
 										Admin
 									</span>
 								</Nav.Link>

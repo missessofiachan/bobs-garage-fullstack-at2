@@ -75,9 +75,7 @@ describe("ToastProvider", () => {
 			const { notify } = useToast();
 			return (
 				<button
-					onClick={() =>
-						notify({ title: "Success", body: "Operation completed", variant: "success" })
-					}
+					onClick={() => notify({ title: "Success", body: "Operation completed", variant: "success" })}
 				>
 					Show Toast
 				</button>

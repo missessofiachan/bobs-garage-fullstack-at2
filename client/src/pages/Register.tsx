@@ -6,13 +6,15 @@
 
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { Alert, Button, Card, Col, Form, InputGroup, Row } from "react-bootstrap";
+import { Button, Form, InputGroup } from "react-bootstrap";
 import { MdEmail, MdLock, MdLogin, MdPersonAdd } from "react-icons/md";
 import { Link, useNavigate } from "react-router-dom";
+import AuthCardLayout from "../components/layouts/AuthCardLayout";
 import { useToast } from "../components/ui/ToastProvider";
 import { useAuth } from "../hooks/useAuth";
+import { useErrorHandler } from "../hooks/useErrorHandler";
 import { registerSchema } from "../lib/validation";
-import { formatErrorMessageWithId } from "../utils/errorFormatter";
+import { extractFieldErrors } from "../utils/errorFormatter";
 
 export default function Register() {
 	const [email, setEmail] = useState("");
@@ -23,37 +25,11 @@ export default function Register() {
 	const nav = useNavigate();
 	const { register } = useAuth();
 	const { notify } = useToast();
-
-	const extractFieldErrors = (error: unknown): Record<string, string> => {
-		const errors: Record<string, string> = {};
-		if (
-			error &&
-			typeof error === "object" &&
-			"response" in error &&
-			error.response &&
-			typeof error.response === "object" &&
-			"data" in error.response &&
-			error.response.data &&
-			typeof error.response.data === "object" &&
-			"errors" in error.response.data &&
-			Array.isArray(error.response.data.errors)
-		) {
-			error.response.data.errors.forEach((issue: unknown) => {
-				if (
-					issue &&
-					typeof issue === "object" &&
-					"path" in issue &&
-					Array.isArray(issue.path) &&
-					"message" in issue &&
-					typeof issue.message === "string"
-				) {
-					const field = issue.path[0] || "general";
-					errors[field] = issue.message;
-				}
-			});
-		}
-		return errors;
-	};
+	const handleError = useErrorHandler({
+		setError: setErr,
+		setFieldErrors,
+		showToast: true,
+	});
 
 	const onSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -67,41 +43,14 @@ export default function Register() {
 			nav("/login");
 		} catch (error: unknown) {
 			// Handle client-side Zod validation errors
-			if (
-				error &&
-				typeof error === "object" &&
-				"issues" in error &&
-				Array.isArray(error.issues)
-			) {
-				const messages = error.issues
-					.map((issue: unknown) => {
-						if (
-							issue &&
-							typeof issue === "object" &&
-							"message" in issue &&
-							typeof issue.message === "string" &&
-							"path" in issue &&
-							Array.isArray(issue.path)
-						) {
-							return issue.message || `${issue.path.join(".")}: Invalid value`;
-						}
-						return null;
-					})
-					.filter((msg): msg is string => typeof msg === "string");
-				setErr(messages.join(". "));
-				// Also set field-specific errors
-				const fieldErrs = extractFieldErrors({ response: { data: { errors: error.issues } } });
+			if (error && typeof error === "object" && "issues" in error && Array.isArray(error.issues)) {
+				const fieldErrs = extractFieldErrors(error);
 				setFieldErrors(fieldErrs);
 				// Show simple toast for client-side validation
 				notify({ body: "Please check the form for errors", variant: "danger" });
 			} else {
 				// Handle server errors
-				const { message: errorMessage, requestId } = formatErrorMessageWithId(error);
-				setErr(errorMessage);
-				const fieldErrs = extractFieldErrors(error);
-				setFieldErrors(fieldErrs);
-				// Show formatted error in toast
-				notify({ body: errorMessage, variant: "danger", requestId });
+				handleError(error);
 			}
 		} finally {
 			setLoading(false);
@@ -109,146 +58,106 @@ export default function Register() {
 	};
 
 	return (
-		<motion.div
-			initial={{ opacity: 0, y: 20 }}
-			animate={{ opacity: 1, y: 0 }}
-			transition={{ duration: 0.5 }}
-			className="py-5"
+		<AuthCardLayout
+			icon={<MdPersonAdd size={64} className="text-primary mb-3" />}
+			title="Create Account"
+			subtitle="Join Bob's Garage and start managing your services"
+			error={err}
+			footer={
+				<>
+					<p className="text-muted mb-2">Already have an account?</p>
+					<Link to="/login" className="text-decoration-none">
+						<Button variant="outline-secondary" className="d-inline-flex align-items-center gap-2">
+							<MdLogin />
+							Sign In
+						</Button>
+					</Link>
+				</>
+			}
 		>
-			<Row className="justify-content-center">
-				<Col xs={12} sm={10} md={8} lg={6} xl={5}>
-					<motion.div
-						initial={{ scale: 0.95 }}
-						animate={{ scale: 1 }}
-						transition={{ delay: 0.2, duration: 0.4 }}
+			<Form onSubmit={onSubmit}>
+				<Form.Group className="mb-3">
+					<Form.Label htmlFor="register-email">Email</Form.Label>
+					<InputGroup>
+						<InputGroup.Text aria-hidden="true">
+							<MdEmail />
+						</InputGroup.Text>
+						<Form.Control
+							id="register-email"
+							value={email}
+							onChange={(e) => setEmail(e.target.value)}
+							type="email"
+							placeholder="Enter your email"
+							required
+							autoComplete="email"
+							autoFocus
+							isInvalid={!!fieldErrors.email}
+							aria-invalid={!!fieldErrors.email}
+							aria-describedby={fieldErrors.email ? "register-email-error" : undefined}
+						/>
+					</InputGroup>
+					{fieldErrors.email && (
+						<Form.Control.Feedback
+							type="invalid"
+							className="d-block"
+							id="register-email-error"
+							role="alert"
+						>
+							{fieldErrors.email}
+						</Form.Control.Feedback>
+					)}
+				</Form.Group>
+
+				<Form.Group className="mb-4">
+					<Form.Label htmlFor="register-password">Password</Form.Label>
+					<InputGroup>
+						<InputGroup.Text aria-hidden="true">
+							<MdLock />
+						</InputGroup.Text>
+						<Form.Control
+							id="register-password"
+							value={password}
+							onChange={(e) => setPassword(e.target.value)}
+							type="password"
+							placeholder="Enter your password"
+							required
+							autoComplete="new-password"
+							isInvalid={!!fieldErrors.password}
+							aria-invalid={!!fieldErrors.password}
+							aria-describedby={
+								fieldErrors.password
+									? "register-password-error register-password-hint"
+									: "register-password-hint"
+							}
+						/>
+					</InputGroup>
+					{fieldErrors.password && (
+						<Form.Control.Feedback
+							type="invalid"
+							className="d-block"
+							id="register-password-error"
+							role="alert"
+						>
+							{fieldErrors.password}
+						</Form.Control.Feedback>
+					)}
+					<Form.Text className="text-muted" id="register-password-hint">
+						Password must be at least 8 characters long
+					</Form.Text>
+				</Form.Group>
+
+				<motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+					<Button
+						type="submit"
+						variant="primary"
+						size="lg"
+						className="w-100 mb-3"
+						disabled={loading}
 					>
-						<Card className="shadow-sm">
-							<Card.Body className="p-4 p-md-5">
-								{/* Header */}
-								<div className="text-center mb-4">
-									<motion.div
-										initial={{ scale: 0 }}
-										animate={{ scale: 1 }}
-										transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
-									>
-										<MdPersonAdd size={64} className="text-primary mb-3" />
-									</motion.div>
-									<h1 className="mb-2">Create Account</h1>
-									<p className="text-muted">Join Bob's Garage and start managing your services</p>
-								</div>
-
-								{/* Error Alert */}
-								{err && (
-									<motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
-										<Alert variant="danger" className="mb-4">
-											{err}
-										</Alert>
-									</motion.div>
-								)}
-
-								{/* Register Form */}
-								<Form onSubmit={onSubmit}>
-									<Form.Group className="mb-3">
-										<Form.Label htmlFor="register-email">Email</Form.Label>
-										<InputGroup>
-											<InputGroup.Text aria-hidden="true">
-												<MdEmail />
-											</InputGroup.Text>
-											<Form.Control
-												id="register-email"
-												value={email}
-												onChange={(e) => setEmail(e.target.value)}
-												type="email"
-												placeholder="Enter your email"
-												required
-												autoComplete="email"
-												autoFocus
-												isInvalid={!!fieldErrors.email}
-												aria-invalid={!!fieldErrors.email}
-												aria-describedby={fieldErrors.email ? "register-email-error" : undefined}
-											/>
-										</InputGroup>
-										{fieldErrors.email && (
-											<Form.Control.Feedback
-												type="invalid"
-												className="d-block"
-												id="register-email-error"
-												role="alert"
-											>
-												{fieldErrors.email}
-											</Form.Control.Feedback>
-										)}
-									</Form.Group>
-
-									<Form.Group className="mb-4">
-										<Form.Label htmlFor="register-password">Password</Form.Label>
-										<InputGroup>
-											<InputGroup.Text aria-hidden="true">
-												<MdLock />
-											</InputGroup.Text>
-											<Form.Control
-												id="register-password"
-												value={password}
-												onChange={(e) => setPassword(e.target.value)}
-												type="password"
-												placeholder="Enter your password"
-												required
-												autoComplete="new-password"
-												isInvalid={!!fieldErrors.password}
-												aria-invalid={!!fieldErrors.password}
-												aria-describedby={
-													fieldErrors.password
-														? "register-password-error register-password-hint"
-														: "register-password-hint"
-												}
-											/>
-										</InputGroup>
-										{fieldErrors.password && (
-											<Form.Control.Feedback
-												type="invalid"
-												className="d-block"
-												id="register-password-error"
-												role="alert"
-											>
-												{fieldErrors.password}
-											</Form.Control.Feedback>
-										)}
-										<Form.Text className="text-muted" id="register-password-hint">
-											Password must be at least 8 characters long
-										</Form.Text>
-									</Form.Group>
-
-									<motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-										<Button
-											type="submit"
-											variant="primary"
-											size="lg"
-											className="w-100 mb-3"
-											disabled={loading}
-										>
-											{loading ? "Creating Account..." : "Create Account"}
-										</Button>
-									</motion.div>
-								</Form>
-
-								{/* Login Link */}
-								<div className="text-center mt-4 pt-3 border-top">
-									<p className="text-muted mb-2">Already have an account?</p>
-									<Link to="/login" className="text-decoration-none">
-										<Button
-											variant="outline-secondary"
-											className="d-inline-flex align-items-center gap-2"
-										>
-											<MdLogin />
-											Sign In
-										</Button>
-									</Link>
-								</div>
-							</Card.Body>
-						</Card>
-					</motion.div>
-				</Col>
-			</Row>
-		</motion.div>
+						{loading ? "Creating Account..." : "Create Account"}
+					</Button>
+				</motion.div>
+			</Form>
+		</AuthCardLayout>
 	);
 }

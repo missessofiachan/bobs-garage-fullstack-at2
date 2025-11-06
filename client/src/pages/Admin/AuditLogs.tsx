@@ -214,9 +214,7 @@ export default function AuditLogs() {
 			{/* Audit Logs Table */}
 			<Card className="shadow-sm">
 				<Card.Header>
-					<Card.Title className="mb-0">
-						Activity Log ({data?.pagination.total ?? 0} total)
-					</Card.Title>
+					<Card.Title className="mb-0">Activity Log ({data?.pagination.total ?? 0} total)</Card.Title>
 				</Card.Header>
 				<Card.Body className="p-0">
 					<div className="table-responsive">
@@ -248,9 +246,7 @@ export default function AuditLogs() {
 												{log.userEmail ? (
 													<span>
 														{log.userEmail}
-														{log.userId && (
-															<small className="text-muted d-block">ID: {log.userId}</small>
-														)}
+														{log.userId && <small className="text-muted d-block">ID: {log.userId}</small>}
 													</span>
 												) : (
 													<span className="text-muted">System</span>
@@ -262,9 +258,7 @@ export default function AuditLogs() {
 											<td>
 												<span>
 													{getResourceIcon(log.resource)} {log.resource}
-													{log.resourceId && (
-														<small className="text-muted d-block">ID: {log.resourceId}</small>
-													)}
+													{log.resourceId && <small className="text-muted d-block">ID: {log.resourceId}</small>}
 												</span>
 											</td>
 											<td>
@@ -275,10 +269,7 @@ export default function AuditLogs() {
 															View Changes
 														</summary>
 														<div className="mt-2 p-2 bg-light rounded">
-															<StateDiff
-																previous={log.previousState ?? null}
-																current={log.newState ?? null}
-															/>
+															<StateDiff previous={log.previousState ?? null} current={log.newState ?? null} />
 														</div>
 													</details>
 												)}
@@ -286,9 +277,7 @@ export default function AuditLogs() {
 											<td>
 												<small className="text-muted">{log.ipAddress || "N/A"}</small>
 												{log.requestId && (
-													<small className="text-muted d-block">
-														Req: {log.requestId.substring(0, 8)}...
-													</small>
+													<small className="text-muted d-block">Req: {log.requestId.substring(0, 8)}...</small>
 												)}
 											</td>
 										</tr>

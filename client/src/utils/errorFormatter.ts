@@ -171,3 +171,63 @@ export function formatErrorMessageWithId(error: unknown): {
 	const errorCode = getErrorCode(error);
 	return { message, requestId, errorCode };
 }
+
+/**
+ * Extract field-specific errors from validation error responses
+ * Returns a record mapping field names to error messages
+ */
+export function extractFieldErrors(error: unknown): Record<string, string> {
+	const errors: Record<string, string> = {};
+
+	// Handle Axios errors with response.data.errors
+	if (
+		error &&
+		typeof error === "object" &&
+		"response" in error &&
+		error.response &&
+		typeof error.response === "object" &&
+		"data" in error.response &&
+		error.response.data &&
+		typeof error.response.data === "object" &&
+		"errors" in error.response.data &&
+		Array.isArray(error.response.data.errors)
+	) {
+		error.response.data.errors.forEach((issue: unknown) => {
+			if (
+				issue &&
+				typeof issue === "object" &&
+				"path" in issue &&
+				Array.isArray(issue.path) &&
+				"message" in issue &&
+				typeof issue.message === "string"
+			) {
+				const field = issue.path[0] || "general";
+				errors[field] = issue.message;
+			}
+		});
+	}
+
+	// Handle Zod validation errors (direct issues array)
+	if (
+		error &&
+		typeof error === "object" &&
+		"issues" in error &&
+		Array.isArray(error.issues)
+	) {
+		error.issues.forEach((issue: unknown) => {
+			if (
+				issue &&
+				typeof issue === "object" &&
+				"path" in issue &&
+				Array.isArray(issue.path) &&
+				"message" in issue &&
+				typeof issue.message === "string"
+			) {
+				const field = issue.path[0] || "general";
+				errors[field] = issue.message;
+			}
+		});
+	}
+
+	return errors;
+}

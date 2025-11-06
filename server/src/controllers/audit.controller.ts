@@ -31,16 +31,7 @@ interface AuditLogQueryParams {
 export async function getAuditLogs(req: Request, res: Response) {
 	try {
 		const query = req.query as unknown as AuditLogQueryParams;
-		const {
-			page = 1,
-			limit = 50,
-			userId,
-			action,
-			resource,
-			resourceId,
-			startDate,
-			endDate,
-		} = query;
+		const { page = 1, limit = 50, userId, action, resource, resourceId, startDate, endDate } = query;
 
 		const where: Record<string, unknown> = {};
 

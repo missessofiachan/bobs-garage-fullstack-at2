@@ -60,9 +60,7 @@ export function useAuditLogs(params: AuditLogsParams = {}) {
 			if (params.startDate) queryParams.append("startDate", params.startDate);
 			if (params.endDate) queryParams.append("endDate", params.endDate);
 
-			const { data } = await api.get<AuditLogsResponse>(
-				`/admin/audit-logs?${queryParams.toString()}`,
-			);
+			const { data } = await api.get<AuditLogsResponse>(`/admin/audit-logs?${queryParams.toString()}`);
 			return data;
 		},
 		staleTime: 10000, // Consider stale after 10 seconds

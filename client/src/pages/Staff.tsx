@@ -11,22 +11,8 @@ import Loading from "../components/ui/Loading";
 import usePageTitle from "../hooks/usePageTitle";
 import { useStaffList } from "../hooks/useStaff";
 import { getImageBaseUrl } from "../utils/api";
+import { fadeInUp, staggerContainer } from "../utils/animations";
 import { getImageSrc, IMAGE_PLACEHOLDER } from "../utils/imagePlaceholder";
-
-const fadeInUp = {
-	initial: { opacity: 0, y: 20 },
-	animate: { opacity: 1, y: 0 },
-	transition: { duration: 0.5 },
-};
-
-const staggerContainer = {
-	initial: {},
-	animate: {
-		transition: {
-			staggerChildren: 0.1,
-		},
-	},
-};
 
 export default function Staff() {
 	const { data, isLoading, error, refetch } = useStaffList();
@@ -110,9 +96,7 @@ export default function Staff() {
 											<Card.Body>
 												<Card.Title className="mb-2">{member.name}</Card.Title>
 												{member.role && (
-													<div className="text-primary fw-semibold mb-3 small text-uppercase">
-														{member.role}
-													</div>
+													<div className="text-primary fw-semibold mb-3 small text-uppercase">{member.role}</div>
 												)}
 												{member.bio && (
 													<Card.Text

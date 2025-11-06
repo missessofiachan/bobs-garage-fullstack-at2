@@ -77,9 +77,7 @@ export default function SystemHealthPanel() {
 										health.services.database.status === "connected" ? "text-success" : "text-danger"
 									}
 								>
-									{health.services.database.status === "connected"
-										? "✓ Connected"
-										: "✗ Disconnected"}
+									{health.services.database.status === "connected" ? "✓ Connected" : "✗ Disconnected"}
 								</span>
 							</div>
 							{health.services.database.responseTime !== undefined && (
@@ -97,8 +95,7 @@ export default function SystemHealthPanel() {
 								<strong>Cache</strong>
 								<span
 									className={
-										health.services.cache.status === "connected" ||
-										health.services.cache.status === "enabled"
+										health.services.cache.status === "connected" || health.services.cache.status === "enabled"
 											? "text-success"
 											: health.services.cache.status === "disabled"
 												? "text-muted"

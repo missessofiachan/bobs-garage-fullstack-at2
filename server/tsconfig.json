@@ -1,53 +1,53 @@
 {
-  // Visit https://aka.ms/tsconfig to read more about this file
-  "compilerOptions": {
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    // File Layout
-    "rootDir": "src",
-    "outDir": "dist",
-    "baseUrl": ".",
-    "paths": {
-      "@config/*": ["src/config/*"],
-      "@db/*": ["src/db/*"],
-      "@models/*": ["src/db/models/models/*"],
-      "@routes/*": ["src/routes/*"],
-      "@controllers/*": ["src/controllers/*"],
-      "@middleware/*": ["src/middleware/*"],
-      "@utils/*": ["src/utils/*"]
-    },
+	// Visit https://aka.ms/tsconfig to read more about this file
+	"compilerOptions": {
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true,
+		// File Layout
+		"rootDir": "src",
+		"outDir": "dist",
+		"baseUrl": ".",
+		"paths": {
+			"@config/*": ["src/config/*"],
+			"@db/*": ["src/db/*"],
+			"@models/*": ["src/db/models/models/*"],
+			"@routes/*": ["src/routes/*"],
+			"@controllers/*": ["src/controllers/*"],
+			"@middleware/*": ["src/middleware/*"],
+			"@utils/*": ["src/utils/*"]
+		},
 
-    // Environment Settings
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "esModuleInterop": true,
-    "types": ["node"],
-    "target": "ES2022",
-    "lib": ["ES2022"],
+		// Environment Settings
+		"module": "NodeNext",
+		"moduleResolution": "NodeNext",
+		"esModuleInterop": true,
+		"types": ["node"],
+		"target": "ES2022",
+		"lib": ["ES2022"],
 
-    // For nodejs:
-    // "lib": ["esnext"],
-    // "types": ["node"],
-    // and npm install -D @types/node
+		// For nodejs:
+		// "lib": ["esnext"],
+		// "types": ["node"],
+		// and npm install -D @types/node
 
-    // Other Outputs
-    "sourceMap": true,
-    "declaration": true,
-    "declarationMap": true,
+		// Other Outputs
+		"sourceMap": true,
+		"declaration": true,
+		"declarationMap": true,
 
-    // Stricter Typechecking Options
-    "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": true,
+		// Stricter Typechecking Options
+		"noUncheckedIndexedAccess": true,
+		"exactOptionalPropertyTypes": true,
 
-    // Recommended Options
-    "strict": true,
-    "verbatimModuleSyntax": true,
-    "isolatedModules": true,
-    "noUncheckedSideEffectImports": true,
-    "moduleDetection": "force",
-    "skipLibCheck": true,
+		// Recommended Options
+		"strict": true,
+		"verbatimModuleSyntax": true,
+		"isolatedModules": true,
+		"noUncheckedSideEffectImports": true,
+		"moduleDetection": "force",
+		"skipLibCheck": true,
 
-    "resolveJsonModule": true
-  },
-  "include": ["src/**/*"]
+		"resolveJsonModule": true
+	},
+	"include": ["src/**/*"]
 }

@@ -95,9 +95,7 @@ export default function Profile() {
 							<div className="mb-3">
 								<strong>Account Status:</strong>
 								<div>
-									<Badge bg={me.active ? "success" : "warning"}>
-										{me.active ? "Active" : "Inactive"}
-									</Badge>
+									<Badge bg={me.active ? "success" : "warning"}>{me.active ? "Active" : "Inactive"}</Badge>
 								</div>
 							</div>
 							<div>
@@ -155,8 +153,8 @@ export default function Profile() {
 								</div>
 							) : favorites.length === 0 ? (
 								<Alert variant="info">
-									You haven't favorited any services yet.{" "}
-									<Link to="/services">Browse services</Link> to add some!
+									You haven't favorited any services yet. <Link to="/services">Browse services</Link> to add
+									some!
 								</Alert>
 							) : (
 								<Alert variant="info" className="mb-0">

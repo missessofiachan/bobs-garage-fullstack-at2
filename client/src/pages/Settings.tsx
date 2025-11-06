@@ -169,9 +169,7 @@ export default function Settings() {
 											<option value="comfortable">Comfortable</option>
 											<option value="compact">Compact</option>
 										</Form.Select>
-										<Form.Text className="text-muted">
-											Control spacing and padding in the interface
-										</Form.Text>
+										<Form.Text className="text-muted">Control spacing and padding in the interface</Form.Text>
 									</Form.Group>
 								</Col>
 								<Col md={6}>
@@ -183,9 +181,7 @@ export default function Settings() {
 											checked={prefs.animationsEnabled}
 											onChange={(e) => dispatch(setAnimationsEnabled(e.target.checked))}
 										/>
-										<Form.Text className="text-muted">
-											Toggle UI animations and transitions
-										</Form.Text>
+										<Form.Text className="text-muted">Toggle UI animations and transitions</Form.Text>
 									</Form.Group>
 								</Col>
 							</Row>
@@ -313,9 +309,7 @@ export default function Settings() {
 									checked={prefs.accessibilityHighContrast}
 									onChange={(e) => dispatch(setAccessibilityHighContrast(e.target.checked))}
 								/>
-								<Form.Text className="text-muted">
-									Increase contrast for better visibility
-								</Form.Text>
+								<Form.Text className="text-muted">Increase contrast for better visibility</Form.Text>
 							</Form.Group>
 							<Form.Group className="mb-3">
 								<Form.Check
@@ -363,11 +357,7 @@ export default function Settings() {
 											<Card.Text className="text-muted small mb-3">
 												Clear all cached data and local storage (will reload the page)
 											</Card.Text>
-											<Button
-												variant="outline-warning"
-												size="sm"
-												onClick={() => setShowClearCacheModal(true)}
-											>
+											<Button variant="outline-warning" size="sm" onClick={() => setShowClearCacheModal(true)}>
 												Clear Cache
 											</Button>
 										</Card.Body>
@@ -413,9 +403,8 @@ export default function Settings() {
 					<Modal.Title>Clear Cache</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
-					Are you sure you want to clear all cached data? This will remove your local preferences
-					and cached data. The page will reload after clearing. Your account data will not be
-					affected.
+					Are you sure you want to clear all cached data? This will remove your local preferences and
+					cached data. The page will reload after clearing. Your account data will not be affected.
 				</Modal.Body>
 				<Modal.Footer>
 					<Button variant="secondary" onClick={() => setShowClearCacheModal(false)}>

@@ -148,7 +148,9 @@ describe("createResourceHooks", () => {
 
 		it("should be disabled when id is not a finite number", () => {
 			const hooks = createResourceHooks<TestDTO>(config);
-			const { result } = renderHook(() => hooks.useGet(NaN as any), { wrapper: createWrapper() });
+			const { result } = renderHook(() => hooks.useGet(Number.NaN as any), {
+				wrapper: createWrapper(),
+			});
 
 			expect(result.current.isFetching).toBe(false);
 			expect(mockGet).not.toHaveBeenCalled();

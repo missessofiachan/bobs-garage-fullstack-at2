@@ -200,6 +200,8 @@ temp/
 
 # Biome
 .biome/
+biome-report.txt
+biome-report-detailed.txt
 
 # Husky
 .husky/_/

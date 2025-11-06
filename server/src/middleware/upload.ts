@@ -132,9 +132,7 @@ function imageFileFilter(_req: Request, file: Express.Multer.File, cb: multer.Fi
 	const allowedMimeTypes = Object.keys(ALLOWED_IMAGE_TYPES);
 	if (!allowedMimeTypes.includes(file.mimetype)) {
 		return cb(
-			new Error(
-				`Invalid file type: ${file.mimetype}. Allowed types: ${allowedMimeTypes.join(", ")}`,
-			),
+			new Error(`Invalid file type: ${file.mimetype}. Allowed types: ${allowedMimeTypes.join(", ")}`),
 		);
 	}
 

@@ -189,9 +189,7 @@ api.interceptors.response.use(
 			if (count < 1) {
 				original._retry429Count = count + 1;
 				const retryAfterHeader = response?.headers?.["retry-after"];
-				const rateResetHeader = response?.headers?.["ratelimit-reset"] as unknown as
-					| string
-					| undefined;
+				const rateResetHeader = response?.headers?.["ratelimit-reset"] as unknown as string | undefined;
 				let delayMs = 1000;
 				if (retryAfterHeader) {
 					const v = Number(retryAfterHeader);

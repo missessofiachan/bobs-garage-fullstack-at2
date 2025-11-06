@@ -12,11 +12,7 @@ import { useSearchParams } from "react-router-dom";
 import { useToast } from "../components/ui/ToastProvider";
 import usePageTitle from "../hooks/usePageTitle";
 
-const fadeInUp = {
-	initial: { opacity: 0, y: 20 },
-	animate: { opacity: 1, y: 0 },
-	transition: { duration: 0.5 },
-};
+import { fadeInUp } from "../utils/animations";
 
 export default function Contact() {
 	usePageTitle("Contact Us");
@@ -75,8 +71,8 @@ export default function Contact() {
 			<motion.div {...fadeInUp}>
 				<h1 className="mb-4">Contact Us</h1>
 				<p className="lead mb-5">
-					Have a question or want to book a service? Get in touch with us and we'll get back to you
-					as soon as possible.
+					Have a question or want to book a service? Get in touch with us and we'll get back to you as
+					soon as possible.
 				</p>
 			</motion.div>
 
@@ -89,8 +85,8 @@ export default function Contact() {
 								<h2 className="mb-4">Send us a Message</h2>
 								{showSuccess && (
 									<Alert variant="success" className="mb-4">
-										Your email client should open shortly. If it doesn't, please contact us directly
-										at <a href="mailto:info@bobsgarage.com.au">info@bobsgarage.com.au</a>
+										Your email client should open shortly. If it doesn't, please contact us directly at{" "}
+										<a href="mailto:info@bobsgarage.com.au">info@bobsgarage.com.au</a>
 									</Alert>
 								)}
 								<Form onSubmit={handleSubmit}>

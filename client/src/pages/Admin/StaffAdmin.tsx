@@ -330,12 +330,7 @@ export default function StaffAdmin() {
 			<Form onSubmit={onCreate} style={{ maxWidth: 360 }}>
 				<Form.Group className="mb-2">
 					<Form.Label>Name</Form.Label>
-					<Form.Control
-						value={name}
-						onChange={(e) => setName(e.target.value)}
-						required
-						minLength={1}
-					/>
+					<Form.Control value={name} onChange={(e) => setName(e.target.value)} required minLength={1} />
 				</Form.Group>
 				<Form.Group className="mb-2">
 					<Form.Label>Role</Form.Label>

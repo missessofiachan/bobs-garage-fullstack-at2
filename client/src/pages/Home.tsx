@@ -24,21 +24,7 @@ import { useStaffList } from "../hooks/useStaff";
 import { getImageBaseUrl } from "../utils/api";
 import { formatCurrency } from "../utils/formatters";
 import { getImageSrc } from "../utils/imagePlaceholder";
-
-const fadeInUp = {
-	initial: { opacity: 0, y: 20 },
-	animate: { opacity: 1, y: 0 },
-	transition: { duration: 0.5 },
-};
-
-const staggerContainer = {
-	initial: {},
-	animate: {
-		transition: {
-			staggerChildren: 0.1,
-		},
-	},
-};
+import { fadeInUp, staggerContainer } from "../utils/animations";
 
 export default function Home() {
 	const { accessToken } = useSelector((s: any) => s.auth);
@@ -127,10 +113,7 @@ export default function Home() {
 					<Col xs={6} md={3}>
 						<Card className="text-center h-100">
 							<Card.Body>
-								<div
-									className="display-4 fw-bold text-primary"
-									aria-label="5000 plus happy customers"
-								>
+								<div className="display-4 fw-bold text-primary" aria-label="5000 plus happy customers">
 									5000+
 								</div>
 								<div className="text-muted">Happy Customers</div>
@@ -140,10 +123,7 @@ export default function Home() {
 					<Col xs={6} md={3}>
 						<Card className="text-center h-100">
 							<Card.Body>
-								<div
-									className="display-4 fw-bold text-primary"
-									aria-label="1000 plus services completed"
-								>
+								<div className="display-4 fw-bold text-primary" aria-label="1000 plus services completed">
 									1000+
 								</div>
 								<div className="text-muted">Services Completed</div>
@@ -252,9 +232,7 @@ export default function Home() {
 															{service.description?.substring(0, 80)}
 															{service.description && service.description.length > 80 ? "..." : ""}
 														</Card.Text>
-														<div className="fw-bold text-primary fs-5">
-															{formatCurrency(service.price)}
-														</div>
+														<div className="fw-bold text-primary fs-5">{formatCurrency(service.price)}</div>
 													</Card.Body>
 												</Card>
 											</Link>
@@ -340,8 +318,7 @@ export default function Home() {
 									))}
 								</div>
 								<Card.Text>
-									"Best garage in town! They fixed my car quickly and the price was fair. Highly
-									recommend!"
+									"Best garage in town! They fixed my car quickly and the price was fair. Highly recommend!"
 								</Card.Text>
 								<Card.Text className="text-muted small mb-0">
 									<strong>Sarah Johnson</strong>
@@ -358,8 +335,8 @@ export default function Home() {
 									))}
 								</div>
 								<Card.Text>
-									"Professional, honest, and reliable. They explained everything clearly and did a
-									great job!"
+									"Professional, honest, and reliable. They explained everything clearly and did a great
+									job!"
 								</Card.Text>
 								<Card.Text className="text-muted small mb-0">
 									<strong>Mike Chen</strong>
@@ -395,8 +372,8 @@ export default function Home() {
 							<Col md={6} className="mb-4 mb-md-0">
 								<h2 className="mb-4">Ready to Get Started?</h2>
 								<p className="fs-5 mb-4">
-									Book your service today and experience the difference of working with honest,
-									professional mechanics.
+									Book your service today and experience the difference of working with honest, professional
+									mechanics.
 								</p>
 								<Link to="/services" className="btn btn-primary btn-lg me-2">
 									Book a Service

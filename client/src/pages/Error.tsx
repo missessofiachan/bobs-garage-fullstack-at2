@@ -44,10 +44,7 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
 							<a className="btn btn-primary" href="/">
 								Go to Home
 							</a>
-							<button
-								className="btn btn-outline-secondary"
-								onClick={() => window.location.reload()}
-							>
+							<button className="btn btn-outline-secondary" onClick={() => window.location.reload()}>
 								Reload page
 							</button>
 						</div>

@@ -14,18 +14,13 @@ import Loading from "../components/ui/Loading";
 import usePageTitle from "../hooks/usePageTitle";
 import { useService } from "../hooks/useServices";
 import { getImageBaseUrl } from "../utils/api";
+import { fadeInUp } from "../utils/animations";
 import { formatCurrency } from "../utils/formatters";
 import { getImageSrc, IMAGE_PLACEHOLDER } from "../utils/imagePlaceholder";
 
-const fadeInUp = {
-	initial: { opacity: 0, y: 20 },
-	animate: { opacity: 1, y: 0 },
-	transition: { duration: 0.5 },
-};
-
 export default function ServiceDetail() {
 	const { id } = useParams<{ id: string }>();
-	const serviceId = id ? parseInt(id, 10) : undefined;
+	const serviceId = id ? Number.parseInt(id, 10) : undefined;
 	const { data: service, isLoading, error } = useService(serviceId);
 
 	usePageTitle(service ? `${service.name} - Services` : "Service Details");
@@ -148,9 +143,7 @@ export default function ServiceDetail() {
 								<div className="mb-4">
 									<div className="d-flex align-items-baseline gap-2 mb-3">
 										<span className="text-muted fs-6">Price:</span>
-										<span className="fw-bold text-primary fs-3">
-											{formatCurrency(service.price)}
-										</span>
+										<span className="fw-bold text-primary fs-3">{formatCurrency(service.price)}</span>
 									</div>
 
 									{service.description && (

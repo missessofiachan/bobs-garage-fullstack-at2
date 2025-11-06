@@ -80,9 +80,7 @@ export default function Dashboard() {
 						<Card.Body>
 							<div className="d-flex justify-content-between align-items-start">
 								<div className="flex-grow-1">
-									<Card.Title className="text-muted small text-uppercase mb-2">
-										Total Users
-									</Card.Title>
+									<Card.Title className="text-muted small text-uppercase mb-2">Total Users</Card.Title>
 									<h3 className="mb-1">{metrics?.users.total ?? 0}</h3>
 									<div className="small text-muted">
 										<span className="text-success">{metrics?.users.active ?? 0} active</span>
@@ -113,18 +111,12 @@ export default function Dashboard() {
 						<Card.Body>
 							<div className="d-flex justify-content-between align-items-start">
 								<div className="flex-grow-1">
-									<Card.Title className="text-muted small text-uppercase mb-2">
-										Total Services
-									</Card.Title>
+									<Card.Title className="text-muted small text-uppercase mb-2">Total Services</Card.Title>
 									<h3 className="mb-1">{metrics?.services.total ?? 0}</h3>
 									<div className="small text-muted">
-										<span className="text-success">
-											{metrics?.services.published ?? 0} published
-										</span>
+										<span className="text-success">{metrics?.services.published ?? 0} published</span>
 										{" • "}
-										<span className="text-warning">
-											{metrics?.services.unpublished ?? 0} unpublished
-										</span>
+										<span className="text-warning">{metrics?.services.unpublished ?? 0} unpublished</span>
 										{metrics?.services.recent ? (
 											<>
 												<br />
@@ -148,9 +140,7 @@ export default function Dashboard() {
 						<Card.Body>
 							<div className="d-flex justify-content-between align-items-start">
 								<div className="flex-grow-1">
-									<Card.Title className="text-muted small text-uppercase mb-2">
-										Total Staff
-									</Card.Title>
+									<Card.Title className="text-muted small text-uppercase mb-2">Total Staff</Card.Title>
 									<h3 className="mb-1">{metrics?.staff.total ?? 0}</h3>
 									<div className="small text-muted">
 										<span className="text-success">{metrics?.staff.active ?? 0} active</span>
@@ -183,9 +173,7 @@ export default function Dashboard() {
 						<Card.Body>
 							<div className="d-flex justify-content-between align-items-start">
 								<div className="flex-grow-1">
-									<Card.Title className="text-muted small text-uppercase mb-2">
-										Total Favorites
-									</Card.Title>
+									<Card.Title className="text-muted small text-uppercase mb-2">Total Favorites</Card.Title>
 									<h3 className="mb-0">{metrics?.favorites.total ?? 0}</h3>
 									<small className="text-muted">User service favorites</small>
 								</div>
@@ -197,31 +185,23 @@ export default function Dashboard() {
 				<Col md={6}>
 					<Card className="h-100 shadow-sm">
 						<Card.Body>
-							<Card.Title className="text-muted small text-uppercase mb-3">
-								Activity Today
-							</Card.Title>
+							<Card.Title className="text-muted small text-uppercase mb-3">Activity Today</Card.Title>
 							<Row className="g-3">
 								<Col xs={4}>
 									<div className="text-center">
-										<div className="h4 mb-1 text-primary">
-											{metrics?.recentActivity.usersToday ?? 0}
-										</div>
+										<div className="h4 mb-1 text-primary">{metrics?.recentActivity.usersToday ?? 0}</div>
 										<small className="text-muted d-block">Users</small>
 									</div>
 								</Col>
 								<Col xs={4}>
 									<div className="text-center">
-										<div className="h4 mb-1 text-success">
-											{metrics?.recentActivity.servicesToday ?? 0}
-										</div>
+										<div className="h4 mb-1 text-success">{metrics?.recentActivity.servicesToday ?? 0}</div>
 										<small className="text-muted d-block">Services</small>
 									</div>
 								</Col>
 								<Col xs={4}>
 									<div className="text-center">
-										<div className="h4 mb-1 text-info">
-											{metrics?.recentActivity.staffToday ?? 0}
-										</div>
+										<div className="h4 mb-1 text-info">{metrics?.recentActivity.staffToday ?? 0}</div>
 										<small className="text-muted d-block">Staff</small>
 									</div>
 								</Col>

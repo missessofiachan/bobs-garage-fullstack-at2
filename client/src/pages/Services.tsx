@@ -17,25 +17,10 @@ import { useServices } from "../hooks/useServices";
 import type { ServicesSort, ServicesView } from "../slices/preferences.slice";
 import { setServicesSort, setServicesView } from "../slices/preferences.slice";
 import { getImageBaseUrl } from "../utils/api";
+import { fadeInUp, staggerContainer } from "../utils/animations";
 import { formatCurrency } from "../utils/formatters";
 import { getImageSrc, IMAGE_PLACEHOLDER } from "../utils/imagePlaceholder";
 import { highlightSearch } from "../utils/searchHighlight";
-
-const fadeInUp = {
-	initial: { opacity: 0, y: 20 },
-	animate: { opacity: 1, y: 0 },
-	transition: { duration: 0.5 },
-};
-
-const staggerContainer = {
-	initial: { opacity: 1 },
-	animate: {
-		opacity: 1,
-		transition: {
-			staggerChildren: 0.1,
-		},
-	},
-};
 
 export default function Services() {
 	const { data, isLoading, error, refetch } = useServices();
@@ -83,8 +68,7 @@ export default function Services() {
 					<div>
 						<h1 className="mb-0">Our Services</h1>
 						<p className="text-muted mb-0">
-							Browse our comprehensive range of automotive services. Find exactly what your vehicle
-							needs.
+							Browse our comprehensive range of automotive services. Find exactly what your vehicle needs.
 						</p>
 					</div>
 				</div>
@@ -208,9 +192,7 @@ export default function Services() {
 															}}
 															loading="lazy"
 															onError={(e) => {
-																if (
-																	(e.currentTarget as HTMLImageElement).src !== IMAGE_PLACEHOLDER
-																) {
+																if ((e.currentTarget as HTMLImageElement).src !== IMAGE_PLACEHOLDER) {
 																	(e.currentTarget as HTMLImageElement).src = IMAGE_PLACEHOLDER;
 																}
 															}}
@@ -233,9 +215,7 @@ export default function Services() {
 														<Card.Title className="mb-2">
 															{q ? highlightSearch(service.name, q) : service.name}
 														</Card.Title>
-														<div className="fw-bold text-primary fs-5 mb-2">
-															{formatCurrency(service.price)}
-														</div>
+														<div className="fw-bold text-primary fs-5 mb-2">{formatCurrency(service.price)}</div>
 														{service.description && (
 															<Card.Text
 																className="text-muted small"
@@ -312,9 +292,7 @@ export default function Services() {
 														to={`/services/${service.id}`}
 														style={{ textDecoration: "none", color: "inherit" }}
 													>
-														<span className="fw-bold text-primary">
-															{formatCurrency(service.price)}
-														</span>
+														<span className="fw-bold text-primary">{formatCurrency(service.price)}</span>
 													</Link>
 												</td>
 												<td>
@@ -323,9 +301,7 @@ export default function Services() {
 														style={{ textDecoration: "none", color: "inherit" }}
 													>
 														<span className="text-muted">
-															{q
-																? highlightSearch(service.description || "", q)
-																: service.description}
+															{q ? highlightSearch(service.description || "", q) : service.description}
 														</span>
 													</Link>
 												</td>

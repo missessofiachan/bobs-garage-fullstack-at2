@@ -6,13 +6,14 @@
 
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { Alert, Button, Card, Col, Form, InputGroup, Row } from "react-bootstrap";
+import { Alert, Button, Form, InputGroup } from "react-bootstrap";
 import { MdArrowBack, MdCheckCircle, MdEmail, MdLockReset } from "react-icons/md";
 import { Link } from "react-router-dom";
 import api from "../api/axios";
+import AuthCardLayout from "../components/layouts/AuthCardLayout";
 import { useToast } from "../components/ui/ToastProvider";
+import { useErrorHandler } from "../hooks/useErrorHandler";
 import usePageTitle from "../hooks/usePageTitle";
-import { formatErrorMessageWithId } from "../utils/errorFormatter";
 
 export default function ForgotPassword() {
 	usePageTitle("Forgot Password");
@@ -21,6 +22,10 @@ export default function ForgotPassword() {
 	const [loading, setLoading] = useState(false);
 	const [success, setSuccess] = useState(false);
 	const { notify } = useToast();
+	const handleError = useErrorHandler({
+		setError: setErr,
+		showToast: true,
+	});
 
 	const onSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -52,164 +57,113 @@ export default function ForgotPassword() {
 				variant: "success",
 			});
 		} catch (error: any) {
-			const { message: errorMessage, requestId } = formatErrorMessageWithId(
-				error || new Error("Failed to send reset email. Please try again."),
-			);
-			setErr(errorMessage);
-			notify({ body: errorMessage, variant: "danger", requestId });
+			handleError(error || new Error("Failed to send reset email. Please try again."));
 		} finally {
 			setLoading(false);
 		}
 	};
 
 	return (
-		<motion.div
-			initial={{ opacity: 0, y: 20 }}
-			animate={{ opacity: 1, y: 0 }}
-			transition={{ duration: 0.5 }}
-			className="py-5"
+		<AuthCardLayout
+			icon={<MdLockReset size={64} className="text-primary mb-3" />}
+			title="Reset Password"
+			subtitle="Enter your email address and we'll send you reset instructions"
+			error={err}
+			footer={
+				!success && (
+					<Link to="/login" className="text-decoration-none">
+						<Button variant="outline-secondary" className="d-inline-flex align-items-center gap-2">
+							<MdArrowBack />
+							Back to Login
+						</Button>
+					</Link>
+				)
+			}
 		>
-			<Row className="justify-content-center">
-				<Col xs={12} sm={10} md={8} lg={6} xl={5}>
+			{/* YouTube Video Embed */}
+			<div className="mb-4">
+				<div className="ratio ratio-16x9">
+					<iframe
+						src="https://www.youtube.com/embed/L8XbI9aJOXk"
+						title="Password Reset Help Video"
+						allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+						allowFullScreen
+						style={{ borderRadius: "8px" }}
+					/>
+				</div>
+			</div>
+
+			{success ? (
+				<>
+					{/* Success State */}
 					<motion.div
-						initial={{ scale: 0.95 }}
-						animate={{ scale: 1 }}
-						transition={{ delay: 0.2, duration: 0.4 }}
+						initial={{ opacity: 0, y: 10 }}
+						animate={{ opacity: 1, y: 0 }}
+						className="text-center mb-4"
 					>
-						<Card className="shadow-sm">
-							<Card.Body className="p-4 p-md-5">
-								{/* Header */}
-								<div className="text-center mb-4">
-									<motion.div
-										initial={{ scale: 0 }}
-										animate={{ scale: 1 }}
-										transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
-									>
-										<MdLockReset size={64} className="text-primary mb-3" />
-									</motion.div>
-									<h1 className="mb-2">Reset Password</h1>
-									<p className="text-muted">
-										Enter your email address and we'll send you reset instructions
-									</p>
-								</div>
-
-								{/* YouTube Video Embed */}
-								<div className="mb-4">
-									<div className="ratio ratio-16x9">
-										<iframe
-											src="https://www.youtube.com/embed/L8XbI9aJOXk"
-											title="Password Reset Help Video"
-											allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-											allowFullScreen
-											style={{ borderRadius: "8px" }}
-										></iframe>
-									</div>
-								</div>
-
-								{success ? (
-									<>
-										{/* Success State */}
-										<motion.div
-											initial={{ opacity: 0, y: 10 }}
-											animate={{ opacity: 1, y: 0 }}
-											className="text-center mb-4"
-										>
-											<MdCheckCircle size={48} className="text-primary mb-3" />
-											<Alert
-												style={{
-													backgroundColor: "rgba(85, 205, 252, 0.15)",
-													borderColor: "#55CDFC",
-													color: "inherit",
-												}}
-												className="border"
-											>
-												<h5 style={{ color: "#55CDFC" }}>Check your email</h5>
-												<p className="mb-0">
-													If an account exists with <strong>{email}</strong>, you'll receive
-													password reset instructions shortly.
-												</p>
-											</Alert>
-										</motion.div>
-
-										<div className="text-center mt-4">
-											<Link to="/login" className="text-decoration-none">
-												<Button
-													variant="primary"
-													className="d-inline-flex align-items-center gap-2"
-												>
-													<MdArrowBack />
-													Back to Login
-												</Button>
-											</Link>
-										</div>
-									</>
-								) : (
-									<>
-										{/* Error Alert */}
-										{err && (
-											<motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
-												<Alert variant="danger" className="mb-4">
-													{err}
-												</Alert>
-											</motion.div>
-										)}
-
-										{/* Form */}
-										<Form onSubmit={onSubmit}>
-											<Form.Group className="mb-4">
-												<Form.Label htmlFor="forgot-password-email">Email Address</Form.Label>
-												<InputGroup>
-													<InputGroup.Text aria-hidden="true">
-														<MdEmail />
-													</InputGroup.Text>
-													<Form.Control
-														id="forgot-password-email"
-														value={email}
-														onChange={(e) => setEmail(e.target.value)}
-														type="email"
-														placeholder="Enter your email"
-														required
-														autoComplete="email"
-														autoFocus
-													/>
-												</InputGroup>
-												<Form.Text className="text-muted">
-													We'll send password reset instructions to this email address
-												</Form.Text>
-											</Form.Group>
-
-											<motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-												<Button
-													type="submit"
-													variant="primary"
-													size="lg"
-													className="w-100 mb-3"
-													disabled={loading}
-												>
-													{loading ? "Sending..." : "Send Reset Instructions"}
-												</Button>
-											</motion.div>
-										</Form>
-
-										{/* Back to Login Link */}
-										<div className="text-center mt-4 pt-3 border-top">
-											<Link to="/login" className="text-decoration-none">
-												<Button
-													variant="outline-secondary"
-													className="d-inline-flex align-items-center gap-2"
-												>
-													<MdArrowBack />
-													Back to Login
-												</Button>
-											</Link>
-										</div>
-									</>
-								)}
-							</Card.Body>
-						</Card>
+						<MdCheckCircle size={48} className="text-primary mb-3" />
+						<Alert
+							style={{
+								backgroundColor: "rgba(85, 205, 252, 0.15)",
+								borderColor: "#55CDFC",
+								color: "inherit",
+							}}
+							className="border"
+						>
+							<h5 style={{ color: "#55CDFC" }}>Check your email</h5>
+							<p className="mb-0">
+								If an account exists with <strong>{email}</strong>, you'll receive password reset
+								instructions shortly.
+							</p>
+						</Alert>
 					</motion.div>
-				</Col>
-			</Row>
-		</motion.div>
+
+					<div className="text-center mt-4">
+						<Link to="/login" className="text-decoration-none">
+							<Button variant="primary" className="d-inline-flex align-items-center gap-2">
+								<MdArrowBack />
+								Back to Login
+							</Button>
+						</Link>
+					</div>
+				</>
+			) : (
+				<Form onSubmit={onSubmit}>
+					<Form.Group className="mb-4">
+						<Form.Label htmlFor="forgot-password-email">Email Address</Form.Label>
+						<InputGroup>
+							<InputGroup.Text aria-hidden="true">
+								<MdEmail />
+							</InputGroup.Text>
+							<Form.Control
+								id="forgot-password-email"
+								value={email}
+								onChange={(e) => setEmail(e.target.value)}
+								type="email"
+								placeholder="Enter your email"
+								required
+								autoComplete="email"
+								autoFocus
+							/>
+						</InputGroup>
+						<Form.Text className="text-muted">
+							We'll send password reset instructions to this email address
+						</Form.Text>
+					</Form.Group>
+
+					<motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+						<Button
+							type="submit"
+							variant="primary"
+							size="lg"
+							className="w-100 mb-3"
+							disabled={loading}
+						>
+							{loading ? "Sending..." : "Send Reset Instructions"}
+						</Button>
+					</motion.div>
+				</Form>
+			)}
+		</AuthCardLayout>
 	);
 }

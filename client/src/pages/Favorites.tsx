@@ -13,24 +13,9 @@ import Loading from "../components/ui/Loading";
 import { useFavorites } from "../hooks/useFavorites";
 import usePageTitle from "../hooks/usePageTitle";
 import { getImageBaseUrl } from "../utils/api";
+import { fadeInUp, staggerContainer } from "../utils/animations";
 import { formatCurrency } from "../utils/formatters";
 import { getImageSrc, IMAGE_PLACEHOLDER } from "../utils/imagePlaceholder";
-
-const fadeInUp = {
-	initial: { opacity: 0, y: 20 },
-	animate: { opacity: 1, y: 0 },
-	transition: { duration: 0.5 },
-};
-
-const staggerContainer = {
-	initial: { opacity: 1 },
-	animate: {
-		opacity: 1,
-		transition: {
-			staggerChildren: 0.1,
-		},
-	},
-};
 
 export default function Favorites() {
 	const { favorites, isLoading } = useFavorites();
@@ -82,10 +67,7 @@ export default function Favorites() {
 										whileHover={{ y: -5 }}
 										transition={{ type: "spring", stiffness: 300 }}
 									>
-										<Link
-											to={`/services/${service.id}`}
-											style={{ textDecoration: "none", color: "inherit" }}
-										>
+										<Link to={`/services/${service.id}`} style={{ textDecoration: "none", color: "inherit" }}>
 											<Card className="h-100 shadow-sm" style={{ cursor: "pointer" }}>
 												<div
 													style={{
@@ -129,9 +111,7 @@ export default function Favorites() {
 												</div>
 												<Card.Body className="d-flex flex-column">
 													<Card.Title className="mb-2">{service.name}</Card.Title>
-													<div className="fw-bold text-primary fs-5 mb-2">
-														{formatCurrency(service.price)}
-													</div>
+													<div className="fw-bold text-primary fs-5 mb-2">{formatCurrency(service.price)}</div>
 													{service.description && (
 														<Card.Text
 															className="text-muted small flex-grow-1"

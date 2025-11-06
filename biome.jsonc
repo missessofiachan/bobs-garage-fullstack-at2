@@ -3,28 +3,214 @@
 {
 	"$schema": "https://biomejs.dev/schemas/2.3.4/schema.json",
 	"files": {
-		"ignoreUnknown": true,
-		"includes": [
-			"**",
-			"!**/node_modules",
-			"!**/dist",
-			"!**/coverage",
-			"!**/uploads",
-			"!**/build",
-			"!**/tsconfig*.json",
-			"!**/docs",
-			"!**/server/tests",
-			"!**/server/src/db/scripts"
-		]
+		"ignoreUnknown": true
 	},
 	"formatter": {
 		"enabled": true,
-		"lineWidth": 100
+		"formatWithErrors": false,
+		"indentStyle": "tab",
+		"indentWidth": 1,
+		"lineWidth": 100,
+		"lineEnding": "lf"
 	},
 	"linter": {
 		"enabled": true,
 		"rules": {
-			"recommended": true
+			"recommended": true,
+			"a11y": {
+				"recommended": true,
+				"noAriaUnsupportedElements": "error",
+				"useKeyWithClickEvents": "error",
+				"useKeyWithMouseEvents": "error",
+				"useValidAriaProps": "error",
+				"useValidAriaValues": "error"
+			},
+			"complexity": {
+				"recommended": true,
+				"noBannedTypes": "warn",
+				"noExcessiveCognitiveComplexity": "warn",
+				"noForEach": "off",
+				"noUselessCatch": "error",
+				"noUselessTypeConstraint": "error"
+			},
+			"correctness": {
+				"recommended": true,
+				"noUnusedVariables": "error",
+				"noUnusedImports": "error",
+				"useExhaustiveDependencies": "warn",
+				"useHookAtTopLevel": "error",
+				"noUnusedFunctionParameters": "warn",
+				"noUnusedPrivateClassMembers": "error",
+				"noUnusedLabels": "error",
+				"useIsNan": "error",
+				"useValidForDirection": "error",
+				"noConstAssign": "error",
+				"noConstantCondition": "warn",
+				"noSelfAssign": "error",
+				"noUndeclaredVariables": "error",
+				"noUnsafeFinally": "error",
+				"noUnsafeOptionalChaining": "error",
+				"useValidTypeof": "error"
+			},
+			"performance": {
+				"recommended": true,
+				"noAccumulatingSpread": "warn",
+				"noDelete": "error"
+			},
+			"security": {
+				"recommended": true,
+				"noDangerouslySetInnerHtml": "error",
+				"noDangerouslySetInnerHtmlWithChildren": "error"
+			},
+			"style": {
+				"recommended": true,
+				"noImplicitBoolean": "off",
+				"useConst": "error",
+				"useExportType": "error",
+				"useImportType": "error",
+				"useNodejsImportProtocol": "error",
+				"useNumberNamespace": "error",
+				"useNamingConvention": {
+					"level": "warn",
+					"options": {
+						"strictCase": false,
+						"conventions": [
+							{
+								"selector": {
+									"kind": "variable"
+								},
+								"formats": ["camelCase", "PascalCase", "CONSTANT_CASE"]
+							},
+							{
+								"selector": {
+									"kind": "function"
+								},
+								"formats": ["camelCase", "PascalCase"]
+							},
+							{
+								"selector": {
+									"kind": "typeLike"
+								},
+								"formats": ["PascalCase"]
+							}
+						]
+					}
+				},
+				"useConsistentArrayType": "error",
+				"useSingleVarDeclarator": "error",
+				"useTemplate": "error",
+				"noParameterAssign": "warn",
+				"useBlockStatements": "off",
+				"useCollapsedElseIf": "warn",
+				"useDefaultParameterLast": "error",
+				"useExponentiationOperator": "error",
+				"useFragmentSyntax": "error",
+				"useSelfClosingElements": "error",
+				"useShorthandAssign": "error"
+			},
+			"suspicious": {
+				"recommended": true,
+				"noAssignInExpressions": "warn",
+				"noArrayIndexKey": "warn",
+				"noCommentText": "warn",
+				"noCompareNegZero": "error",
+				"noConsole": "warn",
+				"noControlCharactersInRegex": "error",
+				"noDebugger": "error",
+				"noDoubleEquals": "error",
+				"noDuplicateObjectKeys": "error",
+				"noDuplicateParameters": "error",
+				"noEmptyInterface": "warn",
+				"noFallthroughSwitchClause": "error",
+				"noFunctionAssign": "error",
+				"noImplicitAnyLet": "warn",
+				"noMisleadingCharacterClass": "error",
+				"noPrototypeBuiltins": "error",
+				"noRedeclare": "error",
+				"noShadowRestrictedNames": "error",
+				"noUnsafeNegation": "error",
+				"useGetterReturn": "error"
+			},
+			"nursery": {
+				"useSortedClasses": "off"
+			}
 		}
-	}
+	},
+	"javascript": {
+		"formatter": {
+			"quoteStyle": "double",
+			"jsxQuoteStyle": "double",
+			"quoteProperties": "asNeeded",
+			"trailingCommas": "all",
+			"semicolons": "always",
+			"arrowParentheses": "always",
+			"bracketSpacing": true,
+			"bracketSameLine": false,
+			"attributePosition": "auto"
+		},
+		"globals": []
+	},
+	"json": {
+		"formatter": {
+			"enabled": true,
+			"indentStyle": "tab",
+			"indentWidth": 1,
+			"lineWidth": 100,
+			"trailingCommas": "none"
+		}
+	},
+	"overrides": [
+		{
+			"includes": ["**/server/**/*.ts", "**/server/**/*.js"],
+			"linter": {
+				"rules": {
+					"suspicious": {
+						"noConsole": "off"
+					}
+				}
+			}
+		},
+		{
+			"includes": ["**/client/**/*.tsx", "**/client/**/*.ts"],
+			"linter": {
+				"rules": {
+					"suspicious": {
+						"noArrayIndexKey": "warn"
+					}
+				}
+			}
+		},
+		{
+			"includes": ["**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts", "**/*.spec.tsx"],
+			"linter": {
+				"rules": {
+					"suspicious": {
+						"noConsole": "off"
+					},
+					"style": {
+						"useNamingConvention": "off"
+					}
+				}
+			}
+		},
+		{
+			"includes": ["**/server/src/db/migrations/**"],
+			"formatter": {
+				"enabled": false
+			},
+			"linter": {
+				"enabled": false
+			}
+		},
+		{
+			"includes": ["**/server/tests/**"],
+			"linter": {
+				"rules": {
+					"style": {
+						"useNamingConvention": "off"
+					}
+				}
+			}
+		}
+	]
 }

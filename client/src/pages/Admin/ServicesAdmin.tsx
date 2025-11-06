@@ -227,9 +227,7 @@ export default function ServicesAdmin() {
 												(e.currentTarget as HTMLInputElement).value = "";
 											}}
 										/>
-										{progress[s.id] ? (
-											<div className="small text-muted">{progress[s.id]}%</div>
-										) : null}
+										{progress[s.id] ? <div className="small text-muted">{progress[s.id]}%</div> : null}
 									</div>
 								</td>
 								<td>
@@ -258,9 +256,7 @@ export default function ServicesAdmin() {
 										<Form.Control
 											type="number"
 											value={editForm.price}
-											onChange={(e) =>
-												setEditForm({ ...editForm, price: Number(e.target.value) || 0 })
-											}
+											onChange={(e) => setEditForm({ ...editForm, price: Number(e.target.value) || 0 })}
 											size="sm"
 											min={0}
 											step="0.01"

@@ -43,9 +43,7 @@ export function createResourceHooks<
 			return useQuery<DTO[], unknown, DTO[], any>({
 				queryKey: queryKey.all,
 				queryFn: async (): Promise<DTO[]> => {
-					const { data } = await api.get<DTO[] | { data: DTO[]; pagination?: any }>(
-						config.basePath,
-					);
+					const { data } = await api.get<DTO[] | { data: DTO[]; pagination?: any }>(config.basePath);
 					// Handle both array responses and object responses with { data: [...], pagination: {...} }
 					if (Array.isArray(data)) {
 						return data;

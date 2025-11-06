@@ -183,8 +183,7 @@ export default function Footer() {
 							<div className="d-flex align-items-center mb-1">
 								{getStatusDot(api)}
 								<span>
-									<span className="visually-hidden">API connection status: </span>API:{" "}
-									<strong>{api}</strong>
+									<span className="visually-hidden">API connection status: </span>API: <strong>{api}</strong>
 									{apiPing !== null && (
 										<span className="text-muted" style={{ fontSize: "0.75rem" }}>
 											{" "}

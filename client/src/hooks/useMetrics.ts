@@ -58,10 +58,10 @@ function calculatePercentile(
 
 	for (let i = buckets.length - 1; i >= 0; i--) {
 		if (buckets[i].count >= target) {
-			return parseFloat(buckets[i].le);
+			return Number.parseFloat(buckets[i].le);
 		}
 	}
-	return parseFloat(buckets[buckets.length - 1]?.le || "0");
+	return Number.parseFloat(buckets[buckets.length - 1]?.le || "0");
 }
 
 /**
@@ -120,48 +120,44 @@ function parseMetrics(metricsText: string): ParsedMetrics {
 			const match = line.match(/http_requests_total\{([^}]+)\} (\d+)/);
 			if (match) {
 				const labels = match[1];
-				const count = parseInt(match[2], 10);
+				const count = Number.parseInt(match[2], 10);
 				metrics.httpRequests.total += count;
 
 				// Extract status code
 				const statusMatch = labels.match(/status_code="(\d+)"/);
 				if (statusMatch) {
 					const status = statusMatch[1];
-					metrics.httpRequests.byStatus[status] =
-						(metrics.httpRequests.byStatus[status] || 0) + count;
+					metrics.httpRequests.byStatus[status] = (metrics.httpRequests.byStatus[status] || 0) + count;
 				}
 
 				// Extract method
 				const methodMatch = labels.match(/method="([^"]+)"/);
 				if (methodMatch) {
 					const method = methodMatch[1];
-					metrics.httpRequests.byMethod[method] =
-						(metrics.httpRequests.byMethod[method] || 0) + count;
+					metrics.httpRequests.byMethod[method] = (metrics.httpRequests.byMethod[method] || 0) + count;
 				}
 			}
 		}
 
 		// Parse http_request_duration_seconds histogram
 		if (line.startsWith("http_request_duration_seconds_bucket")) {
-			const match = line.match(
-				/http_request_duration_seconds_bucket\{[^}]*le="([^"]+)"[^}]*\} (\d+)/,
-			);
+			const match = line.match(/http_request_duration_seconds_bucket\{[^}]*le="([^"]+)"[^}]*\} (\d+)/);
 			if (match) {
 				const le = match[1];
-				const count = parseInt(match[2], 10);
+				const count = Number.parseInt(match[2], 10);
 				httpDurationBuckets.push({ le, count });
 			}
 		}
 		if (line.startsWith("http_request_duration_seconds_sum")) {
 			const match = line.match(/http_request_duration_seconds_sum\{[^}]*\} ([\d.]+)/);
 			if (match) {
-				httpDurationSum += parseFloat(match[1]);
+				httpDurationSum += Number.parseFloat(match[1]);
 			}
 		}
 		if (line.startsWith("http_request_duration_seconds_count")) {
 			const match = line.match(/http_request_duration_seconds_count\{[^}]*\} (\d+)/);
 			if (match) {
-				httpDurationCount += parseInt(match[1], 10);
+				httpDurationCount += Number.parseInt(match[1], 10);
 			}
 		}
 
@@ -169,7 +165,7 @@ function parseMetrics(metricsText: string): ParsedMetrics {
 		if (line.startsWith("http_errors_total")) {
 			const match = line.match(/http_errors_total\{[^}]*\} (\d+)/);
 			if (match) {
-				metrics.httpErrors += parseInt(match[1], 10);
+				metrics.httpErrors += Number.parseInt(match[1], 10);
 			}
 		}
 
@@ -178,7 +174,7 @@ function parseMetrics(metricsText: string): ParsedMetrics {
 			const match = line.match(/db_queries_total\{([^}]+)\} (\d+)/);
 			if (match) {
 				const labels = match[1];
-				const count = parseInt(match[2], 10);
+				const count = Number.parseInt(match[2], 10);
 				metrics.database.totalQueries += count;
 
 				// Extract operation
@@ -203,11 +199,11 @@ function parseMetrics(metricsText: string): ParsedMetrics {
 			const match = line.match(/db_query_duration_seconds_bucket\{[^}]*le="([^"]+)"[^}]*\} (\d+)/);
 			if (match) {
 				const le = match[1];
-				const count = parseInt(match[2], 10);
+				const count = Number.parseInt(match[2], 10);
 				dbDurationBuckets.push({ le, count });
 
 				// Count slow queries (>1 second)
-				if (parseFloat(le) >= 1.0) {
+				if (Number.parseFloat(le) >= 1.0) {
 					metrics.database.slowQueryCount += count;
 				}
 			}
@@ -215,13 +211,13 @@ function parseMetrics(metricsText: string): ParsedMetrics {
 		if (line.startsWith("db_query_duration_seconds_sum")) {
 			const match = line.match(/db_query_duration_seconds_sum\{[^}]*\} ([\d.]+)/);
 			if (match) {
-				dbDurationSum += parseFloat(match[1]);
+				dbDurationSum += Number.parseFloat(match[1]);
 			}
 		}
 		if (line.startsWith("db_query_duration_seconds_count")) {
 			const match = line.match(/db_query_duration_seconds_count\{[^}]*\} (\d+)/);
 			if (match) {
-				dbDurationCount += parseInt(match[1], 10);
+				dbDurationCount += Number.parseInt(match[1], 10);
 			}
 		}
 
@@ -229,13 +225,13 @@ function parseMetrics(metricsText: string): ParsedMetrics {
 		if (line.startsWith("cache_hits_total")) {
 			const match = line.match(/cache_hits_total\{[^}]*\} (\d+)/);
 			if (match) {
-				metrics.cache.hits += parseInt(match[1], 10);
+				metrics.cache.hits += Number.parseInt(match[1], 10);
 			}
 		}
 		if (line.startsWith("cache_misses_total")) {
 			const match = line.match(/cache_misses_total\{[^}]*\} (\d+)/);
 			if (match) {
-				metrics.cache.misses += parseInt(match[1], 10);
+				metrics.cache.misses += Number.parseInt(match[1], 10);
 			}
 		}
 
@@ -243,7 +239,7 @@ function parseMetrics(metricsText: string): ParsedMetrics {
 		if (line.startsWith("process_resident_memory_bytes")) {
 			const match = line.match(/process_resident_memory_bytes (\d+)/);
 			if (match) {
-				metrics.system.memory.used = parseInt(match[1], 10);
+				metrics.system.memory.used = Number.parseInt(match[1], 10);
 			}
 		}
 	}
@@ -254,7 +250,7 @@ function parseMetrics(metricsText: string): ParsedMetrics {
 		httpDurationBuckets.sort((a, b) => {
 			if (a.le === "+Inf") return 1;
 			if (b.le === "+Inf") return -1;
-			return parseFloat(a.le) - parseFloat(b.le);
+			return Number.parseFloat(a.le) - Number.parseFloat(b.le);
 		});
 
 		// Find the +Inf bucket for total count (or use the highest bucket)
@@ -274,7 +270,7 @@ function parseMetrics(metricsText: string): ParsedMetrics {
 		dbDurationBuckets.sort((a, b) => {
 			if (a.le === "+Inf") return 1;
 			if (b.le === "+Inf") return -1;
-			return parseFloat(a.le) - parseFloat(b.le);
+			return Number.parseFloat(a.le) - Number.parseFloat(b.le);
 		});
 
 		// Find the +Inf bucket for total count
@@ -290,14 +286,14 @@ function parseMetrics(metricsText: string): ParsedMetrics {
 		// Count slow queries: find the bucket with le >= 1.0
 		const slowQueryBucket = dbDurationBuckets.find((b) => {
 			if (b.le === "+Inf") return false;
-			return parseFloat(b.le) >= 1.0;
+			return Number.parseFloat(b.le) >= 1.0;
 		});
 		if (slowQueryBucket) {
 			// For slow queries, we want queries that took >= 1 second
 			// Find the bucket just before 1.0 and subtract
 			const beforeOneSecond = dbDurationBuckets.find((b) => {
 				if (b.le === "+Inf") return false;
-				return parseFloat(b.le) < 1.0;
+				return Number.parseFloat(b.le) < 1.0;
 			});
 			const beforeCount = beforeOneSecond?.count || 0;
 			metrics.database.slowQueryCount = slowQueryBucket.count - beforeCount;

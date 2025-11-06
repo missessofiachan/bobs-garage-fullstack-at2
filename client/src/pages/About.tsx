@@ -25,22 +25,8 @@ import {
 	MdWorkspacePremium,
 } from "react-icons/md";
 import { Link } from "react-router-dom";
+import { fadeInUp, staggerContainer } from "../utils/animations";
 import Staff from "./Staff";
-
-const fadeInUp = {
-	initial: { opacity: 0, y: 20 },
-	animate: { opacity: 1, y: 0 },
-	transition: { duration: 0.5 },
-};
-
-const staggerContainer = {
-	initial: {},
-	animate: {
-		transition: {
-			staggerChildren: 0.1,
-		},
-	},
-};
 
 export default function About() {
 	return (
@@ -129,9 +115,9 @@ export default function About() {
 							<Card.Body>
 								<h4 className="text-primary mb-3">The Beginning (2004)</h4>
 								<p>
-									Bob's Garage started as a small family business with a simple mission: provide
-									honest, reliable automotive service to our neighbors. What began as a one-bay
-									garage has grown into a trusted community institution.
+									Bob's Garage started as a small family business with a simple mission: provide honest,
+									reliable automotive service to our neighbors. What began as a one-bay garage has grown into
+									a trusted community institution.
 								</p>
 							</Card.Body>
 						</Card>
@@ -141,9 +127,9 @@ export default function About() {
 							<Card.Body>
 								<h4 className="text-primary mb-3">Growing Together (2010-2015)</h4>
 								<p>
-									As word spread about our commitment to quality and fair pricing, we expanded our
-									facilities and added more certified technicians. We invested in the latest
-									diagnostic equipment to better serve our customers.
+									As word spread about our commitment to quality and fair pricing, we expanded our facilities
+									and added more certified technicians. We invested in the latest diagnostic equipment to
+									better serve our customers.
 								</p>
 							</Card.Body>
 						</Card>
@@ -153,9 +139,9 @@ export default function About() {
 							<Card.Body>
 								<h4 className="text-primary mb-3">Community Leaders (2016-2020)</h4>
 								<p>
-									We became deeply involved in our community, sponsoring local events and supporting
-									local charities. Our commitment to environmental responsibility led us to
-									implement eco-friendly practices and recycling programs.
+									We became deeply involved in our community, sponsoring local events and supporting local
+									charities. Our commitment to environmental responsibility led us to implement eco-friendly
+									practices and recycling programs.
 								</p>
 							</Card.Body>
 						</Card>
@@ -165,9 +151,9 @@ export default function About() {
 							<Card.Body>
 								<h4 className="text-primary mb-3">Today & Beyond (2021-)</h4>
 								<p>
-									Today, Bob's Garage continues to evolve, embracing new technologies while
-									maintaining our core values of honesty, quality, and customer-first service. We're
-									proud to be your trusted automotive partner.
+									Today, Bob's Garage continues to evolve, embracing new technologies while maintaining our
+									core values of honesty, quality, and customer-first service. We're proud to be your trusted
+									automotive partner.
 								</p>
 							</Card.Body>
 						</Card>
@@ -184,8 +170,8 @@ export default function About() {
 								<h2 className="mb-4">Our Mission</h2>
 								<p className="fs-5">
 									To provide exceptional automotive services that keep our customers' vehicles safe,
-									reliable, and performing at their best, while treating every customer with
-									respect, honesty, and integrity.
+									reliable, and performing at their best, while treating every customer with respect,
+									honesty, and integrity.
 								</p>
 							</Card.Body>
 						</Card>
@@ -251,8 +237,7 @@ export default function About() {
 										<MdAccessTime size={40} className="text-primary mb-3" />
 										<Card.Title>Fast & Efficient</Card.Title>
 										<Card.Text>
-											We understand your time is valuable. Most repairs completed same-day or within
-											24 hours.
+											We understand your time is valuable. Most repairs completed same-day or within 24 hours.
 										</Card.Text>
 									</Card.Body>
 								</Card>
@@ -265,8 +250,7 @@ export default function About() {
 										<MdPriceCheck size={40} className="text-primary mb-3" />
 										<Card.Title>Fair Pricing</Card.Title>
 										<Card.Text>
-											No hidden fees or surprise charges. We provide detailed quotes before any work
-											begins.
+											No hidden fees or surprise charges. We provide detailed quotes before any work begins.
 										</Card.Text>
 									</Card.Body>
 								</Card>
@@ -292,8 +276,7 @@ export default function About() {
 										<MdBuild size={40} className="text-primary mb-3" />
 										<Card.Title>Modern Equipment</Card.Title>
 										<Card.Text>
-											State-of-the-art diagnostic tools and equipment for accurate assessments and
-											repairs.
+											State-of-the-art diagnostic tools and equipment for accurate assessments and repairs.
 										</Card.Text>
 									</Card.Body>
 								</Card>
@@ -328,8 +311,8 @@ export default function About() {
 									<div>
 										<h5>Honest Communication</h5>
 										<p className="mb-0">
-											We'll always explain what needs to be done and why, in terms you can
-											understand. No technical jargon, just straight talk.
+											We'll always explain what needs to be done and why, in terms you can understand. No
+											technical jargon, just straight talk.
 										</p>
 									</div>
 								</div>
@@ -352,8 +335,8 @@ export default function About() {
 									<div>
 										<h5>Respect for Your Time</h5>
 										<p className="mb-0">
-											We know your car is essential to your daily life. We work efficiently to get
-											you back on the road as quickly as possible.
+											We know your car is essential to your daily life. We work efficiently to get you back on
+											the road as quickly as possible.
 										</p>
 									</div>
 								</div>
@@ -364,8 +347,8 @@ export default function About() {
 									<div>
 										<h5>Safety First</h5>
 										<p className="mb-0">
-											Your safety and the safety of your family is our top priority. We never cut
-											corners on safety-critical repairs.
+											Your safety and the safety of your family is our top priority. We never cut corners on
+											safety-critical repairs.
 										</p>
 									</div>
 								</div>
@@ -387,9 +370,7 @@ export default function About() {
 							<Card.Body>
 								<MdVerified size={48} className="text-primary mb-3" />
 								<Card.Title>ASE Certified</Card.Title>
-								<Card.Text>
-									All our mechanics hold Automotive Service Excellence certifications
-								</Card.Text>
+								<Card.Text>All our mechanics hold Automotive Service Excellence certifications</Card.Text>
 							</Card.Body>
 						</Card>
 					</Col>
@@ -409,9 +390,7 @@ export default function About() {
 							<Card.Body>
 								<MdStar size={48} className="text-primary mb-3" />
 								<Card.Title>BBB Accredited</Card.Title>
-								<Card.Text>
-									Better Business Bureau A+ rating for outstanding customer service
-								</Card.Text>
+								<Card.Text>Better Business Bureau A+ rating for outstanding customer service</Card.Text>
 							</Card.Body>
 						</Card>
 					</Col>
@@ -430,8 +409,8 @@ export default function About() {
 							<Col md={6}>
 								<h4 className="mb-3">Giving Back</h4>
 								<p>
-									Bob's Garage is more than just a business—we're part of the community. We're proud
-									to support:
+									Bob's Garage is more than just a business—we're part of the community. We're proud to
+									support:
 								</p>
 								<ul>
 									<li>Local school fundraisers and events</li>
@@ -443,10 +422,7 @@ export default function About() {
 							</Col>
 							<Col md={6}>
 								<h4 className="mb-3">Environmental Responsibility</h4>
-								<p>
-									We care about the planet as much as we care about your car. Our commitment
-									includes:
-								</p>
+								<p>We care about the planet as much as we care about your car. Our commitment includes:</p>
 								<ul>
 									<li>Recycling all used oil, batteries, and parts</li>
 									<li>Using eco-friendly cleaning products</li>
@@ -477,8 +453,8 @@ export default function About() {
 							<Col md={6} className="mb-4 mb-md-0">
 								<h2 className="mb-4">Visit Us Today</h2>
 								<p className="fs-5 mb-4">
-									Experience the Bob's Garage difference. Stop by for a free inspection or schedule
-									your service online.
+									Experience the Bob's Garage difference. Stop by for a free inspection or schedule your
+									service online.
 								</p>
 								<Link to="/services" className="btn btn-primary btn-lg me-2 mb-2">
 									View Our Services

@@ -211,9 +211,7 @@ export default function MetricsPanel() {
 									<div className="mb-2">
 										<div className="d-flex justify-content-between">
 											<span>Slow Queries (&gt;1s)</span>
-											<strong className="text-danger">
-												{formatNumber(metrics.database.slowQueryCount)}
-											</strong>
+											<strong className="text-danger">{formatNumber(metrics.database.slowQueryCount)}</strong>
 										</div>
 									</div>
 								)}

@@ -195,9 +195,7 @@ class CacheService {
 
 		if (env.CACHE_TYPE === "redis") {
 			if (!env.REDIS_HOST) {
-				winstonLogger.warn(
-					"Redis cache selected but REDIS_HOST not set, falling back to memory cache",
-				);
+				winstonLogger.warn("Redis cache selected but REDIS_HOST not set, falling back to memory cache");
 				this.backend = new MemoryCacheBackend();
 			} else {
 				this.backend = new RedisCacheBackend();
