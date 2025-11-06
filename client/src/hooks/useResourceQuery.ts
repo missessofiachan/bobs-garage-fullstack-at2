@@ -44,15 +44,8 @@ export function createResourceHooks<
 				queryKey: queryKey.all,
 				queryFn: async (): Promise<DTO[]> => {
 					const { data } = await api.get<DTO[] | { data: DTO[]; pagination?: any }>(config.basePath);
-					// Handle both array responses and object responses with { data: [...], pagination: {...} }
-					if (Array.isArray(data)) {
-						return data;
-					}
-					// If it's an object with a data property, extract the array
-					if (data && typeof data === "object" && "data" in data && Array.isArray(data.data)) {
-						return data.data;
-					}
-					// Fallback to empty array if structure is unexpected
+					if (Array.isArray(data)) return data;
+					if (Array.isArray(data?.data)) return data.data;
 					return [];
 				},
 				staleTime: config.staleTime ?? 30_000,
@@ -82,9 +75,11 @@ export function createResourceHooks<
 		 */
 		useCreate: (options?: any) => {
 			const qc = useQueryClient();
-			const customOnMutate = options?.onMutate || config.options?.mutations?.create?.onMutate;
-			const customOnError = options?.onError || config.options?.mutations?.create?.onError;
-			const customOnSuccess = options?.onSuccess || config.options?.mutations?.create?.onSuccess;
+			const { onMutate: userOnMutate, onError: userOnError, onSuccess: userOnSuccess, ...restOptions } = options || {};
+			const { onMutate: configOnMutate, onError: configOnError, onSuccess: configOnSuccess, ...restConfig } = config.options?.mutations?.create || {};
+			const customOnMutate = userOnMutate || configOnMutate;
+			const customOnError = userOnError || configOnError;
+			const customOnSuccess = userOnSuccess || configOnSuccess;
 
 			return useMutation<DTO, unknown, CreateDTO, { previousData: DTO[] | undefined }>({
 				mutationFn: async (payload: CreateDTO): Promise<DTO> => {
@@ -141,16 +136,8 @@ export function createResourceHooks<
 					// Call custom onSuccess if provided
 					customOnSuccess?.(newData, vars, context);
 				},
-				...Object.fromEntries(
-					Object.entries(options || {}).filter(
-						([key]) => !["onMutate", "onError", "onSuccess"].includes(key),
-					),
-				),
-				...Object.fromEntries(
-					Object.entries(config.options?.mutations?.create || {}).filter(
-						([key]) => !["onMutate", "onError", "onSuccess"].includes(key),
-					),
-				),
+				...restOptions,
+				...restConfig,
 			});
 		},
 
@@ -159,9 +146,11 @@ export function createResourceHooks<
 		 */
 		useUpdate: (options?: any) => {
 			const qc = useQueryClient();
-			const customOnMutate = options?.onMutate || config.options?.mutations?.update?.onMutate;
-			const customOnError = options?.onError || config.options?.mutations?.update?.onError;
-			const customOnSuccess = options?.onSuccess || config.options?.mutations?.update?.onSuccess;
+			const { onMutate: userOnMutate, onError: userOnError, onSuccess: userOnSuccess, ...restOptions } = options || {};
+			const { onMutate: configOnMutate, onError: configOnError, onSuccess: configOnSuccess, ...restConfig } = config.options?.mutations?.update || {};
+			const customOnMutate = userOnMutate || configOnMutate;
+			const customOnError = userOnError || configOnError;
+			const customOnSuccess = userOnSuccess || configOnSuccess;
 
 			return useMutation<
 				DTO,
@@ -228,16 +217,8 @@ export function createResourceHooks<
 					// Call custom onSuccess if provided
 					customOnSuccess?.(updatedData, vars, context);
 				},
-				...Object.fromEntries(
-					Object.entries(options || {}).filter(
-						([key]) => !["onMutate", "onError", "onSuccess"].includes(key),
-					),
-				),
-				...Object.fromEntries(
-					Object.entries(config.options?.mutations?.update || {}).filter(
-						([key]) => !["onMutate", "onError", "onSuccess"].includes(key),
-					),
-				),
+				...restOptions,
+				...restConfig,
 			});
 		},
 
@@ -246,7 +227,8 @@ export function createResourceHooks<
 		 */
 		useDelete: (options?: any) => {
 			const qc = useQueryClient();
-			const configDeleteOptions = config.options?.mutations?.delete || {};
+			const { onMutate: userOnMutate, onError: userOnError, onSuccess: userOnSuccess, ...restOptions } = options || {};
+			const { onMutate: configOnMutate, onError: configOnError, onSuccess: configOnSuccess, ...restConfig } = config.options?.mutations?.delete || {};
 
 			return useMutation<void, unknown, number, { previousData: DTO[] | undefined }>({
 				mutationFn: async (id: number): Promise<void> => {
@@ -254,7 +236,7 @@ export function createResourceHooks<
 				},
 				onMutate: async (id: number) => {
 					// Call config onMutate if provided
-					const configContext = await configDeleteOptions.onMutate?.(id);
+					const configContext = await configOnMutate?.(id);
 
 					// Cancel any outgoing refetches to avoid overwriting our optimistic update
 					await qc.cancelQueries({ queryKey: queryKey.all });
@@ -282,9 +264,9 @@ export function createResourceHooks<
 						qc.setQueryData(queryKey.all, context.previousData);
 					}
 					// Call config error handler if provided
-					configDeleteOptions.onError?.(_err, _id, context);
+					configOnError?.(_err, _id, context);
 					// Call user's error handler if provided
-					options?.onError?.(_err, _id, context);
+					userOnError?.(_err, _id, context);
 				},
 				onSuccess: (_data, id, _context) => {
 					// Invalidate to refetch and ensure consistency
@@ -292,16 +274,12 @@ export function createResourceHooks<
 					// Also remove the detail query for this specific item
 					qc.removeQueries({ queryKey: queryKey.detail(id) });
 					// Call config success handler if provided
-					configDeleteOptions.onSuccess?.(_data, id, _context);
+					configOnSuccess?.(_data, id, _context);
 					// Call user's success handler if provided
-					options?.onSuccess?.(_data, id, _context);
+					userOnSuccess?.(_data, id, _context);
 				},
-				// Spread other config options (excluding callbacks we've already handled)
-				...Object.fromEntries(
-					Object.entries(configDeleteOptions).filter(
-						([key]) => !["onMutate", "onError", "onSuccess"].includes(key),
-					),
-				),
+				...restOptions,
+				...restConfig,
 			});
 		},
 
@@ -310,8 +288,7 @@ export function createResourceHooks<
 		 */
 		useUpload: (options?: any) => {
 			const qc = useQueryClient();
-			const customOnSuccess = options?.onSuccess;
-			const customOnError = options?.onError;
+			const { onSuccess: customOnSuccess, onError: customOnError, ...restOptions } = options || {};
 			return useMutation({
 				mutationFn: async ({
 					id,
@@ -345,9 +322,7 @@ export function createResourceHooks<
 				onError: (err, vars, context) => {
 					customOnError?.(err, vars, context);
 				},
-				...Object.fromEntries(
-					Object.entries(options || {}).filter(([key]) => !["onSuccess", "onError"].includes(key)),
-				),
+				...restOptions,
 			});
 		},
 

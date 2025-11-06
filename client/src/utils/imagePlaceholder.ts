@@ -35,7 +35,8 @@ export function getImageSrc(imageUrl: string | undefined | null, baseUrl?: strin
 	}
 
 	if (baseUrl) {
-		return imageUrl.startsWith("/") ? `${baseUrl}${imageUrl}` : `${baseUrl}/${imageUrl}`;
+		const separator = imageUrl.startsWith("/") ? "" : "/";
+		return `${baseUrl}${separator}${imageUrl}`;
 	}
 
 	return imageUrl;

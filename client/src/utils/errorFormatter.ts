@@ -172,6 +172,40 @@ export function formatErrorMessageWithId(error: unknown): {
 	return { message, requestId, errorCode };
 }
 
+interface ValidationIssue {
+	path: string[];
+	message: string;
+}
+
+function isAxiosErrorWithValidationErrors(
+	error: unknown,
+): error is AxiosError<{ errors: ValidationIssue[] }> {
+	return (
+		error instanceof AxiosError &&
+		Array.isArray((error.response?.data as { errors?: ValidationIssue[] })?.errors)
+	);
+}
+
+function isZodError(error: unknown): error is { issues: ValidationIssue[] } {
+	return (
+		error !== null &&
+		typeof error === "object" &&
+		"issues" in error &&
+		Array.isArray((error as { issues: unknown }).issues)
+	);
+}
+
+function isValidationIssue(issue: unknown): issue is ValidationIssue {
+	return (
+		issue !== null &&
+		typeof issue === "object" &&
+		"path" in issue &&
+		Array.isArray((issue as { path: unknown }).path) &&
+		"message" in issue &&
+		typeof (issue as { message: unknown }).message === "string"
+	);
+}
+
 /**
  * Extract field-specific errors from validation error responses
  * Returns a record mapping field names to error messages
@@ -180,27 +214,9 @@ export function extractFieldErrors(error: unknown): Record<string, string> {
 	const errors: Record<string, string> = {};
 
 	// Handle Axios errors with response.data.errors
-	if (
-		error &&
-		typeof error === "object" &&
-		"response" in error &&
-		error.response &&
-		typeof error.response === "object" &&
-		"data" in error.response &&
-		error.response.data &&
-		typeof error.response.data === "object" &&
-		"errors" in error.response.data &&
-		Array.isArray(error.response.data.errors)
-	) {
-		error.response.data.errors.forEach((issue: unknown) => {
-			if (
-				issue &&
-				typeof issue === "object" &&
-				"path" in issue &&
-				Array.isArray(issue.path) &&
-				"message" in issue &&
-				typeof issue.message === "string"
-			) {
+	if (isAxiosErrorWithValidationErrors(error)) {
+		error.response.data.errors.forEach((issue) => {
+			if (isValidationIssue(issue)) {
 				const field = issue.path[0] || "general";
 				errors[field] = issue.message;
 			}
@@ -208,21 +224,9 @@ export function extractFieldErrors(error: unknown): Record<string, string> {
 	}
 
 	// Handle Zod validation errors (direct issues array)
-	if (
-		error &&
-		typeof error === "object" &&
-		"issues" in error &&
-		Array.isArray(error.issues)
-	) {
-		error.issues.forEach((issue: unknown) => {
-			if (
-				issue &&
-				typeof issue === "object" &&
-				"path" in issue &&
-				Array.isArray(issue.path) &&
-				"message" in issue &&
-				typeof issue.message === "string"
-			) {
+	if (isZodError(error)) {
+		error.issues.forEach((issue) => {
+			if (isValidationIssue(issue)) {
 				const field = issue.path[0] || "general";
 				errors[field] = issue.message;
 			}

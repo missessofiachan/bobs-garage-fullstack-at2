@@ -4,7 +4,6 @@
  * @version 1.0.0
  */
 
-import { useMemo } from "react";
 import { Button } from "react-bootstrap";
 import Loading from "../components/ui/Loading";
 
@@ -28,38 +27,29 @@ export function useQueryState(options: UseQueryStateOptions) {
 	const { isLoading, error, data, isEmpty, emptyMessage, loadingMessage, onRetry, showRetry } =
 		options;
 
-	const state = useMemo<QueryState>(() => {
-		if (isLoading) return "loading";
-		if (error) return "error";
-		if (isEmpty && data && isEmpty(data)) return "empty";
-		if (!data) return "empty";
-		return "success";
-	}, [isLoading, error, data, isEmpty]);
+	const state: QueryState = isLoading
+		? "loading"
+		: error
+			? "error"
+			: (isEmpty && data && isEmpty(data)) || !data
+				? "empty"
+				: "success";
 
-	const content = useMemo(() => {
-		if (state === "loading") {
-			return <Loading message={loadingMessage || "Loading..."} />;
-		}
-
-		if (state === "error") {
-			return (
-				<div className="alert alert-danger d-flex align-items-center justify-content-between">
-					<div>Failed to load data</div>
-					{showRetry && onRetry && (
-						<Button size="sm" variant="outline-light" onClick={onRetry}>
-							Retry
-						</Button>
-					)}
-				</div>
-			);
-		}
-
-		if (state === "empty") {
-			return <div className="text-muted">{emptyMessage || "No data available"}</div>;
-		}
-
-		return null;
-	}, [state, loadingMessage, emptyMessage, showRetry, onRetry]);
+	const content =
+		state === "loading" ? (
+			<Loading message={loadingMessage || "Loading..."} />
+		) : state === "error" ? (
+			<div className="alert alert-danger d-flex align-items-center justify-content-between">
+				<div>Failed to load data</div>
+				{showRetry && onRetry && (
+					<Button size="sm" variant="outline-light" onClick={onRetry}>
+						Retry
+					</Button>
+				)}
+			</div>
+		) : state === "empty" ? (
+			<div className="text-muted">{emptyMessage || "No data available"}</div>
+		) : null;
 
 	return {
 		state,

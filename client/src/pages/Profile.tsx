@@ -95,7 +95,12 @@ export default function Profile() {
 							<div className="mb-3">
 								<strong>Account Status:</strong>
 								<div>
-									<Badge bg={me.active ? "success" : "warning"}>{me.active ? "Active" : "Inactive"}</Badge>
+									{(() => {
+										const isActive = me.active;
+										const variant = isActive ? "success" : "warning";
+										const text = isActive ? "Active" : "Inactive";
+										return <Badge bg={variant}>{text}</Badge>;
+									})()}
 								</div>
 							</div>
 							<div>

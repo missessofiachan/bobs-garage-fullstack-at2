@@ -69,13 +69,13 @@ export function useForm<T extends Record<string, unknown>>(options: UseFormOptio
 		[values, options, notify],
 	);
 
-	const setValue = useCallback((key: keyof T, value: unknown) => {
+	const setValue = (key: keyof T, value: unknown) => {
 		setValues((prev) => ({ ...prev, [key]: value }));
-	}, []);
+	};
 
-	const setValues_ = useCallback((newValues: Partial<T>) => {
+	const setValues_ = (newValues: Partial<T>) => {
 		setValues((prev) => ({ ...prev, ...newValues }));
-	}, []);
+	};
 
 	const reset = useCallback(() => {
 		setValues(options.defaultValues);
@@ -83,9 +83,9 @@ export function useForm<T extends Record<string, unknown>>(options: UseFormOptio
 		setFieldErrors({});
 	}, [options.defaultValues]);
 
-	const setFieldError = useCallback((field: string, message: string) => {
+	const setFieldError = (field: string, message: string) => {
 		setFieldErrors((prev) => ({ ...prev, [field]: message }));
-	}, []);
+	};
 
 	return {
 		values,

@@ -25,6 +25,24 @@ function formatDuration(seconds: number): string {
 	return `${seconds.toFixed(3)}s`;
 }
 
+function getVariantForErrorRate(rate: number): "success" | "warning" | "danger" {
+	if (rate < 0.01) return "success";
+	if (rate < 0.05) return "warning";
+	return "danger";
+}
+
+function getVariantForHitRate(rate: number): "success" | "warning" | "danger" {
+	if (rate > 0.7) return "success";
+	if (rate > 0.5) return "warning";
+	return "danger";
+}
+
+function getVariantForDuration(seconds: number): "success" | "warning" | "danger" {
+	if (seconds > 1) return "danger";
+	if (seconds > 0.5) return "warning";
+	return "success";
+}
+
 export default function MetricsPanel() {
 	const { data: metrics, isLoading, error } = useMetrics();
 
@@ -86,7 +104,7 @@ export default function MetricsPanel() {
 									<span>{formatPercentage(errorRate)}</span>
 								</div>
 								<ProgressBar
-									variant={errorRate < 0.01 ? "success" : errorRate < 0.05 ? "warning" : "danger"}
+									variant={getVariantForErrorRate(errorRate)}
 									now={errorRate * 100}
 									max={10}
 									className="mb-1"
@@ -117,13 +135,7 @@ export default function MetricsPanel() {
 									<span>{formatPercentage(metrics.cache.hitRate)}</span>
 								</div>
 								<ProgressBar
-									variant={
-										metrics.cache.hitRate > 0.7
-											? "success"
-											: metrics.cache.hitRate > 0.5
-												? "warning"
-												: "danger"
-									}
+									variant={getVariantForHitRate(metrics.cache.hitRate)}
 									now={metrics.cache.hitRate * 100}
 									className="mb-1"
 								/>
@@ -145,15 +157,7 @@ export default function MetricsPanel() {
 								<div className="mb-2">
 									<div className="d-flex justify-content-between">
 										<span>P95</span>
-										<strong
-											className={
-												metrics.httpRequestDuration.p95 > 1
-													? "text-danger"
-													: metrics.httpRequestDuration.p95 > 0.5
-														? "text-warning"
-														: "text-success"
-											}
-										>
+										<strong className={`text-${getVariantForDuration(metrics.httpRequestDuration.p95)}`}>
 											{formatDuration(metrics.httpRequestDuration.p95)}
 										</strong>
 									</div>
@@ -161,15 +165,7 @@ export default function MetricsPanel() {
 								<div className="mb-2">
 									<div className="d-flex justify-content-between">
 										<span>P99</span>
-										<strong
-											className={
-												metrics.httpRequestDuration.p99 > 1
-													? "text-danger"
-													: metrics.httpRequestDuration.p99 > 0.5
-														? "text-warning"
-														: "text-success"
-											}
-										>
+										<strong className={`text-${getVariantForDuration(metrics.httpRequestDuration.p99)}`}>
 											{formatDuration(metrics.httpRequestDuration.p99)}
 										</strong>
 									</div>
@@ -193,15 +189,7 @@ export default function MetricsPanel() {
 									<div className="mb-2">
 										<div className="d-flex justify-content-between">
 											<span>Avg Duration</span>
-											<strong
-												className={
-													metrics.database.averageDuration > 1
-														? "text-danger"
-														: metrics.database.averageDuration > 0.5
-															? "text-warning"
-															: "text-success"
-												}
-											>
+											<strong className={`text-${getVariantForDuration(metrics.database.averageDuration)}`}>
 												{formatDuration(metrics.database.averageDuration)}
 											</strong>
 										</div>

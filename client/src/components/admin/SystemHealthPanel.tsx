@@ -25,6 +25,31 @@ function formatBytes(bytes: number): string {
 	return `${(bytes / (1024 * 1024 * 1024)).toFixed(1)} GB`;
 }
 
+function getStatusColor(status: string): "success" | "warning" | "danger" {
+	if (status === "healthy") return "success";
+	if (status === "degraded") return "warning";
+	return "danger";
+}
+
+function getMemoryVariant(percentage: number): "success" | "warning" | "danger" {
+	if (percentage < 70) return "success";
+	if (percentage < 85) return "warning";
+	return "danger";
+}
+
+function getCacheStatusColor(status: string): "success" | "warning" | "danger" | "muted" {
+	if (status === "connected" || status === "enabled") return "success";
+	if (status === "disabled") return "muted";
+	return "danger";
+}
+
+function getCacheStatusText(status: string): string {
+	if (status === "connected") return "✓ Connected";
+	if (status === "enabled") return "✓ Enabled";
+	if (status === "disabled") return "○ Disabled";
+	return "✗ Disconnected";
+}
+
 export default function SystemHealthPanel() {
 	const { data: health, isLoading, error } = useSystemHealth();
 
@@ -54,8 +79,7 @@ export default function SystemHealthPanel() {
 		);
 	}
 
-	const statusColor =
-		health.status === "healthy" ? "success" : health.status === "degraded" ? "warning" : "danger";
+	const statusColor = getStatusColor(health.status);
 
 	return (
 		<Card className="shadow-sm">
@@ -93,22 +117,8 @@ export default function SystemHealthPanel() {
 						<div className="mb-3">
 							<div className="d-flex justify-content-between mb-1">
 								<strong>Cache</strong>
-								<span
-									className={
-										health.services.cache.status === "connected" || health.services.cache.status === "enabled"
-											? "text-success"
-											: health.services.cache.status === "disabled"
-												? "text-muted"
-												: "text-danger"
-									}
-								>
-									{health.services.cache.status === "connected"
-										? "✓ Connected"
-										: health.services.cache.status === "enabled"
-											? "✓ Enabled"
-											: health.services.cache.status === "disabled"
-												? "○ Disabled"
-												: "✗ Disconnected"}
+								<span className={`text-${getCacheStatusColor(health.services.cache.status)}`}>
+									{getCacheStatusText(health.services.cache.status)}
 								</span>
 							</div>
 							{health.services.cache.type && (
@@ -130,13 +140,7 @@ export default function SystemHealthPanel() {
 								<span>{health.system.memory.percentage}%</span>
 							</div>
 							<ProgressBar
-								variant={
-									health.system.memory.percentage < 70
-										? "success"
-										: health.system.memory.percentage < 85
-											? "warning"
-											: "danger"
-								}
+								variant={getMemoryVariant(health.system.memory.percentage)}
 								now={health.system.memory.percentage}
 								className="mb-1"
 							/>
