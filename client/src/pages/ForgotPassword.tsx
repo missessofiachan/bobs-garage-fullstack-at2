@@ -152,13 +152,7 @@ export default function ForgotPassword() {
 					</Form.Group>
 
 					<motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-						<Button
-							type="submit"
-							variant="primary"
-							size="lg"
-							className="w-100 mb-3"
-							disabled={loading}
-						>
+						<Button type="submit" variant="primary" size="lg" className="w-100 mb-3" disabled={loading}>
 							{loading ? "Sending..." : "Send Reset Instructions"}
 						</Button>
 					</motion.div>

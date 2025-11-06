@@ -75,8 +75,18 @@ export function createResourceHooks<
 		 */
 		useCreate: (options?: any) => {
 			const qc = useQueryClient();
-			const { onMutate: userOnMutate, onError: userOnError, onSuccess: userOnSuccess, ...restOptions } = options || {};
-			const { onMutate: configOnMutate, onError: configOnError, onSuccess: configOnSuccess, ...restConfig } = config.options?.mutations?.create || {};
+			const {
+				onMutate: userOnMutate,
+				onError: userOnError,
+				onSuccess: userOnSuccess,
+				...restOptions
+			} = options || {};
+			const {
+				onMutate: configOnMutate,
+				onError: configOnError,
+				onSuccess: configOnSuccess,
+				...restConfig
+			} = config.options?.mutations?.create || {};
 			const customOnMutate = userOnMutate || configOnMutate;
 			const customOnError = userOnError || configOnError;
 			const customOnSuccess = userOnSuccess || configOnSuccess;
@@ -146,8 +156,18 @@ export function createResourceHooks<
 		 */
 		useUpdate: (options?: any) => {
 			const qc = useQueryClient();
-			const { onMutate: userOnMutate, onError: userOnError, onSuccess: userOnSuccess, ...restOptions } = options || {};
-			const { onMutate: configOnMutate, onError: configOnError, onSuccess: configOnSuccess, ...restConfig } = config.options?.mutations?.update || {};
+			const {
+				onMutate: userOnMutate,
+				onError: userOnError,
+				onSuccess: userOnSuccess,
+				...restOptions
+			} = options || {};
+			const {
+				onMutate: configOnMutate,
+				onError: configOnError,
+				onSuccess: configOnSuccess,
+				...restConfig
+			} = config.options?.mutations?.update || {};
 			const customOnMutate = userOnMutate || configOnMutate;
 			const customOnError = userOnError || configOnError;
 			const customOnSuccess = userOnSuccess || configOnSuccess;
@@ -227,8 +247,18 @@ export function createResourceHooks<
 		 */
 		useDelete: (options?: any) => {
 			const qc = useQueryClient();
-			const { onMutate: userOnMutate, onError: userOnError, onSuccess: userOnSuccess, ...restOptions } = options || {};
-			const { onMutate: configOnMutate, onError: configOnError, onSuccess: configOnSuccess, ...restConfig } = config.options?.mutations?.delete || {};
+			const {
+				onMutate: userOnMutate,
+				onError: userOnError,
+				onSuccess: userOnSuccess,
+				...restOptions
+			} = options || {};
+			const {
+				onMutate: configOnMutate,
+				onError: configOnError,
+				onSuccess: configOnSuccess,
+				...restConfig
+			} = config.options?.mutations?.delete || {};
 
 			return useMutation<void, unknown, number, { previousData: DTO[] | undefined }>({
 				mutationFn: async (id: number): Promise<void> => {

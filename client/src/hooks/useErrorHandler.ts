@@ -55,9 +55,12 @@ export function useErrorHandler(options: UseErrorHandlerOptions = {}) {
 				});
 			}
 
-			return { message, requestId, fieldErrors: setFieldErrors ? extractFieldErrors(error) : undefined };
+			return {
+				message,
+				requestId,
+				fieldErrors: setFieldErrors ? extractFieldErrors(error) : undefined,
+			};
 		},
 		[notify, setError, setFieldErrors, showToast],
 	);
 }
-

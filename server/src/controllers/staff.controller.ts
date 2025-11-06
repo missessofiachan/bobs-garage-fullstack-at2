@@ -6,9 +6,9 @@
 
 import type { Request, Response } from "express";
 import { z } from "zod";
-import { Staff } from "../db/models/Staff.js";
 import { invalidateCache } from "../middleware/cache.js";
 import { logCreate, logDelete, logUpdate, logUpload } from "../services/audit.service.js";
+import * as staffService from "../services/staff.service.js";
 import {
 	deleteOldUpload,
 	generatePublicUrl,
@@ -20,7 +20,6 @@ import type {
 	UpdateStaffRequest,
 } from "../types/requests.js";
 import { handleControllerError, sendBadRequest, sendNotFound } from "../utils/errors.js";
-import { calculatePaginationParams } from "../utils/pagination.js";
 import { createPaginationResponse } from "../utils/responses.js";
 import { findByIdOr404, parseIdParam } from "../utils/validation.js";
 
@@ -68,17 +67,14 @@ export async function listStaff(req: Request, res: Response) {
 		const query = req.query as { page?: number; limit?: number };
 		const { page = 1, limit = 20 } = query;
 
-		const { offset, limit: actualLimit } = calculatePaginationParams(page, limit);
-
-		const { count, rows: staff } = await Staff.findAndCountAll({
-			order: [["name", "ASC"]],
-			limit: actualLimit,
-			offset,
-		});
+		const { staff, total, page: actualPage, limit: actualLimit } = await staffService.listStaff(
+			page,
+			limit,
+		);
 
 		res.json({
 			data: staff,
-			pagination: createPaginationResponse(Number(page), actualLimit, count),
+			pagination: createPaginationResponse(actualPage, actualLimit, total),
 		});
 	} catch (err) {
 		handleControllerError(err, res);
@@ -98,7 +94,7 @@ export async function listStaff(req: Request, res: Response) {
  */
 export async function getStaffById(req: Request, res: Response) {
 	try {
-		const s = await findByIdOr404(req, res, (id) => Staff.findByPk(id));
+		const s = await findByIdOr404(req, res, (id) => staffService.getStaffById(id));
 		if (!s) return; // Error response already sent
 
 		res.json(s);
@@ -126,7 +122,7 @@ export async function getStaffById(req: Request, res: Response) {
 export async function createStaff(req: Request, res: Response) {
 	try {
 		const body = req.body as CreateStaffRequest;
-		const s = await Staff.create(body as unknown as Parameters<typeof Staff.create>[0]);
+		const s = await staffService.createStaff(body);
 
 		// Invalidate cache for staff list
 		await invalidateCache("staff");
@@ -161,12 +157,17 @@ export async function updateStaff(req: Request, res: Response) {
 		const id = parseIdParam(req, res);
 		if (id === null) return; // Error response already sent
 
+		// Get previous state before update
+		const existingStaff = await staffService.getStaffById(id);
+		if (!existingStaff) return sendNotFound(res);
+		const previousState = existingStaff.toJSON();
+
 		const body = req.body as UpdateStaffRequest;
-		const s = await Staff.findByPk(id);
+		const s = await staffService.updateStaff(id, body);
 		if (!s) return sendNotFound(res);
 
-		const previousState = s.toJSON();
-		await s.update(body);
+		// Reload to get updated state
+		await s.reload();
 		const newState = s.toJSON();
 
 		// Invalidate cache for this staff member and list
@@ -201,11 +202,14 @@ export async function deleteStaff(req: Request, res: Response) {
 		const id = parseIdParam(req, res);
 		if (id === null) return; // Error response already sent
 
-		const s = await Staff.findByPk(id);
+		// Get staff before deletion for audit log
+		const s = await staffService.getStaffById(id);
 		if (!s) return sendNotFound(res);
 
 		const previousState = s.toJSON();
-		await s.destroy();
+
+		// Delete staff member
+		await staffService.deleteStaff(id);
 
 		// Invalidate cache for this staff member and list
 		await invalidateCache("staff", id);
@@ -252,14 +256,14 @@ export async function uploadStaffPhoto(req: Request, res: Response) {
 			return sendBadRequest(res, "No file uploaded");
 		}
 
-		const s = await Staff.findByPk(id);
+		const s = await staffService.getStaffById(id);
 		if (!s) return sendNotFound(res);
 
 		// Delete old photo if it exists
 		await deleteOldUpload(s.photoUrl);
 
 		const publicUrl = generatePublicUrl(filename, "staff");
-		await s.update({ photoUrl: publicUrl });
+		await staffService.updateStaffPhotoUrl(id, publicUrl);
 
 		// Invalidate cache for this staff member
 		await invalidateCache("staff", id);
@@ -267,7 +271,7 @@ export async function uploadStaffPhoto(req: Request, res: Response) {
 		// Log audit event
 		await logUpload(req, "staff", id, `Uploaded photo for staff member: ${s.name}`);
 
-		res.status(200).json({ id: s.id, photoUrl: publicUrl });
+		res.status(200).json({ id, photoUrl: publicUrl });
 	} catch (err) {
 		handleControllerError(err, res);
 	}

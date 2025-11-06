@@ -215,7 +215,7 @@ export function extractFieldErrors(error: unknown): Record<string, string> {
 
 	// Handle Axios errors with response.data.errors
 	if (isAxiosErrorWithValidationErrors(error)) {
-		error.response.data.errors.forEach((issue) => {
+		(error.response?.data as { errors: ValidationIssue[] }).errors.forEach((issue) => {
 			if (isValidationIssue(issue)) {
 				const field = issue.path[0] || "general";
 				errors[field] = issue.message;

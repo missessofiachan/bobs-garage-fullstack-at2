@@ -105,13 +105,10 @@ export async function listUsers(req: Request, res: Response) {
  */
 export async function getUserById(req: Request, res: Response) {
 	try {
-		const user = await findByIdOr404(
-			req,
-			res,
-			(id) =>
-				User.findByPk(id, {
-					attributes: ["id", "email", "role", "active", "createdAt"],
-				}),
+		const user = await findByIdOr404(req, res, (id) =>
+			User.findByPk(id, {
+				attributes: ["id", "email", "role", "active", "createdAt"],
+			}),
 		);
 		if (!user) return; // Error response already sent
 

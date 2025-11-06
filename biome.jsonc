@@ -3,7 +3,39 @@
 {
 	"$schema": "https://biomejs.dev/schemas/2.3.4/schema.json",
 	"files": {
-		"ignoreUnknown": true
+		"ignoreUnknown": true,
+		"includes": [
+			"**/*.ts",
+			"**/*.tsx",
+			"**/*.js",
+			"**/*.jsx",
+			"**/*.json",
+			"**/*.jsonc",
+			"**/*.css",
+			"**/*.scss",
+			"**/*.md"
+		],
+		"experimentalScannerIgnores": [
+			"**/node_modules/**",
+			"**/dist/**",
+			"**/build/**",
+			"**/.next/**",
+			"**/.turbo/**",
+			"**/coverage/**",
+			"**/.cache/**",
+			"**/logs/**",
+			"**/*.log",
+			"**/yarn.lock",
+			"**/package-lock.json",
+			"**/pnpm-lock.yaml",
+			"**/.biome/**",
+			"**/biome-report*.txt",
+			"**/.git/**",
+			"**/.husky/**",
+			"**/uploads/**",
+			"**/.vscode/**",
+			"**/.idea/**"
+		]
 	},
 	"formatter": {
 		"enabled": true,

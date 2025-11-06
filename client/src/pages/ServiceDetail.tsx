@@ -13,8 +13,8 @@ import FavouriteButton from "../components/FavouriteButton";
 import Loading from "../components/ui/Loading";
 import usePageTitle from "../hooks/usePageTitle";
 import { useService } from "../hooks/useServices";
-import { getImageBaseUrl } from "../utils/api";
 import { fadeInUp } from "../utils/animations";
+import { getImageBaseUrl } from "../utils/api";
 import { formatCurrency } from "../utils/formatters";
 import { getImageSrc, IMAGE_PLACEHOLDER } from "../utils/imagePlaceholder";
 

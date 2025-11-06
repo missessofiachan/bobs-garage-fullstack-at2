@@ -10,8 +10,8 @@ import { MdPeople } from "react-icons/md";
 import Loading from "../components/ui/Loading";
 import usePageTitle from "../hooks/usePageTitle";
 import { useStaffList } from "../hooks/useStaff";
-import { getImageBaseUrl } from "../utils/api";
 import { fadeInUp, staggerContainer } from "../utils/animations";
+import { getImageBaseUrl } from "../utils/api";
 import { getImageSrc, IMAGE_PLACEHOLDER } from "../utils/imagePlaceholder";
 
 export default function Staff() {

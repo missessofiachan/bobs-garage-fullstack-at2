@@ -5,7 +5,7 @@
  */
 
 import { motion } from "framer-motion";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Alert, Button, Card, Col, Form, Image, InputGroup, Row, Table } from "react-bootstrap";
 import { MdBuild, MdSearch, MdSort, MdViewList, MdViewModule } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,10 +14,11 @@ import FavouriteButton from "../components/FavouriteButton";
 import Loading from "../components/ui/Loading";
 import usePageTitle from "../hooks/usePageTitle";
 import { useServices } from "../hooks/useServices";
+import { useServiceFilters } from "../hooks/useServiceFilters";
 import type { ServicesSort, ServicesView } from "../slices/preferences.slice";
 import { setServicesSort, setServicesView } from "../slices/preferences.slice";
-import { getImageBaseUrl } from "../utils/api";
 import { fadeInUp, staggerContainer } from "../utils/animations";
+import { getImageBaseUrl } from "../utils/api";
 import { formatCurrency } from "../utils/formatters";
 import { getImageSrc, IMAGE_PLACEHOLDER } from "../utils/imagePlaceholder";
 import { highlightSearch } from "../utils/searchHighlight";
@@ -33,15 +34,12 @@ export default function Services() {
 	const sort = prefs?.servicesSort || "price-asc";
 	const view = prefs?.servicesView || "grid";
 
-	const list = useMemo(() => {
-		let arr = (data ?? []).filter((s) => s.published !== false);
-		if (q) arr = arr.filter((s) => s.name.toLowerCase().includes(q.toLowerCase()));
-		if (maxPrice && typeof maxPrice === "number") {
-			arr = arr.filter((s) => s.price <= maxPrice);
-		}
-		arr = arr.sort((a, b) => (sort === "price-asc" ? a.price - b.price : b.price - a.price));
-		return arr;
-	}, [data, q, maxPrice, sort]);
+	const list = useServiceFilters({
+		services: data,
+		searchQuery: q,
+		maxPrice,
+		sort,
+	});
 
 	if (isLoading) return <Loading message="Loading services…" />;
 	if (error)

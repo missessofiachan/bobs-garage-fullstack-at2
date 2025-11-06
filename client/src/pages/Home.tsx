@@ -21,10 +21,10 @@ import { Link } from "react-router-dom";
 import Loading from "../components/ui/Loading";
 import { useServices } from "../hooks/useServices";
 import { useStaffList } from "../hooks/useStaff";
+import { fadeInUp, staggerContainer } from "../utils/animations";
 import { getImageBaseUrl } from "../utils/api";
 import { formatCurrency } from "../utils/formatters";
 import { getImageSrc } from "../utils/imagePlaceholder";
-import { fadeInUp, staggerContainer } from "../utils/animations";
 
 export default function Home() {
 	const { accessToken } = useSelector((s: any) => s.auth);

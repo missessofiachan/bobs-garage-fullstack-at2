@@ -8,12 +8,10 @@
  */
 
 import type { Request, Response } from "express";
-import { Op } from "sequelize";
 import { z } from "zod";
-import { Favorite } from "../db/models/Favorite.js";
-import { Service } from "../db/models/Service.js";
 import { invalidateCache } from "../middleware/cache.js";
 import { logCreate, logDelete, logUpdate, logUpload } from "../services/audit.service.js";
+import * as serviceService from "../services/service.service.js";
 import {
 	deleteOldUpload,
 	generatePublicUrl,
@@ -26,7 +24,6 @@ import type {
 	UpdateServiceRequest,
 } from "../types/requests.js";
 import { handleControllerError, sendBadRequest, sendNotFound } from "../utils/errors.js";
-import { calculatePaginationParams } from "../utils/pagination.js";
 import { createPaginationResponse } from "../utils/responses.js";
 import { findByIdOr404, parseIdParam } from "../utils/validation.js";
 
@@ -76,52 +73,12 @@ const serviceSchema = z.object({
  */
 export async function listServices(req: Request, res: Response) {
 	try {
-		// Filters: active (published), q (name contains), minPrice, maxPrice, sort
 		const query = req.query as unknown as ServiceQueryParams;
-		const { q, minPrice, maxPrice, active, sort, page = 1, limit = 20 } = query;
-
-		const where: Record<string, unknown> = {};
-		if (typeof active !== "undefined")
-			where.published = ["1", "true", "yes"].includes(String(active).toLowerCase());
-
-		// Full-text search if query provided
-		// Uses LIKE for fuzzy matching (full-text index available via migration for better performance)
-		if (q) {
-			const searchQuery = String(q).trim();
-			(where as Record<string | symbol, unknown>)[Op.or] = [
-				{ name: { [Op.like]: `%${searchQuery}%` } },
-				{ description: { [Op.like]: `%${searchQuery}%` } },
-			];
-		}
-
-		if (minPrice || maxPrice) {
-			const priceWhere: Record<string, unknown> = {};
-			if (minPrice) priceWhere[Op.gte as unknown as string] = Number(minPrice);
-			if (maxPrice) priceWhere[Op.lte as unknown as string] = Number(maxPrice);
-			where.price = priceWhere;
-		}
-
-		let order: [string, "ASC" | "DESC"][] = [["name", "ASC"]];
-		if (sort) {
-			const [f, dir] = String(sort).split(":");
-			const field: string = f || "name";
-			const allowed = new Set(["name", "price", "createdAt"]);
-			const direction = String(dir || "ASC").toUpperCase() === "DESC" ? "DESC" : "ASC";
-			if (allowed.has(field)) order = [[field, direction]];
-		}
-		// Pagination
-		const { offset, limit: actualLimit } = calculatePaginationParams(page, limit);
-
-		const { count, rows: services } = await Service.findAndCountAll({
-			where,
-			order,
-			limit: actualLimit,
-			offset,
-		});
+		const { services, total, page, limit } = await serviceService.listServices(query);
 
 		res.json({
 			data: services,
-			pagination: createPaginationResponse(Number(page), actualLimit, count),
+			pagination: createPaginationResponse(page, limit, total),
 		});
 	} catch (err) {
 		handleControllerError(err, res);
@@ -141,7 +98,7 @@ export async function listServices(req: Request, res: Response) {
  */
 export async function getServiceById(req: Request, res: Response) {
 	try {
-		const s = await findByIdOr404(req, res, (id) => Service.findByPk(id));
+		const s = await findByIdOr404(req, res, (id) => serviceService.getServiceById(id));
 		if (!s) return; // Error response already sent
 
 		res.json(s);
@@ -169,7 +126,7 @@ export async function getServiceById(req: Request, res: Response) {
 export async function createService(req: Request, res: Response) {
 	try {
 		const body = req.body as CreateServiceRequest;
-		const s = await Service.create(body as unknown as Parameters<typeof Service.create>[0]);
+		const s = await serviceService.createService(body);
 
 		// Invalidate cache for services list
 		await invalidateCache("services");
@@ -204,12 +161,17 @@ export async function updateService(req: Request, res: Response) {
 		const id = parseIdParam(req, res);
 		if (id === null) return; // Error response already sent
 
+		// Get previous state before update
+		const existingService = await serviceService.getServiceById(id);
+		if (!existingService) return sendNotFound(res);
+		const previousState = existingService.toJSON();
+
 		const body = req.body as UpdateServiceRequest;
-		const s = await Service.findByPk(id);
+		const s = await serviceService.updateService(id, body);
 		if (!s) return sendNotFound(res);
 
-		const previousState = s.toJSON();
-		await s.update(body);
+		// Reload to get updated state
+		await s.reload();
 		const newState = s.toJSON();
 
 		// Invalidate cache for this service and list
@@ -244,19 +206,14 @@ export async function deleteService(req: Request, res: Response) {
 		const id = parseIdParam(req, res);
 		if (id === null) return; // Error response already sent
 
-		const s = await Service.findByPk(id);
+		// Get service before deletion for audit log
+		const s = await serviceService.getServiceById(id);
 		if (!s) return sendNotFound(res);
 
 		const previousState = s.toJSON();
 
-		// Delete all favorites associated with this service first
-		// This prevents foreign key constraint errors
-		await Favorite.destroy({
-			where: { serviceId: id },
-		});
-
-		// Now delete the service
-		await s.destroy();
+		// Delete service (service layer handles favorites cleanup)
+		await serviceService.deleteService(id);
 
 		// Invalidate cache for this service and list
 		await invalidateCache("services", id);
@@ -303,14 +260,14 @@ export async function uploadServiceImage(req: Request, res: Response) {
 			return sendBadRequest(res, "No file uploaded");
 		}
 
-		const s = await Service.findByPk(id);
+		const s = await serviceService.getServiceById(id);
 		if (!s) return sendNotFound(res);
 
 		// Delete old image if it exists
 		await deleteOldUpload(s.imageUrl);
 
 		const publicUrl = generatePublicUrl(filename, "services");
-		await s.update({ imageUrl: publicUrl });
+		await serviceService.updateServiceImageUrl(id, publicUrl);
 
 		// Invalidate cache for this service
 		await invalidateCache("services", id);
@@ -318,7 +275,7 @@ export async function uploadServiceImage(req: Request, res: Response) {
 		// Log audit event
 		await logUpload(req, "service", id, `Uploaded image for service: ${s.name}`);
 
-		res.status(200).json({ id: s.id, imageUrl: publicUrl });
+		res.status(200).json({ id, imageUrl: publicUrl });
 	} catch (err) {
 		handleControllerError(err, res);
 	}

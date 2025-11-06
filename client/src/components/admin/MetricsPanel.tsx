@@ -154,22 +154,6 @@ export default function MetricsPanel() {
 										<strong>{formatDuration(metrics.httpRequestDuration.average)}</strong>
 									</div>
 								</div>
-								<div className="mb-2">
-									<div className="d-flex justify-content-between">
-										<span>P95</span>
-										<strong className={`text-${getVariantForDuration(metrics.httpRequestDuration.p95)}`}>
-											{formatDuration(metrics.httpRequestDuration.p95)}
-										</strong>
-									</div>
-								</div>
-								<div className="mb-2">
-									<div className="d-flex justify-content-between">
-										<span>P99</span>
-										<strong className={`text-${getVariantForDuration(metrics.httpRequestDuration.p99)}`}>
-											{formatDuration(metrics.httpRequestDuration.p99)}
-										</strong>
-									</div>
-								</div>
 							</div>
 						</Col>
 					)}

@@ -12,8 +12,8 @@ import FavouriteButton from "../components/FavouriteButton";
 import Loading from "../components/ui/Loading";
 import { useFavorites } from "../hooks/useFavorites";
 import usePageTitle from "../hooks/usePageTitle";
-import { getImageBaseUrl } from "../utils/api";
 import { fadeInUp, staggerContainer } from "../utils/animations";
+import { getImageBaseUrl } from "../utils/api";
 import { formatCurrency } from "../utils/formatters";
 import { getImageSrc, IMAGE_PLACEHOLDER } from "../utils/imagePlaceholder";
 

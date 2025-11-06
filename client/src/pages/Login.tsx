@@ -135,8 +135,8 @@ export default function Login() {
 							<div className="d-flex align-items-start gap-2">
 								<MdSecurity size={18} className="mt-1 flex-shrink-0" />
 								<div>
-									<strong>Security Note:</strong> This will keep you signed in for longer. Only use this
-									on trusted devices.
+									<strong>Security Note:</strong> This will keep you signed in for longer. Only use this on
+									trusted devices.
 								</div>
 							</div>
 						</Alert>
@@ -144,13 +144,7 @@ export default function Login() {
 				</Form.Group>
 
 				<motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-					<Button
-						type="submit"
-						variant="primary"
-						size="lg"
-						className="w-100 mb-3"
-						disabled={loading}
-					>
+					<Button type="submit" variant="primary" size="lg" className="w-100 mb-3" disabled={loading}>
 						{loading ? "Logging in..." : "Login"}
 					</Button>
 				</motion.div>

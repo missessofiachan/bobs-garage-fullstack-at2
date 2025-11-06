@@ -24,4 +24,14 @@ function previewProxyPlugin(): Plugin {
 // https://vite.dev/config/
 export default defineConfig({
 	plugins: [react(), vanillaExtractPlugin(), previewProxyPlugin()],
+	server: {
+		// Proxy for dev mode (npm run dev)
+		proxy: {
+			"/api": {
+				target: "http://localhost:4000",
+				changeOrigin: true,
+				secure: false,
+			},
+		},
+	},
 });

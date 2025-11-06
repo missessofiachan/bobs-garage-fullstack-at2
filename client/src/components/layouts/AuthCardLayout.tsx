@@ -5,7 +5,7 @@
  */
 
 import { motion } from "framer-motion";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import { Alert, Card, Col, Row } from "react-bootstrap";
 
 interface AuthCardLayoutProps {
@@ -89,9 +89,7 @@ export default function AuthCardLayout({
 								{children}
 
 								{/* Footer */}
-								{footer && (
-									<div className="text-center mt-4 pt-3 border-top">{footer}</div>
-								)}
+								{footer && <div className="text-center mt-4 pt-3 border-top">{footer}</div>}
 							</Card.Body>
 						</Card>
 					</motion.div>
@@ -100,4 +98,3 @@ export default function AuthCardLayout({
 		</motion.div>
 	);
 }
-

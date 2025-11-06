@@ -6,7 +6,7 @@
  */
 
 import type { Request } from "express";
-import rateLimit from "express-rate-limit";
+import rateLimit, { ipKeyGenerator } from "express-rate-limit";
 import jwt from "jsonwebtoken";
 import { env } from "../config/env.js";
 import type { JwtPayload } from "../types/global.d.ts";
@@ -75,8 +75,8 @@ export const perUserLimiter = rateLimit({
 		if (authenticatedUserId) {
 			return `user:${authenticatedUserId}`;
 		}
-		// Fall back to IP address for unauthenticated users
-		return req.ip || req.socket.remoteAddress || "unknown";
+		// Fall back to IP address for unauthenticated users (using helper for IPv6 safety)
+		return ipKeyGenerator(req) || "unknown";
 	},
 	standardHeaders: true,
 	legacyHeaders: false,
