@@ -138,6 +138,9 @@ export default function Footer() {
 							<Link to="/staff" className="text-decoration-none">
 								Our Team
 							</Link>
+							<Link to="/contact" className="text-decoration-none">
+								Contact Us
+							</Link>
 						</div>
 					</Col>
 

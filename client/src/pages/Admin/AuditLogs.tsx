@@ -6,13 +6,14 @@
  * @since 1.0.0
  */
 
-import React, { useState } from "react";
+import type React from "react";
+import { useState } from "react";
 import { Badge, Button, Card, Col, Form, Pagination, Row, Table } from "react-bootstrap";
-import { MdHistory, MdFilterList, MdClear } from "react-icons/md";
+import { MdClear, MdFilterList, MdHistory } from "react-icons/md";
 import ErrorDisplay from "../../components/admin/ErrorDisplay";
 import Loading from "../../components/ui/Loading";
+import { type AuditLog, useAuditLogs } from "../../hooks/useAuditLogs";
 import usePageTitle from "../../hooks/usePageTitle";
-import { useAuditLogs, type AuditLog } from "../../hooks/useAuditLogs";
 
 const ACTION_COLORS: Record<string, string> = {
 	create: "success",
@@ -46,7 +47,13 @@ function getResourceIcon(resource: string): string {
 	return RESOURCE_ICONS[resource.toLowerCase()] || RESOURCE_ICONS.other;
 }
 
-function StateDiff({ previous, current }: { previous: unknown; current: unknown }): React.ReactNode {
+function StateDiff({
+	previous,
+	current,
+}: {
+	previous: unknown;
+	current: unknown;
+}): React.ReactNode {
 	if (!previous && !current) return <span className="text-muted">No state changes</span>;
 	if (!previous) return <span className="text-success">Created</span>;
 	if (!current) return <span className="text-danger">Deleted</span>;
@@ -104,7 +111,8 @@ export default function AuditLogs() {
 		});
 	};
 
-	const hasActiveFilters = filters.action || filters.resource || filters.userId || filters.startDate || filters.endDate;
+	const hasActiveFilters =
+		filters.action || filters.resource || filters.userId || filters.startDate || filters.endDate;
 
 	if (isLoading) return <Loading message="Loading audit logs…" />;
 
@@ -263,9 +271,14 @@ export default function AuditLogs() {
 												<div>{log.description}</div>
 												{(log.previousState !== null || log.newState !== null) && (
 													<details className="mt-1">
-														<summary className="small text-muted" style={{ cursor: "pointer" }}>View Changes</summary>
+														<summary className="small text-muted" style={{ cursor: "pointer" }}>
+															View Changes
+														</summary>
 														<div className="mt-2 p-2 bg-light rounded">
-															<StateDiff previous={log.previousState ?? null} current={log.newState ?? null} />
+															<StateDiff
+																previous={log.previousState ?? null}
+																current={log.newState ?? null}
+															/>
 														</div>
 													</details>
 												)}
@@ -273,7 +286,9 @@ export default function AuditLogs() {
 											<td>
 												<small className="text-muted">{log.ipAddress || "N/A"}</small>
 												{log.requestId && (
-													<small className="text-muted d-block">Req: {log.requestId.substring(0, 8)}...</small>
+													<small className="text-muted d-block">
+														Req: {log.requestId.substring(0, 8)}...
+													</small>
 												)}
 											</td>
 										</tr>
@@ -320,4 +335,3 @@ export default function AuditLogs() {
 		</div>
 	);
 }
-

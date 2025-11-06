@@ -12,9 +12,9 @@ import api from "../api/axios";
 import type { UserMeDTO } from "../api/types";
 import Loading from "../components/ui/Loading";
 import { useToast } from "../components/ui/ToastProvider";
-import { formatErrorMessageWithId } from "../utils/errorFormatter";
 import { useFavorites } from "../hooks/useFavorites";
 import usePageTitle from "../hooks/usePageTitle";
+import { formatErrorMessageWithId } from "../utils/errorFormatter";
 
 export default function Profile() {
 	const [me, setMe] = useState<UserMeDTO | null>(null);

@@ -9,7 +9,19 @@
  * Used for root-level endpoints like /health and /db-status
  */
 export function getApiBaseUrl(): string {
-	const apiUrl = (import.meta as ImportMeta)?.env?.VITE_API_URL ?? "http://localhost:4000/api";
+	const envUrl = (import.meta as ImportMeta)?.env?.VITE_API_URL;
+	let apiUrl: string;
+
+	if (envUrl) {
+		apiUrl = envUrl;
+	} else if (import.meta.env.PROD) {
+		// In production without env var, assume same-origin
+		apiUrl = "/api";
+	} else {
+		// Development fallback
+		apiUrl = "http://localhost:4000/api";
+	}
+
 	return apiUrl.replace(/\/api\/?$/, "");
 }
 
@@ -18,7 +30,16 @@ export function getApiBaseUrl(): string {
  * Used for API endpoints
  */
 export function getApiUrl(): string {
-	return (import.meta as ImportMeta)?.env?.VITE_API_URL ?? "http://localhost:4000/api";
+	const envUrl = (import.meta as ImportMeta)?.env?.VITE_API_URL;
+	if (envUrl) {
+		return envUrl;
+	}
+	if (import.meta.env.PROD) {
+		// In production without env var, assume same-origin
+		return "/api";
+	}
+	// Development fallback
+	return "http://localhost:4000/api";
 }
 
 /**

@@ -4,7 +4,8 @@
  * @version 1.0.0
  */
 
-import { Alert, Badge, Button, Card, Col, Row } from "react-bootstrap";
+import { motion } from "framer-motion";
+import { Alert, Badge, Button, Card, Col, Image, Row } from "react-bootstrap";
 import { MdFavorite } from "react-icons/md";
 import { Link } from "react-router-dom";
 import FavouriteButton from "../components/FavouriteButton";
@@ -13,7 +14,23 @@ import { useFavorites } from "../hooks/useFavorites";
 import usePageTitle from "../hooks/usePageTitle";
 import { getImageBaseUrl } from "../utils/api";
 import { formatCurrency } from "../utils/formatters";
-import { getImageSrc } from "../utils/imagePlaceholder";
+import { getImageSrc, IMAGE_PLACEHOLDER } from "../utils/imagePlaceholder";
+
+const fadeInUp = {
+	initial: { opacity: 0, y: 20 },
+	animate: { opacity: 1, y: 0 },
+	transition: { duration: 0.5 },
+};
+
+const staggerContainer = {
+	initial: { opacity: 1 },
+	animate: {
+		opacity: 1,
+		transition: {
+			staggerChildren: 0.1,
+		},
+	},
+};
 
 export default function Favorites() {
 	const { favorites, isLoading } = useFavorites();
@@ -47,49 +64,96 @@ export default function Favorites() {
 					</Button>
 				</Alert>
 			) : (
-				<Row className="g-4">
-					{favorites.map((service) => {
-						const imageSrc = getImageSrc(service.imageUrl, getImageBaseUrl());
+				<motion.div
+					variants={staggerContainer}
+					initial="initial"
+					animate="animate"
+					style={{ width: "100%" }}
+				>
+					<Row xs={1} sm={2} md={3} lg={4} className="g-4">
+						{favorites.map((service) => {
+							const imageSrc = getImageSrc(service.imageUrl, getImageBaseUrl());
+							const isPlaceholder = !service.imageUrl || service.imageUrl.trim() === "";
 
-						return (
-							<Col key={service.id} xs={12} sm={6} md={4} lg={3}>
-								<Card className="h-100 shadow-sm">
-									<Card.Img
-										variant="top"
-										src={imageSrc}
-										style={{
-											height: 200,
-											objectFit: "cover",
-										}}
-										onError={(e) => {
-											(e.currentTarget as HTMLImageElement).src = imageSrc;
-										}}
-									/>
-									<Card.Body className="d-flex flex-column">
-										<Card.Title>{service.name}</Card.Title>
-										<Card.Text className="flex-grow-1">
-											<strong className="text-primary fs-5">{formatCurrency(service.price)}</strong>
-											<br />
-											<small className="text-muted">{service.description}</small>
-										</Card.Text>
-										<div className="d-flex gap-2 mt-auto">
-											<Button
-												as={Link as any}
-												to="/services"
-												size="sm"
-												variant="outline-primary"
-												className="flex-grow-1"
-											>
-												View Service
-											</Button>
-											<FavouriteButton id={service.id} />
-										</div>
-									</Card.Body>
-								</Card>
-							</Col>
-						);
-					})}
-				</Row>
+							return (
+								<Col key={service.id}>
+									<motion.div
+										variants={fadeInUp}
+										whileHover={{ y: -5 }}
+										transition={{ type: "spring", stiffness: 300 }}
+									>
+										<Link
+											to={`/services/${service.id}`}
+											style={{ textDecoration: "none", color: "inherit" }}
+										>
+											<Card className="h-100 shadow-sm" style={{ cursor: "pointer" }}>
+												<div
+													style={{
+														position: "relative",
+														width: "100%",
+														height: 200,
+														overflow: "hidden",
+														backgroundColor: isPlaceholder ? "#f3f4f6" : "transparent",
+													}}
+												>
+													<Image
+														src={imageSrc}
+														alt={service.name}
+														fluid
+														style={{
+															width: "100%",
+															height: "100%",
+															objectFit: isPlaceholder ? "contain" : "cover",
+															padding: isPlaceholder ? "1rem" : "0",
+														}}
+														loading="lazy"
+														onError={(e) => {
+															if ((e.currentTarget as HTMLImageElement).src !== IMAGE_PLACEHOLDER) {
+																(e.currentTarget as HTMLImageElement).src = IMAGE_PLACEHOLDER;
+															}
+														}}
+													/>
+													<div
+														style={{
+															position: "absolute",
+															top: 8,
+															right: 8,
+														}}
+														onClick={(e) => {
+															e.preventDefault();
+															e.stopPropagation();
+														}}
+													>
+														<FavouriteButton id={service.id} />
+													</div>
+												</div>
+												<Card.Body className="d-flex flex-column">
+													<Card.Title className="mb-2">{service.name}</Card.Title>
+													<div className="fw-bold text-primary fs-5 mb-2">
+														{formatCurrency(service.price)}
+													</div>
+													{service.description && (
+														<Card.Text
+															className="text-muted small flex-grow-1"
+															style={{
+																display: "-webkit-box",
+																WebkitLineClamp: 3,
+																WebkitBoxOrient: "vertical",
+																overflow: "hidden",
+															}}
+														>
+															{service.description}
+														</Card.Text>
+													)}
+												</Card.Body>
+											</Card>
+										</Link>
+									</motion.div>
+								</Col>
+							);
+						})}
+					</Row>
+				</motion.div>
 			)}
 		</div>
 	);

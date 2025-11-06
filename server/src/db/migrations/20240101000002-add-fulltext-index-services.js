@@ -5,8 +5,6 @@
  * @version 1.0.0
  */
 
-"use strict";
-
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
 	async up(queryInterface, Sequelize) {

@@ -31,7 +31,7 @@ function etagMiddleware(req: Request, res: Response, next: NextFunction): void {
 	const originalSend = res.send.bind(res);
 
 	// Override json to add ETag
-	res.json = function (body: unknown) {
+	res.json = (body: unknown) => {
 		const etag = generateETag(body);
 		res.setHeader("ETag", etag);
 
@@ -45,7 +45,7 @@ function etagMiddleware(req: Request, res: Response, next: NextFunction): void {
 	};
 
 	// Override send to add ETag for non-JSON responses
-	res.send = function (body: unknown) {
+	res.send = (body: unknown) => {
 		if (typeof body === "object" && body !== null) {
 			const etag = generateETag(body);
 			res.setHeader("ETag", etag);

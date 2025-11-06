@@ -43,7 +43,9 @@ export default function ToastProvider({ children }: { children: React.ReactNode 
 							{t.requestId && (
 								<div className="mt-2">
 									<small className="text-muted d-flex align-items-center gap-2">
-										<span>Request ID: <code className="small">{t.requestId.substring(0, 8)}...</code></span>
+										<span>
+											Request ID: <code className="small">{t.requestId.substring(0, 8)}...</code>
+										</span>
 										<button
 											className="btn btn-link btn-sm p-0 text-decoration-none"
 											onClick={async () => {

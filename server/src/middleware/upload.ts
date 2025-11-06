@@ -67,8 +67,10 @@ function validateMagicBytes(buffer: Buffer, mimeType: string): boolean {
 	// For WebP, check RIFF header and WebP identifier
 	if (mimeType === "image/webp") {
 		if (buffer.length < 12) return false;
-		const hasRiff = buffer[0] === 0x52 && buffer[1] === 0x49 && buffer[2] === 0x46 && buffer[3] === 0x46;
-		const hasWebp = buffer[8] === 0x57 && buffer[9] === 0x45 && buffer[10] === 0x42 && buffer[11] === 0x50;
+		const hasRiff =
+			buffer[0] === 0x52 && buffer[1] === 0x49 && buffer[2] === 0x46 && buffer[3] === 0x46;
+		const hasWebp =
+			buffer[8] === 0x57 && buffer[9] === 0x45 && buffer[10] === 0x42 && buffer[11] === 0x50;
 		return hasRiff && hasWebp;
 	}
 
@@ -129,13 +131,19 @@ function imageFileFilter(_req: Request, file: Express.Multer.File, cb: multer.Fi
 	// Check if MIME type is in allowed list
 	const allowedMimeTypes = Object.keys(ALLOWED_IMAGE_TYPES);
 	if (!allowedMimeTypes.includes(file.mimetype)) {
-		return cb(new Error(`Invalid file type: ${file.mimetype}. Allowed types: ${allowedMimeTypes.join(", ")}`));
+		return cb(
+			new Error(
+				`Invalid file type: ${file.mimetype}. Allowed types: ${allowedMimeTypes.join(", ")}`,
+			),
+		);
 	}
 
 	// Validate file extension matches MIME type
 	if (!validateFileExtension(file.originalname, file.mimetype)) {
 		return cb(
-			new Error(`File extension does not match MIME type. Expected: ${ALLOWED_IMAGE_TYPES[file.mimetype as keyof typeof ALLOWED_IMAGE_TYPES]?.extensions.join(", ")}`),
+			new Error(
+				`File extension does not match MIME type. Expected: ${ALLOWED_IMAGE_TYPES[file.mimetype as keyof typeof ALLOWED_IMAGE_TYPES]?.extensions.join(", ")}`,
+			),
 		);
 	}
 
@@ -162,7 +170,9 @@ export function validateFileContent(req: Request, res: Response, next: NextFunct
 	// Validate magic bytes match MIME type
 	if (!validateMagicBytes(buffer, file.mimetype)) {
 		fs.unlinkSync(file.path); // Delete invalid file
-		return res.status(400).json({ message: "File content does not match declared file type. Possible file spoofing." });
+		return res
+			.status(400)
+			.json({ message: "File content does not match declared file type. Possible file spoofing." });
 	}
 
 	next();

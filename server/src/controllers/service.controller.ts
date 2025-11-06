@@ -10,6 +10,7 @@
 import type { Request, Response } from "express";
 import { Op } from "sequelize";
 import { z } from "zod";
+import { Favorite } from "../db/models/Favorite.js";
 import { Service } from "../db/models/Service.js";
 import { invalidateCache } from "../middleware/cache.js";
 import { logCreate, logDelete, logUpdate, logUpload } from "../services/audit.service.js";
@@ -25,6 +26,7 @@ import type {
 	UpdateServiceRequest,
 } from "../types/requests.js";
 import { handleControllerError, sendBadRequest, sendNotFound } from "../utils/errors.js";
+import { createPaginationResponse } from "../utils/responses.js";
 import { parseIdParam } from "../utils/validation.js";
 
 const serviceSchema = z.object({
@@ -119,12 +121,7 @@ export async function listServices(req: Request, res: Response) {
 
 		res.json({
 			data: services,
-			pagination: {
-				page: Number(page),
-				limit: actualLimit,
-				total: count,
-				pages: Math.ceil(count / actualLimit),
-			},
+			pagination: createPaginationResponse(Number(page), actualLimit, count),
 		});
 	} catch (err) {
 		handleControllerError(err, res);
@@ -254,6 +251,14 @@ export async function deleteService(req: Request, res: Response) {
 		if (!s) return sendNotFound(res);
 
 		const previousState = s.toJSON();
+
+		// Delete all favorites associated with this service first
+		// This prevents foreign key constraint errors
+		await Favorite.destroy({
+			where: { serviceId: id },
+		});
+
+		// Now delete the service
 		await s.destroy();
 
 		// Invalidate cache for this service and list

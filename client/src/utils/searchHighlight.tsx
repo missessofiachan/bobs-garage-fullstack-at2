@@ -6,7 +6,7 @@
  * @since 1.0.0
  */
 
-import React from "react";
+import type React from "react";
 
 /**
  * Highlights search terms in text
@@ -40,8 +40,8 @@ export function highlightMultipleTerms(text: string, searchTerms: string[]): Rea
 	if (!searchTerms.length || !text) return text;
 
 	const parts: Array<{ text: string; isMatch: boolean }> = [];
-	let remaining = text;
-	let lastIndex = 0;
+	const remaining = text;
+	const lastIndex = 0;
 
 	// Find all matches
 	const matches: Array<{ start: number; end: number; term: string }> = [];
@@ -100,4 +100,3 @@ export function highlightMultipleTerms(text: string, searchTerms: string[]): Rea
 		</>
 	);
 }
-

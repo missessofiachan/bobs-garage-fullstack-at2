@@ -78,4 +78,3 @@ export function sanitizeObject(obj: unknown): unknown {
 
 	return obj;
 }
-

@@ -16,8 +16,37 @@ import type {
 import axios, { AxiosError } from "axios";
 import { formatErrorMessage } from "../utils/errorFormatter";
 
-// Base URL: configure via Vite env, fallback to local dev server
-const BASE_URL = (import.meta as ImportMeta)?.env?.VITE_API_URL ?? "http://localhost:4000/api";
+/**
+ * Get the API base URL for the current environment.
+ *
+ * Priority:
+ * 1. VITE_API_URL environment variable (set at build time)
+ * 2. Relative URL "/api" if in production and no env var set (same-origin deployment)
+ * 3. Default to localhost for development
+ *
+ * Note: Vite embeds environment variables at BUILD TIME.
+ * For production builds, create client/.env.production with:
+ *   VITE_API_URL=https://api.yourdomain.com/api
+ *
+ * Or use relative URLs if frontend and backend are served from the same origin.
+ */
+function getBaseUrl(): string {
+	const envUrl = (import.meta as ImportMeta)?.env?.VITE_API_URL;
+	if (envUrl) {
+		return envUrl;
+	}
+
+	// In production, if no env var is set, assume same-origin deployment
+	// Use relative URL which will work if frontend and backend are on same domain
+	if (import.meta.env.PROD) {
+		return "/api";
+	}
+
+	// Development fallback
+	return "http://localhost:4000/api";
+}
+
+const BASE_URL = getBaseUrl();
 
 // In-memory access token (keep ephemeral, do not persist)
 let accessToken: string | undefined;

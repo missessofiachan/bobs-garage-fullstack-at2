@@ -10,6 +10,7 @@ import type { Request, Response } from "express";
 import { Op } from "sequelize";
 import { AuditLog } from "../db/models/AuditLog.js";
 import { handleControllerError } from "../utils/errors.js";
+import { createPaginationResponse } from "../utils/responses.js";
 
 interface AuditLogQueryParams {
 	page?: number;
@@ -77,12 +78,7 @@ export async function getAuditLogs(req: Request, res: Response) {
 
 		res.json({
 			data: logsWithParsedStates,
-			pagination: {
-				page: Number(page),
-				limit: actualLimit,
-				total: count,
-				pages: Math.ceil(count / actualLimit),
-			},
+			pagination: createPaginationResponse(Number(page), actualLimit, count),
 		});
 	} catch (err) {
 		handleControllerError(err, res);

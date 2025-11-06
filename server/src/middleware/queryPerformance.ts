@@ -69,7 +69,7 @@ export function requestPerformanceMiddleware(
 	const originalEnd = res.end.bind(res);
 
 	// Override end to set header before response is sent
-	res.end = function (chunk?: unknown, encoding?: unknown, cb?: () => void) {
+	res.end = (chunk?: unknown, encoding?: unknown, cb?: () => void) => {
 		const duration = Date.now() - startTime;
 
 		// Set response time header before sending response

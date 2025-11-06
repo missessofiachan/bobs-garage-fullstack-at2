@@ -22,7 +22,7 @@ export function decodeJwt<T = JwtPayload>(token: string): T | null {
 		const json = decodeURIComponent(
 			atob(payload)
 				.split("")
-				.map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+				.map((c) => `%${("00" + c.charCodeAt(0).toString(16)).slice(-2)}`)
 				.join(""),
 		);
 		return JSON.parse(json) as T;

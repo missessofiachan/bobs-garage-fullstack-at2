@@ -23,7 +23,7 @@ export function metricsMiddleware(req: Request, res: Response, next: NextFunctio
 	// Override res.end to capture response
 	const originalEnd = res.end.bind(res);
 
-	res.end = function (chunk?: unknown, encoding?: unknown, cb?: () => void) {
+	res.end = (chunk?: unknown, encoding?: unknown, cb?: () => void) => {
 		const duration = (Date.now() - startTime) / 1000; // Convert to seconds
 		const statusCode = res.statusCode.toString();
 		const method = req.method;

@@ -12,6 +12,7 @@ import {
 	MdAccountCircle,
 	MdAdminPanelSettings,
 	MdBuild,
+	MdContactMail,
 	MdDarkMode,
 	MdFavorite,
 	MdHome,
@@ -147,6 +148,15 @@ export default function NavBar() {
 						>
 							<MdPeople size={18} style={isActive("/staff") ? activeStyle : undefined} />
 							<span style={isActive("/staff") ? activeStyle : undefined}>Staff</span>
+						</Nav.Link>
+						<Nav.Link
+							as={Link}
+							to="/contact"
+							className="d-flex align-items-center gap-1"
+							style={isActive("/contact") ? activeStyle : undefined}
+						>
+							<MdContactMail size={18} style={isActive("/contact") ? activeStyle : undefined} />
+							<span style={isActive("/contact") ? activeStyle : undefined}>Contact</span>
 						</Nav.Link>
 					</Nav>
 

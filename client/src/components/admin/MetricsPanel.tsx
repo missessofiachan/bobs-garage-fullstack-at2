@@ -145,11 +145,15 @@ export default function MetricsPanel() {
 								<div className="mb-2">
 									<div className="d-flex justify-content-between">
 										<span>P95</span>
-										<strong className={
-											metrics.httpRequestDuration.p95 > 1 ? "text-danger" :
-											metrics.httpRequestDuration.p95 > 0.5 ? "text-warning" :
-											"text-success"
-										}>
+										<strong
+											className={
+												metrics.httpRequestDuration.p95 > 1
+													? "text-danger"
+													: metrics.httpRequestDuration.p95 > 0.5
+														? "text-warning"
+														: "text-success"
+											}
+										>
 											{formatDuration(metrics.httpRequestDuration.p95)}
 										</strong>
 									</div>
@@ -157,11 +161,15 @@ export default function MetricsPanel() {
 								<div className="mb-2">
 									<div className="d-flex justify-content-between">
 										<span>P99</span>
-										<strong className={
-											metrics.httpRequestDuration.p99 > 1 ? "text-danger" :
-											metrics.httpRequestDuration.p99 > 0.5 ? "text-warning" :
-											"text-success"
-										}>
+										<strong
+											className={
+												metrics.httpRequestDuration.p99 > 1
+													? "text-danger"
+													: metrics.httpRequestDuration.p99 > 0.5
+														? "text-warning"
+														: "text-success"
+											}
+										>
 											{formatDuration(metrics.httpRequestDuration.p99)}
 										</strong>
 									</div>
@@ -185,11 +193,15 @@ export default function MetricsPanel() {
 									<div className="mb-2">
 										<div className="d-flex justify-content-between">
 											<span>Avg Duration</span>
-											<strong className={
-												metrics.database.averageDuration > 1 ? "text-danger" :
-												metrics.database.averageDuration > 0.5 ? "text-warning" :
-												"text-success"
-											}>
+											<strong
+												className={
+													metrics.database.averageDuration > 1
+														? "text-danger"
+														: metrics.database.averageDuration > 0.5
+															? "text-warning"
+															: "text-success"
+												}
+											>
 												{formatDuration(metrics.database.averageDuration)}
 											</strong>
 										</div>

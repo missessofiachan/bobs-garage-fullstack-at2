@@ -100,7 +100,7 @@ export function requestResponseLoggingMiddleware(
 	const originalJson = res.json.bind(res);
 	const originalSend = res.send.bind(res);
 
-	res.json = function (body: unknown) {
+	res.json = (body: unknown) => {
 		const duration = Date.now() - startTime;
 		const sanitizedBody = sanitize(body);
 		winstonLogger.debug(
@@ -109,7 +109,7 @@ export function requestResponseLoggingMiddleware(
 		return originalJson(body);
 	};
 
-	res.send = function (body: unknown) {
+	res.send = (body: unknown) => {
 		const duration = Date.now() - startTime;
 		if (typeof body === "string" && body.length > 0) {
 			winstonLogger.debug(`[${requestId}] Response (${duration}ms): ${truncate(body)}`);

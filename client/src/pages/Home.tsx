@@ -228,31 +228,36 @@ export default function Home() {
 											whileHover={{ y: -5 }}
 											transition={{ type: "spring", stiffness: 300 }}
 										>
-											<Card className="h-100">
-												<Image
-													src={imageSrc}
-													alt={service.name}
-													fluid
-													style={{
-														height: 200,
-														objectFit: "cover",
-														width: "100%",
-													}}
-													onError={(e) => {
-														(e.currentTarget as HTMLImageElement).src = imageSrc;
-													}}
-												/>
-												<Card.Body>
-													<Card.Title>{service.name}</Card.Title>
-													<Card.Text className="text-muted small">
-														{service.description?.substring(0, 80)}
-														{service.description && service.description.length > 80 ? "..." : ""}
-													</Card.Text>
-													<div className="fw-bold text-primary fs-5">
-														{formatCurrency(service.price)}
-													</div>
-												</Card.Body>
-											</Card>
+											<Link
+												to={`/services/${service.id}`}
+												style={{ textDecoration: "none", color: "inherit" }}
+											>
+												<Card className="h-100" style={{ cursor: "pointer" }}>
+													<Image
+														src={imageSrc}
+														alt={service.name}
+														fluid
+														style={{
+															height: 200,
+															objectFit: "cover",
+															width: "100%",
+														}}
+														onError={(e) => {
+															(e.currentTarget as HTMLImageElement).src = imageSrc;
+														}}
+													/>
+													<Card.Body>
+														<Card.Title>{service.name}</Card.Title>
+														<Card.Text className="text-muted small">
+															{service.description?.substring(0, 80)}
+															{service.description && service.description.length > 80 ? "..." : ""}
+														</Card.Text>
+														<div className="fw-bold text-primary fs-5">
+															{formatCurrency(service.price)}
+														</div>
+													</Card.Body>
+												</Card>
+											</Link>
 										</motion.div>
 									</Col>
 								);

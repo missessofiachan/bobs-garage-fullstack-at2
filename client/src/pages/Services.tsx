@@ -9,6 +9,7 @@ import { useMemo, useState } from "react";
 import { Alert, Button, Card, Col, Form, Image, InputGroup, Row, Table } from "react-bootstrap";
 import { MdBuild, MdSearch, MdSort, MdViewList, MdViewModule } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import FavouriteButton from "../components/FavouriteButton";
 import Loading from "../components/ui/Loading";
 import usePageTitle from "../hooks/usePageTitle";
@@ -163,7 +164,12 @@ export default function Services() {
 			{/* Services Display */}
 			{list.length > 0 ? (
 				view === "grid" ? (
-					<motion.div variants={staggerContainer} initial="initial" animate="animate" style={{ width: "100%" }}>
+					<motion.div
+						variants={staggerContainer}
+						initial="initial"
+						animate="animate"
+						style={{ width: "100%" }}
+					>
 						<Row xs={1} sm={2} md={3} lg={4} className="g-4">
 							{list.map((service) => {
 								const imageSrc = getImageSrc(service.imageUrl, getImageBaseUrl());
@@ -176,65 +182,76 @@ export default function Services() {
 											whileHover={{ y: -5 }}
 											transition={{ type: "spring", stiffness: 300 }}
 										>
-											<Card className="h-100 shadow-sm">
-												<div
-													style={{
-														position: "relative",
-														width: "100%",
-														height: 200,
-														overflow: "hidden",
-														backgroundColor: isPlaceholder ? "#f3f4f6" : "transparent",
-													}}
-												>
-													<Image
-														src={imageSrc}
-														alt={service.name}
-														fluid
-														style={{
-															width: "100%",
-															height: "100%",
-															objectFit: isPlaceholder ? "contain" : "cover",
-															padding: isPlaceholder ? "1rem" : "0",
-														}}
-														loading="lazy"
-														onError={(e) => {
-															if ((e.currentTarget as HTMLImageElement).src !== IMAGE_PLACEHOLDER) {
-																(e.currentTarget as HTMLImageElement).src = IMAGE_PLACEHOLDER;
-															}
-														}}
-													/>
+											<Link
+												to={`/services/${service.id}`}
+												style={{ textDecoration: "none", color: "inherit" }}
+											>
+												<Card className="h-100 shadow-sm" style={{ cursor: "pointer" }}>
 													<div
 														style={{
-															position: "absolute",
-															top: 8,
-															right: 8,
+															position: "relative",
+															width: "100%",
+															height: 200,
+															overflow: "hidden",
+															backgroundColor: isPlaceholder ? "#f3f4f6" : "transparent",
 														}}
 													>
-														<FavouriteButton id={service.id} />
-													</div>
-												</div>
-												<Card.Body>
-													<Card.Title className="mb-2">
-														{q ? highlightSearch(service.name, q) : service.name}
-													</Card.Title>
-													<div className="fw-bold text-primary fs-5 mb-2">
-														{formatCurrency(service.price)}
-													</div>
-													{service.description && (
-														<Card.Text
-															className="text-muted small"
+														<Image
+															src={imageSrc}
+															alt={service.name}
+															fluid
 															style={{
-																display: "-webkit-box",
-																WebkitLineClamp: 3,
-																WebkitBoxOrient: "vertical",
-																overflow: "hidden",
+																width: "100%",
+																height: "100%",
+																objectFit: isPlaceholder ? "contain" : "cover",
+																padding: isPlaceholder ? "1rem" : "0",
+															}}
+															loading="lazy"
+															onError={(e) => {
+																if (
+																	(e.currentTarget as HTMLImageElement).src !== IMAGE_PLACEHOLDER
+																) {
+																	(e.currentTarget as HTMLImageElement).src = IMAGE_PLACEHOLDER;
+																}
+															}}
+														/>
+														<div
+															style={{
+																position: "absolute",
+																top: 8,
+																right: 8,
+															}}
+															onClick={(e) => {
+																e.preventDefault();
+																e.stopPropagation();
 															}}
 														>
-															{q ? highlightSearch(service.description, q) : service.description}
-														</Card.Text>
-													)}
-												</Card.Body>
-											</Card>
+															<FavouriteButton id={service.id} />
+														</div>
+													</div>
+													<Card.Body>
+														<Card.Title className="mb-2">
+															{q ? highlightSearch(service.name, q) : service.name}
+														</Card.Title>
+														<div className="fw-bold text-primary fs-5 mb-2">
+															{formatCurrency(service.price)}
+														</div>
+														{service.description && (
+															<Card.Text
+																className="text-muted small"
+																style={{
+																	display: "-webkit-box",
+																	WebkitLineClamp: 3,
+																	WebkitBoxOrient: "vertical",
+																	overflow: "hidden",
+																}}
+															>
+																{q ? highlightSearch(service.description, q) : service.description}
+															</Card.Text>
+														)}
+													</Card.Body>
+												</Card>
+											</Link>
 										</motion.div>
 									</Col>
 								);
@@ -283,13 +300,36 @@ export default function Services() {
 													/>
 												</td>
 												<td>
-													<strong>{q ? highlightSearch(service.name, q) : service.name}</strong>
+													<Link
+														to={`/services/${service.id}`}
+														style={{ textDecoration: "none", color: "inherit" }}
+													>
+														<strong>{q ? highlightSearch(service.name, q) : service.name}</strong>
+													</Link>
 												</td>
-												<td className="fw-bold text-primary">{formatCurrency(service.price)}</td>
-												<td className="text-muted">
-													{q ? highlightSearch(service.description || "", q) : service.description}
+												<td>
+													<Link
+														to={`/services/${service.id}`}
+														style={{ textDecoration: "none", color: "inherit" }}
+													>
+														<span className="fw-bold text-primary">
+															{formatCurrency(service.price)}
+														</span>
+													</Link>
 												</td>
-												<td className="text-center">
+												<td>
+													<Link
+														to={`/services/${service.id}`}
+														style={{ textDecoration: "none", color: "inherit" }}
+													>
+														<span className="text-muted">
+															{q
+																? highlightSearch(service.description || "", q)
+																: service.description}
+														</span>
+													</Link>
+												</td>
+												<td className="text-center" onClick={(e) => e.stopPropagation()}>
 													<FavouriteButton id={service.id} />
 												</td>
 											</motion.tr>

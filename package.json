@@ -30,19 +30,13 @@
 		"dev": "concurrently \"yarn workspace server dev\" \"yarn workspace client dev\"",
 		"build": "yarn workspace server build && yarn workspace client build",
 		"start": "yarn workspace server start",
-		"lint": "biome lint .",
-		"lint:fix": "biome check --write .",
-		"lint:docker": "node scripts/biome-docker.js lint .",
-		"lint:fix:docker": "node scripts/biome-docker.js check --write .",
-		"format": "biome format --write .",
-		"format:check": "biome format .",
-		"format:docker": "node scripts/biome-docker.js format --write .",
-		"format:check:docker": "node scripts/biome-docker.js format .",
-		"biome:docker": "node scripts/biome-docker.js",
+		"lint": "node_modules/@biomejs/cli-win32-x64/biome.exe lint .",
+		"lint:fix": "node_modules/@biomejs/cli-win32-x64/biome.exe check --write 4.",
+		"format": "node_modules/@biomejs/cli-win32-x64/biome.exe format --write .",
+		"format:check": "node_modules/@biomejs/cli-win32-x64/biome.exe format .",
 		"typecheck": "yarn workspace server typecheck && yarn workspace client typecheck",
 		"test": "yarn workspace server test && yarn workspace client test",
 		"test:watch": "concurrently \"yarn workspace server test:watch\" \"yarn workspace client test:watch\"",
-		"seed": "yarn workspace server seed",
 		"clean": "yarn workspace server clean && yarn workspace client clean || true",
 		"update:dependencies": "yarn upgrade-interactive --latest"
 	},
@@ -57,7 +51,7 @@
 	},
 	"lint-staged": {
 		"*.{js,jsx,ts,tsx,json,md,css,scss}": [
-			"biome check --write"
+			"node_modules/@biomejs/cli-win32-x64/biome.exe check --write"
 		]
 	},
 	"dependencies": {

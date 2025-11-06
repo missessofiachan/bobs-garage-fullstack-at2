@@ -1,7 +1,7 @@
 // @purpose Configure Biome for linting and formatting across workspace packages
 // @version 2.0.0
 {
-	"$schema": "https://biomejs.dev/schemas/2.3.3/schema.json",
+	"$schema": "https://biomejs.dev/schemas/2.3.4/schema.json",
 	"files": {
 		"ignoreUnknown": true,
 		"includes": [
@@ -12,9 +12,9 @@
 			"!**/uploads",
 			"!**/build",
 			"!**/tsconfig*.json",
-			"!**/docs/**",
-			"!**/server/tests/**",
-			"!**/server/src/db/scripts/**"
+			"!**/docs",
+			"!**/server/tests",
+			"!**/server/src/db/scripts"
 		]
 	},
 	"formatter": {
@@ -24,7 +24,7 @@
 	"linter": {
 		"enabled": true,
 		"rules": {
-			"recommended": false
+			"recommended": true
 		}
 	}
 }

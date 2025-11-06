@@ -10,6 +10,7 @@ import { User } from "../db/models/User.js";
 import type { CreateUserRequest, UpdateUserRequest, UserQueryParams } from "../types/requests.js";
 import { handleControllerError, sendNotFound } from "../utils/errors.js";
 import { hashPassword } from "../utils/hash.js";
+import { createPaginationResponse } from "../utils/responses.js";
 import { parseIdParam } from "../utils/validation.js";
 
 const createSchema = z.object({
@@ -82,12 +83,7 @@ export async function listUsers(req: Request, res: Response) {
 
 		res.json({
 			data: users,
-			pagination: {
-				page: Number(page),
-				limit: actualLimit,
-				total: count,
-				pages: Math.ceil(count / actualLimit),
-			},
+			pagination: createPaginationResponse(Number(page), actualLimit, count),
 		});
 	} catch (err) {
 		handleControllerError(err, res);

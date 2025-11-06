@@ -55,7 +55,7 @@ function calculatePercentile(
 ): number {
 	if (total === 0) return 0;
 	const target = total * (percentile / 100);
-	
+
 	for (let i = buckets.length - 1; i >= 0; i--) {
 		if (buckets[i].count >= target) {
 			return parseFloat(buckets[i].le);
@@ -122,7 +122,7 @@ function parseMetrics(metricsText: string): ParsedMetrics {
 				const labels = match[1];
 				const count = parseInt(match[2], 10);
 				metrics.httpRequests.total += count;
-				
+
 				// Extract status code
 				const statusMatch = labels.match(/status_code="(\d+)"/);
 				if (statusMatch) {
@@ -130,7 +130,7 @@ function parseMetrics(metricsText: string): ParsedMetrics {
 					metrics.httpRequests.byStatus[status] =
 						(metrics.httpRequests.byStatus[status] || 0) + count;
 				}
-				
+
 				// Extract method
 				const methodMatch = labels.match(/method="([^"]+)"/);
 				if (methodMatch) {
@@ -143,7 +143,9 @@ function parseMetrics(metricsText: string): ParsedMetrics {
 
 		// Parse http_request_duration_seconds histogram
 		if (line.startsWith("http_request_duration_seconds_bucket")) {
-			const match = line.match(/http_request_duration_seconds_bucket\{[^}]*le="([^"]+)"[^}]*\} (\d+)/);
+			const match = line.match(
+				/http_request_duration_seconds_bucket\{[^}]*le="([^"]+)"[^}]*\} (\d+)/,
+			);
 			if (match) {
 				const le = match[1];
 				const count = parseInt(match[2], 10);
@@ -178,7 +180,7 @@ function parseMetrics(metricsText: string): ParsedMetrics {
 				const labels = match[1];
 				const count = parseInt(match[2], 10);
 				metrics.database.totalQueries += count;
-				
+
 				// Extract operation
 				const operationMatch = labels.match(/operation="([^"]+)"/);
 				if (operationMatch) {
@@ -186,13 +188,12 @@ function parseMetrics(metricsText: string): ParsedMetrics {
 					metrics.database.byOperation[operation] =
 						(metrics.database.byOperation[operation] || 0) + count;
 				}
-				
+
 				// Extract table
 				const tableMatch = labels.match(/table="([^"]+)"/);
 				if (tableMatch) {
 					const table = tableMatch[1];
-					metrics.database.byTable[table] =
-						(metrics.database.byTable[table] || 0) + count;
+					metrics.database.byTable[table] = (metrics.database.byTable[table] || 0) + count;
 				}
 			}
 		}
@@ -204,7 +205,7 @@ function parseMetrics(metricsText: string): ParsedMetrics {
 				const le = match[1];
 				const count = parseInt(match[2], 10);
 				dbDurationBuckets.push({ le, count });
-				
+
 				// Count slow queries (>1 second)
 				if (parseFloat(le) >= 1.0) {
 					metrics.database.slowQueryCount += count;
@@ -255,12 +256,13 @@ function parseMetrics(metricsText: string): ParsedMetrics {
 			if (b.le === "+Inf") return -1;
 			return parseFloat(a.le) - parseFloat(b.le);
 		});
-		
+
 		// Find the +Inf bucket for total count (or use the highest bucket)
-		const totalBucket = httpDurationBuckets.find((b) => b.le === "+Inf") || 
+		const totalBucket =
+			httpDurationBuckets.find((b) => b.le === "+Inf") ||
 			httpDurationBuckets[httpDurationBuckets.length - 1];
 		const total = totalBucket?.count || httpDurationCount;
-		
+
 		metrics.httpRequestDuration.p95 = calculatePercentile(httpDurationBuckets, total, 95);
 		metrics.httpRequestDuration.p99 = calculatePercentile(httpDurationBuckets, total, 99);
 		metrics.httpRequestDuration.average = httpDurationSum / httpDurationCount;
@@ -274,16 +276,17 @@ function parseMetrics(metricsText: string): ParsedMetrics {
 			if (b.le === "+Inf") return -1;
 			return parseFloat(a.le) - parseFloat(b.le);
 		});
-		
+
 		// Find the +Inf bucket for total count
-		const totalBucket = dbDurationBuckets.find((b) => b.le === "+Inf") || 
+		const totalBucket =
+			dbDurationBuckets.find((b) => b.le === "+Inf") ||
 			dbDurationBuckets[dbDurationBuckets.length - 1];
 		const total = totalBucket?.count || dbDurationCount;
-		
+
 		metrics.database.p95 = calculatePercentile(dbDurationBuckets, total, 95);
 		metrics.database.p99 = calculatePercentile(dbDurationBuckets, total, 99);
 		metrics.database.averageDuration = dbDurationSum / dbDurationCount;
-		
+
 		// Count slow queries: find the bucket with le >= 1.0
 		const slowQueryBucket = dbDurationBuckets.find((b) => {
 			if (b.le === "+Inf") return false;

@@ -69,5 +69,3 @@ export function sanitizeInput(req: Request, _res: Response, next: NextFunction):
 
 	next();
 }
-
-

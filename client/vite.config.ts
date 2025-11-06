@@ -1,7 +1,7 @@
 import { vanillaExtractPlugin } from "@vanilla-extract/vite-plugin";
 import react from "@vitejs/plugin-react";
-import type { Plugin } from "vite";
 import { createProxyMiddleware } from "http-proxy-middleware";
+import type { Plugin } from "vite";
 import { defineConfig } from "vite";
 
 // Proxy plugin for preview mode

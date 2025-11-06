@@ -28,17 +28,7 @@
 		"prebuild": "yarn clean",
 		"start": "node dist/server.js",
 		"clean": "node -e \"const fs=require('fs');if(fs.existsSync('dist'))fs.rmSync('dist',{recursive:true,force:true});fs.readdirSync('.').filter(f=>f.endsWith('.tsbuildinfo')).forEach(f=>fs.rmSync(f,{force:true}));\" || true",
-		"typecheck": "tsc -p tsconfig.json --noEmit",
-		"seed": "tsx src/db/seeders/run-seeder.ts",
-		"migrate": "sequelize-cli db:migrate",
-		"migrate:undo": "sequelize-cli db:migrate:undo",
-		"migrate:create": "sequelize-cli migration:generate --name",
-		"test": "vitest run",
-		"test:watch": "vitest",
-		"test:coverage": "vitest run --coverage",
-		"lint": "biome lint src",
-		"lint:fix": "biome check --write src",
-		"format": "biome format --write src"
+		"typecheck": "tsc -p tsconfig.json --noEmit"
 	},
 	"dependencies": {
 		"bcrypt": "^6.0.0",

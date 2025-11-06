@@ -84,16 +84,75 @@ export function createResourceHooks<
 		 */
 		useCreate: (options?: any) => {
 			const qc = useQueryClient();
-			return useMutation({
+			const customOnMutate = options?.onMutate || config.options?.mutations?.create?.onMutate;
+			const customOnError = options?.onError || config.options?.mutations?.create?.onError;
+			const customOnSuccess = options?.onSuccess || config.options?.mutations?.create?.onSuccess;
+
+			return useMutation<DTO, unknown, CreateDTO, { previousData: DTO[] | undefined }>({
 				mutationFn: async (payload: CreateDTO): Promise<DTO> => {
 					const { data } = await api.post<DTO>(config.basePath, payload as any);
 					return data;
 				},
-				onSuccess: () => {
-					qc.invalidateQueries({ queryKey: queryKey.all });
+				onMutate: async (vars) => {
+					// Cancel any outgoing refetches to avoid overwriting our optimistic update
+					await qc.cancelQueries({ queryKey: queryKey.all });
+
+					// Snapshot the previous value
+					const previousData = qc.getQueryData<DTO[]>(queryKey.all);
+
+					// Optimistically add a temporary item (will be replaced with server response)
+					if (previousData) {
+						// Create a temporary item with a negative ID (temporary)
+						const tempItem = {
+							...vars,
+							id: -Date.now(), // Temporary negative ID
+						} as unknown as DTO;
+						qc.setQueryData<DTO[]>(queryKey.all, [...previousData, tempItem]);
+					}
+
+					// Call custom onMutate if provided
+					const customContext = await customOnMutate?.(vars);
+
+					// Return context with previous data for rollback
+					return { previousData, ...customContext };
 				},
-				...config.options?.mutations?.create,
-				...options,
+				onError: (err, vars, context) => {
+					// Rollback on error
+					if (context?.previousData) {
+						qc.setQueryData(queryKey.all, context.previousData);
+					}
+					// Call custom onError if provided
+					customOnError?.(err, vars, context);
+				},
+				onSuccess: (newData, vars, context) => {
+					// Replace the temporary item with the real server response
+					const currentData = qc.getQueryData<DTO[]>(queryKey.all);
+					if (currentData) {
+						// Remove temporary item and add the real one
+						const filtered = currentData.filter((item) => {
+							const itemWithId = item as unknown as { id: number };
+							return itemWithId.id >= 0; // Remove temporary negative IDs
+						});
+						qc.setQueryData<DTO[]>(queryKey.all, [...filtered, newData]);
+					} else {
+						// If no cache, just set it
+						qc.setQueryData<DTO[]>(queryKey.all, [newData]);
+					}
+					// Refetch in background to ensure consistency
+					qc.invalidateQueries({ queryKey: queryKey.all });
+					// Call custom onSuccess if provided
+					customOnSuccess?.(newData, vars, context);
+				},
+				...Object.fromEntries(
+					Object.entries(options || {}).filter(
+						([key]) => !["onMutate", "onError", "onSuccess"].includes(key),
+					),
+				),
+				...Object.fromEntries(
+					Object.entries(config.options?.mutations?.create || {}).filter(
+						([key]) => !["onMutate", "onError", "onSuccess"].includes(key),
+					),
+				),
 			});
 		},
 
@@ -102,17 +161,85 @@ export function createResourceHooks<
 		 */
 		useUpdate: (options?: any) => {
 			const qc = useQueryClient();
-			return useMutation({
+			const customOnMutate = options?.onMutate || config.options?.mutations?.update?.onMutate;
+			const customOnError = options?.onError || config.options?.mutations?.update?.onError;
+			const customOnSuccess = options?.onSuccess || config.options?.mutations?.update?.onSuccess;
+
+			return useMutation<
+				DTO,
+				unknown,
+				UpdateDTO & { id: number },
+				{ previousData: DTO[] | undefined }
+			>({
 				mutationFn: async ({ id, ...payload }: UpdateDTO & { id: number }): Promise<DTO> => {
 					const { data } = await api.put<DTO>(`${config.basePath}/${id}`, payload as any);
 					return data;
 				},
-				onSuccess: (_d, vars) => {
+				onMutate: async (vars) => {
+					// Cancel any outgoing refetches to avoid overwriting our optimistic update
+					await qc.cancelQueries({ queryKey: queryKey.all });
+
+					// Snapshot the previous value
+					const previousData = qc.getQueryData<DTO[]>(queryKey.all);
+
+					// Optimistically update the item in cache
+					if (previousData) {
+						const { id, ...updatePayload } = vars;
+						qc.setQueryData<DTO[]>(
+							queryKey.all,
+							previousData.map((item) => {
+								const itemWithId = item as unknown as { id: number };
+								if (itemWithId.id === id) {
+									// Merge the update payload with existing item (excluding id)
+									return { ...item, ...updatePayload } as DTO;
+								}
+								return item;
+							}),
+						);
+					}
+
+					// Call custom onMutate if provided
+					const customContext = await customOnMutate?.(vars);
+
+					// Return context with previous data for rollback
+					return { previousData, ...customContext };
+				},
+				onError: (err, vars, context) => {
+					// Rollback on error
+					if (context?.previousData) {
+						qc.setQueryData(queryKey.all, context.previousData);
+					}
+					// Call custom onError if provided
+					customOnError?.(err, vars, context);
+				},
+				onSuccess: (updatedData, vars, context) => {
+					// Update with server response and refetch in background
+					const currentData = qc.getQueryData<DTO[]>(queryKey.all);
+					if (currentData) {
+						qc.setQueryData<DTO[]>(
+							queryKey.all,
+							currentData.map((item) => {
+								const itemWithId = item as unknown as { id: number };
+								return itemWithId.id === vars.id ? updatedData : item;
+							}),
+						);
+					}
+					// Refetch in background to ensure consistency
 					qc.invalidateQueries({ queryKey: queryKey.detail(vars.id) });
 					qc.invalidateQueries({ queryKey: queryKey.all });
+					// Call custom onSuccess if provided
+					customOnSuccess?.(updatedData, vars, context);
 				},
-				...config.options?.mutations?.update,
-				...options,
+				...Object.fromEntries(
+					Object.entries(options || {}).filter(
+						([key]) => !["onMutate", "onError", "onSuccess"].includes(key),
+					),
+				),
+				...Object.fromEntries(
+					Object.entries(config.options?.mutations?.update || {}).filter(
+						([key]) => !["onMutate", "onError", "onSuccess"].includes(key),
+					),
+				),
 			});
 		},
 
@@ -122,20 +249,15 @@ export function createResourceHooks<
 		useDelete: (options?: any) => {
 			const qc = useQueryClient();
 			const configDeleteOptions = config.options?.mutations?.delete || {};
-			
-			return useMutation<
-				void,
-				unknown,
-				number,
-				{ previousData: DTO[] | undefined }
-			>({
+
+			return useMutation<void, unknown, number, { previousData: DTO[] | undefined }>({
 				mutationFn: async (id: number): Promise<void> => {
 					await api.delete(`${config.basePath}/${id}`);
 				},
 				onMutate: async (id: number) => {
 					// Call config onMutate if provided
 					const configContext = await configDeleteOptions.onMutate?.(id);
-					
+
 					// Cancel any outgoing refetches to avoid overwriting our optimistic update
 					await qc.cancelQueries({ queryKey: queryKey.all });
 
@@ -188,8 +310,10 @@ export function createResourceHooks<
 		/**
 		 * Upload a file for a resource
 		 */
-		useUpload: () => {
+		useUpload: (options?: any) => {
 			const qc = useQueryClient();
+			const customOnSuccess = options?.onSuccess;
+			const customOnError = options?.onError;
 			return useMutation({
 				mutationFn: async ({
 					id,
@@ -215,10 +339,17 @@ export function createResourceHooks<
 					});
 					return data;
 				},
-				onSuccess: (_d, vars) => {
+				onSuccess: (data, vars) => {
 					qc.invalidateQueries({ queryKey: queryKey.detail(vars.id) });
 					qc.invalidateQueries({ queryKey: queryKey.all });
+					customOnSuccess?.(data, vars);
 				},
+				onError: (err, vars, context) => {
+					customOnError?.(err, vars, context);
+				},
+				...Object.fromEntries(
+					Object.entries(options || {}).filter(([key]) => !["onSuccess", "onError"].includes(key)),
+				),
 			});
 		},
 

@@ -28,3 +28,28 @@ export const err = (code: string, message: string): ApiError => ({
 	data: null,
 	error: { code, message },
 });
+
+/**
+ * Creates a standardized pagination response object
+ * @param page - Current page number
+ * @param limit - Items per page (actual limit used)
+ * @param total - Total number of items
+ * @returns Pagination metadata object
+ */
+export function createPaginationResponse(
+	page: number,
+	limit: number,
+	total: number,
+): {
+	page: number;
+	limit: number;
+	total: number;
+	pages: number;
+} {
+	return {
+		page: Number(page),
+		limit,
+		total,
+		pages: Math.ceil(total / limit),
+	};
+}

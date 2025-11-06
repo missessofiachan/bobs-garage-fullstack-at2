@@ -68,4 +68,3 @@ export function useAuditLogs(params: AuditLogsParams = {}) {
 		staleTime: 10000, // Consider stale after 10 seconds
 	});
 }
-

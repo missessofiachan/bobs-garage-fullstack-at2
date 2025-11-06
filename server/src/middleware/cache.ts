@@ -54,7 +54,7 @@ export function cacheMiddleware(ttlSeconds?: number, keyPrefix?: string) {
 		const originalJson = res.json.bind(res);
 
 		// Override json to capture response
-		res.json = function (body: unknown) {
+		res.json = (body: unknown) => {
 			// Store response headers that should be cached
 			const headersToCache: Record<string, string> = {};
 			const headers = ["content-type", "etag", "last-modified"];

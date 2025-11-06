@@ -20,6 +20,7 @@ import type {
 	UpdateStaffRequest,
 } from "../types/requests.js";
 import { handleControllerError, sendBadRequest, sendNotFound } from "../utils/errors.js";
+import { createPaginationResponse } from "../utils/responses.js";
 import { parseIdParam } from "../utils/validation.js";
 
 const staffSchema = z.object({
@@ -77,12 +78,7 @@ export async function listStaff(req: Request, res: Response) {
 
 		res.json({
 			data: staff,
-			pagination: {
-				page: Number(page),
-				limit: actualLimit,
-				total: count,
-				pages: Math.ceil(count / actualLimit),
-			},
+			pagination: createPaginationResponse(Number(page), actualLimit, count),
 		});
 	} catch (err) {
 		handleControllerError(err, res);
