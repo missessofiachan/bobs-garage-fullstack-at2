@@ -10,8 +10,9 @@ import { User } from "../db/models/User.js";
 import type { CreateUserRequest, UpdateUserRequest, UserQueryParams } from "../types/requests.js";
 import { handleControllerError, sendNotFound } from "../utils/errors.js";
 import { hashPassword } from "../utils/hash.js";
+import { calculatePaginationParams } from "../utils/pagination.js";
 import { createPaginationResponse } from "../utils/responses.js";
-import { parseIdParam } from "../utils/validation.js";
+import { findByIdOr404, parseIdParam } from "../utils/validation.js";
 
 const createSchema = z.object({
 	email: z.string().email(),
@@ -70,8 +71,7 @@ export async function listUsers(req: Request, res: Response) {
 		if (role) where.role = role;
 		if (typeof active !== "undefined") where.active = active;
 
-		const offset = (Number(page) - 1) * Number(limit);
-		const actualLimit = Math.min(Number(limit), 100); // Cap at 100 per page
+		const { offset, limit: actualLimit } = calculatePaginationParams(page, limit);
 
 		const { count, rows: users } = await User.findAndCountAll({
 			where,
@@ -105,13 +105,15 @@ export async function listUsers(req: Request, res: Response) {
  */
 export async function getUserById(req: Request, res: Response) {
 	try {
-		const id = parseIdParam(req, res);
-		if (id === null) return; // Error response already sent
-
-		const user = await User.findByPk(id, {
-			attributes: ["id", "email", "role", "active", "createdAt"],
-		});
-		if (!user) return sendNotFound(res);
+		const user = await findByIdOr404(
+			req,
+			res,
+			(id) =>
+				User.findByPk(id, {
+					attributes: ["id", "email", "role", "active", "createdAt"],
+				}),
+		);
+		if (!user) return; // Error response already sent
 
 		res.json(user);
 	} catch (err) {

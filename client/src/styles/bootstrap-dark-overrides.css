@@ -255,6 +255,8 @@ html[data-bs-theme="dark"] body {
 	--bs-info-rgb: 125, 211, 252;
 	--bs-warning: #f7a8b8; /* Trans pride flag pink */
 	--bs-warning-rgb: 247, 168, 184;
+	--bs-danger: #f7a8b8; /* Trans pride flag pink */
+	--bs-danger-rgb: 247, 168, 184;
 }
 
 html[data-bs-theme="dark"] .card {
@@ -526,6 +528,33 @@ html[data-bs-theme="dark"] .btn-outline-danger:hover {
 html[data-bs-theme="dark"] .badge.bg-danger {
 	background-color: #f7a8b8 !important;
 	color: #0a0a0a;
+}
+
+/* Progress bar overrides - Trans pride pink for danger/warning */
+html[data-bs-theme="dark"] .progress-bar-danger,
+html[data-bs-theme="dark"] .progress-bar[class*="danger"] {
+	background-color: #f7a8b8 !important;
+}
+
+html[data-bs-theme="dark"] .progress-bar-warning,
+html[data-bs-theme="dark"] .progress-bar[class*="warning"] {
+	background-color: #f7a8b8 !important;
+}
+
+/* Bootstrap 5 ProgressBar variant classes - React Bootstrap uses bg-* classes */
+html[data-bs-theme="dark"] .progress .bg-danger,
+html[data-bs-theme="dark"] .progress-bar.bg-danger {
+	background-color: #f7a8b8 !important;
+}
+
+html[data-bs-theme="dark"] .progress .bg-warning,
+html[data-bs-theme="dark"] .progress-bar.bg-warning {
+	background-color: #f7a8b8 !important;
+}
+
+/* Ensure progress bars use the CSS variable in dark mode */
+html[data-bs-theme="dark"] .progress-bar {
+	--bs-progress-bar-bg: var(--bs-danger);
 }
 
 /* Improve focus visibility for navbar brand while keeping colors */

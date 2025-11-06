@@ -10,6 +10,7 @@ import type { Request, Response } from "express";
 import { Op } from "sequelize";
 import { AuditLog } from "../db/models/AuditLog.js";
 import { handleControllerError } from "../utils/errors.js";
+import { calculatePaginationParams } from "../utils/pagination.js";
 import { createPaginationResponse } from "../utils/responses.js";
 
 interface AuditLogQueryParams {
@@ -47,8 +48,7 @@ export async function getAuditLogs(req: Request, res: Response) {
 			where.createdAt = dateWhere;
 		}
 
-		const offset = (Number(page) - 1) * Number(limit);
-		const actualLimit = Math.min(Number(limit), 100); // Cap at 100 per page
+		const { offset, limit: actualLimit } = calculatePaginationParams(page, limit);
 
 		const { count, rows: logs } = await AuditLog.findAndCountAll({
 			where,

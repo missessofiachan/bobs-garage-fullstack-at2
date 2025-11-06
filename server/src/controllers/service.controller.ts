@@ -26,8 +26,9 @@ import type {
 	UpdateServiceRequest,
 } from "../types/requests.js";
 import { handleControllerError, sendBadRequest, sendNotFound } from "../utils/errors.js";
+import { calculatePaginationParams } from "../utils/pagination.js";
 import { createPaginationResponse } from "../utils/responses.js";
-import { parseIdParam } from "../utils/validation.js";
+import { findByIdOr404, parseIdParam } from "../utils/validation.js";
 
 const serviceSchema = z.object({
 	name: z.string().min(2),
@@ -109,8 +110,7 @@ export async function listServices(req: Request, res: Response) {
 			if (allowed.has(field)) order = [[field, direction]];
 		}
 		// Pagination
-		const offset = (Number(page) - 1) * Number(limit);
-		const actualLimit = Math.min(Number(limit), 100); // Cap at 100 per page
+		const { offset, limit: actualLimit } = calculatePaginationParams(page, limit);
 
 		const { count, rows: services } = await Service.findAndCountAll({
 			where,
@@ -141,11 +141,8 @@ export async function listServices(req: Request, res: Response) {
  */
 export async function getServiceById(req: Request, res: Response) {
 	try {
-		const id = parseIdParam(req, res);
-		if (id === null) return; // Error response already sent
-
-		const s = await Service.findByPk(id);
-		if (!s) return sendNotFound(res);
+		const s = await findByIdOr404(req, res, (id) => Service.findByPk(id));
+		if (!s) return; // Error response already sent
 
 		res.json(s);
 	} catch (err) {

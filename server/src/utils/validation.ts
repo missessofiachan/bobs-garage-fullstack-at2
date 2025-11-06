@@ -5,6 +5,7 @@
  */
 
 import type { Request, Response } from "express";
+import { sendNotFound } from "./errors.js";
 
 /**
  * Parse and validate an ID parameter from the request
@@ -42,4 +43,46 @@ export function getUserIdFromRequest(req: Request): number | null {
 		return null;
 	}
 	return userId;
+}
+
+/**
+ * Require authentication - get user ID from request or send 401
+ * @param req - Express request object
+ * @param res - Express response object
+ * @returns User ID if authenticated, null if error response was sent
+ */
+export function requireAuth(req: Request, res: Response): number | null {
+	const userId = getUserIdFromRequest(req);
+	if (!userId) {
+		res.status(401).json({ message: "Unauthorized" });
+		return null;
+	}
+	return userId;
+}
+
+/**
+ * Find a model instance by ID or send 404 if not found
+ * Combines ID parsing, model lookup, and 404 handling
+ * @param req - Express request object
+ * @param res - Express response object
+ * @param findFn - Function that takes an ID and returns a Promise of the model instance or null
+ * @param notFoundMessage - Optional custom 404 message
+ * @returns Model instance if found, null if error response was sent
+ */
+export async function findByIdOr404<T>(
+	req: Request,
+	res: Response,
+	findFn: (id: number) => Promise<T | null>,
+	notFoundMessage?: string,
+): Promise<T | null> {
+	const id = parseIdParam(req, res);
+	if (id === null) return null; // Error response already sent
+
+	const instance = await findFn(id);
+	if (!instance) {
+		sendNotFound(res, notFoundMessage);
+		return null;
+	}
+
+	return instance;
 }

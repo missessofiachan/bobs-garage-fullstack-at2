@@ -8,7 +8,7 @@ import type { Request, Response } from "express";
 import { Favorite } from "../db/models/Favorite.js";
 import { Service } from "../db/models/Service.js";
 import { handleControllerError, sendConflict, sendNotFound } from "../utils/errors.js";
-import { getUserIdFromRequest } from "../utils/validation.js";
+import { requireAuth } from "../utils/validation.js";
 
 /**
  * @route GET /api/users/me/favorites
@@ -34,10 +34,8 @@ import { getUserIdFromRequest } from "../utils/validation.js";
  */
 export async function listFavorites(req: Request, res: Response) {
 	try {
-		const userId = getUserIdFromRequest(req);
-		if (!userId) {
-			return res.status(401).json({ message: "Unauthorized" });
-		}
+		const userId = requireAuth(req, res);
+		if (!userId) return; // Error response already sent
 
 		const favorites = await Favorite.findAll({
 			where: { userId },
@@ -82,10 +80,8 @@ export async function listFavorites(req: Request, res: Response) {
  */
 export async function addFavorite(req: Request, res: Response) {
 	try {
-		const userId = getUserIdFromRequest(req);
-		if (!userId) {
-			return res.status(401).json({ message: "Unauthorized" });
-		}
+		const userId = requireAuth(req, res);
+		if (!userId) return; // Error response already sent
 
 		const serviceId = Number(req.params.serviceId);
 		if (!Number.isFinite(serviceId)) {
@@ -140,10 +136,8 @@ export async function addFavorite(req: Request, res: Response) {
  */
 export async function removeFavorite(req: Request, res: Response) {
 	try {
-		const userId = getUserIdFromRequest(req);
-		if (!userId) {
-			return res.status(401).json({ message: "Unauthorized" });
-		}
+		const userId = requireAuth(req, res);
+		if (!userId) return; // Error response already sent
 
 		const serviceId = Number(req.params.serviceId);
 		if (!Number.isFinite(serviceId)) {
@@ -189,10 +183,8 @@ export async function removeFavorite(req: Request, res: Response) {
  */
 export async function checkFavorite(req: Request, res: Response) {
 	try {
-		const userId = getUserIdFromRequest(req);
-		if (!userId) {
-			return res.status(401).json({ message: "Unauthorized" });
-		}
+		const userId = requireAuth(req, res);
+		if (!userId) return; // Error response already sent
 
 		const serviceId = Number(req.params.serviceId);
 		if (!Number.isFinite(serviceId)) {

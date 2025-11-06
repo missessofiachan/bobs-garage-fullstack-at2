@@ -20,8 +20,9 @@ import type {
 	UpdateStaffRequest,
 } from "../types/requests.js";
 import { handleControllerError, sendBadRequest, sendNotFound } from "../utils/errors.js";
+import { calculatePaginationParams } from "../utils/pagination.js";
 import { createPaginationResponse } from "../utils/responses.js";
-import { parseIdParam } from "../utils/validation.js";
+import { findByIdOr404, parseIdParam } from "../utils/validation.js";
 
 const staffSchema = z.object({
 	name: z.string().min(1),
@@ -67,8 +68,7 @@ export async function listStaff(req: Request, res: Response) {
 		const query = req.query as { page?: number; limit?: number };
 		const { page = 1, limit = 20 } = query;
 
-		const offset = (Number(page) - 1) * Number(limit);
-		const actualLimit = Math.min(Number(limit), 100); // Cap at 100 per page
+		const { offset, limit: actualLimit } = calculatePaginationParams(page, limit);
 
 		const { count, rows: staff } = await Staff.findAndCountAll({
 			order: [["name", "ASC"]],
@@ -98,11 +98,8 @@ export async function listStaff(req: Request, res: Response) {
  */
 export async function getStaffById(req: Request, res: Response) {
 	try {
-		const id = parseIdParam(req, res);
-		if (id === null) return; // Error response already sent
-
-		const s = await Staff.findByPk(id);
-		if (!s) return sendNotFound(res);
+		const s = await findByIdOr404(req, res, (id) => Staff.findByPk(id));
+		if (!s) return; // Error response already sent
 
 		res.json(s);
 	} catch (err) {
