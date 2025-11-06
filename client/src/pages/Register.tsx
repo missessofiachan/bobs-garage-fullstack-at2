@@ -24,17 +24,30 @@ export default function Register() {
 	const { register } = useAuth();
 	const { notify } = useToast();
 
-	const formatError = (error: any): string => {
-		// Use the centralized error formatter
-		return formatErrorMessage(error);
-	};
-
-	const extractFieldErrors = (error: any): Record<string, string> => {
+	const extractFieldErrors = (error: unknown): Record<string, string> => {
 		const errors: Record<string, string> = {};
-		if (error?.response?.data?.errors && Array.isArray(error.response.data.errors)) {
-			error.response.data.errors.forEach((issue: any) => {
-				const field = issue.path?.[0] || "general";
-				if (issue.message) {
+		if (
+			error &&
+			typeof error === "object" &&
+			"response" in error &&
+			error.response &&
+			typeof error.response === "object" &&
+			"data" in error.response &&
+			error.response.data &&
+			typeof error.response.data === "object" &&
+			"errors" in error.response.data &&
+			Array.isArray(error.response.data.errors)
+		) {
+			error.response.data.errors.forEach((issue: unknown) => {
+				if (
+					issue &&
+					typeof issue === "object" &&
+					"path" in issue &&
+					Array.isArray(issue.path) &&
+					"message" in issue &&
+					typeof issue.message === "string"
+				) {
+					const field = issue.path[0] || "general";
 					errors[field] = issue.message;
 				}
 			});
@@ -52,12 +65,29 @@ export default function Register() {
 			await register({ email, password });
 			notify({ title: "Success", body: "Account created successfully", variant: "success" });
 			nav("/login");
-		} catch (error: any) {
+		} catch (error: unknown) {
 			// Handle client-side Zod validation errors
-			if (error?.issues && Array.isArray(error.issues)) {
+			if (
+				error &&
+				typeof error === "object" &&
+				"issues" in error &&
+				Array.isArray(error.issues)
+			) {
 				const messages = error.issues
-					.map((issue: any) => issue.message || `${issue.path?.join(".")}: Invalid value`)
-					.filter(Boolean);
+					.map((issue: unknown) => {
+						if (
+							issue &&
+							typeof issue === "object" &&
+							"message" in issue &&
+							typeof issue.message === "string" &&
+							"path" in issue &&
+							Array.isArray(issue.path)
+						) {
+							return issue.message || `${issue.path.join(".")}: Invalid value`;
+						}
+						return null;
+					})
+					.filter((msg): msg is string => typeof msg === "string");
 				setErr(messages.join(". "));
 				// Also set field-specific errors
 				const fieldErrs = extractFieldErrors({ response: { data: { errors: error.issues } } });
