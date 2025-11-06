@@ -28,14 +28,7 @@
 		"prebuild": "yarn clean",
 		"preview": "vite preview",
 		"typecheck": "tsc -b --noEmit",
-		"lint": "biome lint .",
-		"lint:fix": "biome check --write .",
-		"format": "biome format --write .",
-		"format:check": "biome format .",
-		"clean": "node -e \"const fs=require('fs');if(fs.existsSync('dist'))fs.rmSync('dist',{recursive:true,force:true});fs.readdirSync('.').filter(f=>f.endsWith('.tsbuildinfo')).forEach(f=>fs.rmSync(f,{force:true}));\" || true",
-		"test": "vitest run",
-		"test:watch": "vitest",
-		"test:coverage": "vitest run --coverage"
+		"clean": "node -e \"const fs=require('fs');if(fs.existsSync('dist'))fs.rmSync('dist',{recursive:true,force:true});fs.readdirSync('.').filter(f=>f.endsWith('.tsbuildinfo')).forEach(f=>fs.rmSync(f,{force:true}));\" || true"
 	},
 	"dependencies": {
 		"@radix-ui/react-dialog": "^1.1.15",
@@ -64,6 +57,7 @@
 		"@vanilla-extract/vite-plugin": "^3.9.5",
 		"@vitejs/plugin-react": "^5.0.0",
 		"@vitest/coverage-v8": "3.2.4",
+		"http-proxy-middleware": "^3.0.3",
 		"jsdom": "^26.1.0",
 		"typescript": "~5.8.3",
 		"vite": "^7.1.2",
