@@ -35,9 +35,7 @@ export function useServiceFilters({
 		if (searchQuery) {
 			const query = searchQuery.toLowerCase();
 			filtered = filtered.filter(
-				(s) =>
-					s.name.toLowerCase().includes(query) ||
-					s.description?.toLowerCase().includes(query),
+				(s) => s.name.toLowerCase().includes(query) || s.description?.toLowerCase().includes(query),
 			);
 		}
 
@@ -58,4 +56,3 @@ export function useServiceFilters({
 		return filtered;
 	}, [services, searchQuery, maxPrice, sort]);
 }
-

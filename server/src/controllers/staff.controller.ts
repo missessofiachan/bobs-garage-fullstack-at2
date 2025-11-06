@@ -19,8 +19,8 @@ import type {
 	FileUploadRequest,
 	UpdateStaffRequest,
 } from "../types/requests.js";
-import { handleControllerError } from "../utils/errors.js";
 import { sendNotFoundError, sendValidationError } from "../utils/errorResponse.js";
+import { handleControllerError } from "../utils/errors.js";
 import { createPaginationResponse } from "../utils/responses.js";
 import { findByIdOr404, parseIdParam } from "../utils/validation.js";
 
@@ -68,10 +68,12 @@ export async function listStaff(req: Request, res: Response) {
 		const query = req.query as { page?: number; limit?: number };
 		const { page = 1, limit = 20 } = query;
 
-		const { staff, total, page: actualPage, limit: actualLimit } = await staffService.listStaff(
-			page,
-			limit,
-		);
+		const {
+			staff,
+			total,
+			page: actualPage,
+			limit: actualLimit,
+		} = await staffService.listStaff(page, limit);
 
 		res.json({
 			data: staff,

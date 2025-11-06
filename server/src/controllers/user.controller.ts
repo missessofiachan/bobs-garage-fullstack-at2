@@ -6,10 +6,10 @@
 
 import type { Request, Response } from "express";
 import { z } from "zod";
-import { User } from "../db/models/User.js";
+import * as userService from "../services/user.service.js";
 import type { UpdateProfileRequest } from "../types/requests.js";
-import { handleControllerError } from "../utils/errors.js";
 import { sendNotFoundError, sendUnauthorizedError } from "../utils/errorResponse.js";
+import { handleControllerError } from "../utils/errors.js";
 import { getUserIdFromRequest } from "../utils/validation.js";
 
 /**
@@ -38,9 +38,7 @@ export async function getMyProfile(req: Request, res: Response) {
 		const userId = getUserIdFromRequest(req);
 		if (!userId) return sendUnauthorizedError(res);
 
-		const user = await User.findByPk(userId, {
-			attributes: ["id", "email", "role", "active", "createdAt"],
-		});
+		const user = await userService.getUserById(userId);
 		if (!user) return sendNotFoundError(res, "User not found");
 
 		res.json(user);
@@ -90,10 +88,9 @@ export async function updateProfile(req: Request, res: Response) {
 		if (!userId) return sendUnauthorizedError(res);
 
 		const payload = updateSchema.parse(req.body);
-		const user = await User.findByPk(userId);
+		const user = await userService.updateUserProfile(userId, payload);
 		if (!user) return sendNotFoundError(res, "User not found");
 
-		await user.update(payload);
 		res.json({
 			id: user.id,
 			email: user.email,

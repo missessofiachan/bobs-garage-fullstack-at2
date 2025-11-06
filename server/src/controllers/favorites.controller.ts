@@ -7,8 +7,8 @@
 import type { Request, Response } from "express";
 import { Favorite } from "../db/models/Favorite.js";
 import { Service } from "../db/models/Service.js";
-import { handleControllerError } from "../utils/errors.js";
 import { sendConflictError, sendNotFoundError } from "../utils/errorResponse.js";
+import { handleControllerError } from "../utils/errors.js";
 import { requireAuth } from "../utils/validation.js";
 
 /**

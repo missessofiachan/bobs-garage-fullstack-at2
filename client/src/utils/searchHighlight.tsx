@@ -32,4 +32,3 @@ export function highlightSearch(text: string, searchTerm: string): React.ReactNo
 		</>
 	);
 }
-

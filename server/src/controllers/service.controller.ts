@@ -23,8 +23,8 @@ import type {
 	ServiceQueryParams,
 	UpdateServiceRequest,
 } from "../types/requests.js";
-import { handleControllerError } from "../utils/errors.js";
 import { sendNotFoundError, sendValidationError } from "../utils/errorResponse.js";
+import { handleControllerError } from "../utils/errors.js";
 import { createPaginationResponse } from "../utils/responses.js";
 import { findByIdOr404, parseIdParam } from "../utils/validation.js";
 

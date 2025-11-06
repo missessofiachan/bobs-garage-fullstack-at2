@@ -89,4 +89,3 @@ export async function updateStaffPhotoUrl(id: number, photoUrl: string): Promise
 	await staff.update({ photoUrl });
 	return staff;
 }
-
