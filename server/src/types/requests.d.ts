@@ -76,6 +76,7 @@ export interface LoginRequest {
 
 export interface UpdateProfileRequest {
 	email?: string;
+	active?: boolean;
 }
 
 // ============================================================================

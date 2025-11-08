@@ -76,7 +76,14 @@ export const perUserLimiter = rateLimit({
 			return `user:${authenticatedUserId}`;
 		}
 		// Fall back to IP address for unauthenticated users (using helper for IPv6 safety)
-		return ipKeyGenerator(req) || "unknown";
+		// Extract IP from request - ipKeyGenerator expects Request but types are incorrect
+		const ip = req.ip || req.socket.remoteAddress || "unknown";
+		// Use ipKeyGenerator helper if available, otherwise use extracted IP
+		try {
+			return (ipKeyGenerator as unknown as (req: Request) => string)(req) || ip;
+		} catch {
+			return ip;
+		}
 	},
 	standardHeaders: true,
 	legacyHeaders: false,

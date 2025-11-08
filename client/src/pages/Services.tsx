@@ -7,9 +7,10 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { Alert, Button, Card, Col, Form, Image, InputGroup, Row, Table } from "react-bootstrap";
-import { MdBuild, MdSearch, MdSort, MdViewList, MdViewModule } from "react-icons/md";
+import { MdBuild, MdSort, MdViewList, MdViewModule } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import Autocomplete from "../components/ui/Autocomplete";
 import FavouriteButton from "../components/FavouriteButton";
 import Loading from "../components/ui/Loading";
 import usePageTitle from "../hooks/usePageTitle";
@@ -27,6 +28,7 @@ export default function Services() {
 	const { data, isLoading, error, refetch } = useServices();
 	usePageTitle("Services");
 	const dispatch = useDispatch();
+	const navigate = useNavigate();
 	const prefs = useSelector((state: any) => state.preferences);
 	const [q, setQ] = useState("");
 	const [maxPrice, setMaxPrice] = useState<number | "">("");
@@ -77,17 +79,17 @@ export default function Services() {
 				<Row className="g-3 align-items-end">
 					<Col xs={12} md={6} lg={4}>
 						<Form.Label className="small text-muted">Search</Form.Label>
-						<InputGroup>
-							<InputGroup.Text aria-hidden="true">
-								<MdSearch />
-							</InputGroup.Text>
-							<Form.Control
-								placeholder="Search by name or description..."
-								value={q}
-								onChange={(e) => setQ(e.target.value)}
-								aria-label="Search services by name or description"
-							/>
-						</InputGroup>
+						<Autocomplete
+							value={q}
+							onChange={setQ}
+							onSelect={(service) => {
+								navigate(`/services/${service.id}`);
+							}}
+							services={data}
+							placeholder="Search by name or description..."
+							ariaLabel="Search services by name or description"
+							maxSuggestions={5}
+						/>
 					</Col>
 					<Col xs={12} sm={6} md={4} lg={3}>
 						<Form.Label className="small text-muted">Max Price</Form.Label>

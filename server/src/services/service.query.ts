@@ -27,7 +27,8 @@ export function buildServiceWhereClause(query: ServiceQueryParams): WhereOptions
 	// Uses LIKE for fuzzy matching (full-text index available via migration for better performance)
 	if (q) {
 		const searchQuery = String(q).trim();
-		where[Op.or] = [
+		// Use Op.or as a symbol key - cast to allow symbol indexing
+		(where as Record<string | symbol, unknown>)[Op.or] = [
 			{ name: { [Op.like]: `%${searchQuery}%` } },
 			{ description: { [Op.like]: `%${searchQuery}%` } },
 		];
@@ -35,9 +36,9 @@ export function buildServiceWhereClause(query: ServiceQueryParams): WhereOptions
 
 	// Price range filter
 	if (minPrice || maxPrice) {
-		const priceWhere: Record<string, unknown> = {};
-		if (minPrice) priceWhere[Op.gte as unknown as string] = Number(minPrice);
-		if (maxPrice) priceWhere[Op.lte as unknown as string] = Number(maxPrice);
+		const priceWhere: Record<string | symbol, unknown> = {};
+		if (minPrice) priceWhere[Op.gte] = Number(minPrice);
+		if (maxPrice) priceWhere[Op.lte] = Number(maxPrice);
 		where.price = priceWhere;
 	}
 

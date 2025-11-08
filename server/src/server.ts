@@ -92,11 +92,19 @@ async function start() {
 		const app = createApp();
 
 		// Start HTTP server with improved error handling
-		server = app.listen(PORT, () => {
+		server = app.listen(PORT, async () => {
 			const addr = server?.address();
 			const host = typeof addr === "object" && addr ? addr.address : "localhost";
 			const port = typeof addr === "object" && addr ? addr.port : PORT;
 			winstonLogger.info(`API listening on ${host}:${port}`);
+
+			// Run initial cleanup of orphaned pictures on startup
+			try {
+				await cleanupService.runCleanupOnce();
+				winstonLogger.info("Completed initial orphaned pictures cleanup");
+			} catch (err) {
+				winstonLogger.warn(`Failed to run initial cleanup: ${err}`);
+			}
 
 			// Start background cleanup job after server is ready
 			try {

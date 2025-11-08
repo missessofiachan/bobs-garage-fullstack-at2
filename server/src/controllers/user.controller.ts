@@ -87,7 +87,12 @@ export async function updateProfile(req: Request, res: Response) {
 		const userId = getUserIdFromRequest(req);
 		if (!userId) return sendUnauthorizedError(res);
 
-		const payload = updateSchema.parse(req.body);
+		const parsed = updateSchema.parse(req.body);
+		// Filter out undefined values to satisfy exactOptionalPropertyTypes
+		const payload: UpdateProfileRequest = {};
+		if (parsed.email !== undefined) payload.email = parsed.email;
+		if (parsed.active !== undefined) payload.active = parsed.active;
+
 		const user = await userService.updateUserProfile(userId, payload);
 		if (!user) return sendNotFoundError(res, "User not found");
 
