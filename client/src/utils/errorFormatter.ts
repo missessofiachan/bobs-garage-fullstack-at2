@@ -112,6 +112,18 @@ function getResponseStatus(error: AxiosError): number | undefined {
 }
 
 /**
+ * Type guard: Check if an object has a string message property
+ */
+function isErrorWithMessage(obj: unknown): obj is { message: string } {
+	return (
+		obj !== null &&
+		typeof obj === "object" &&
+		"message" in obj &&
+		typeof (obj as { message: unknown }).message === "string"
+	);
+}
+
+/**
  * Formats an error into a user-friendly message
  */
 export function formatErrorMessage(error: unknown): string {
@@ -138,7 +150,7 @@ export function formatErrorMessage(error: unknown): string {
 		// Handle 429 Too Many Requests with friendly message
 		if (status === 429) {
 			// Check if server provided a custom message
-			if (data?.message && typeof data.message === "string") {
+			if (isErrorWithMessage(data)) {
 				return data.message;
 			}
 			// Default friendly message
@@ -146,7 +158,7 @@ export function formatErrorMessage(error: unknown): string {
 		}
 
 		// Handle other HTTP errors with server-provided messages
-		if (data?.message && typeof data.message === "string") {
+		if (isErrorWithMessage(data)) {
 			return data.message;
 		}
 
