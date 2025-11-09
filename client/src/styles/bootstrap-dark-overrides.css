@@ -3,6 +3,7 @@
 /* Light Mode Overrides - Trans Pride Theme */
 html[data-bs-theme="light"],
 html[data-bs-theme="light"] body {
+	font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 	--bs-body-bg: #ffffff;
 	--bs-body-color: #111827;
 	--bs-body-color-rgb: 17, 24, 39;
@@ -229,6 +230,7 @@ html[data-bs-theme="light"] .badge.bg-danger {
 
 html[data-bs-theme="dark"],
 html[data-bs-theme="dark"] body {
+	font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 	--bs-body-bg: #121212; /* true dark background */
 	--bs-body-color: #f3f4f6; /* improved contrast - 12.6:1 */
 	--bs-body-color-rgb: 243, 244, 246;

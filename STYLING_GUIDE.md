@@ -97,6 +97,7 @@ gray-900: "#111827"
 ---
 
 ## Typography
+FONT = inter 
 
 ### Font Sizes
 

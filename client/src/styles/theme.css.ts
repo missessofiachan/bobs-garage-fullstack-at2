@@ -59,6 +59,7 @@ globalStyle(`html.${darkTheme} body`, {
 	color: vars.color.text,
 	minHeight: "100vh",
 	fontSize: "var(--pref-font-size, 1rem)",
+	fontFamily: "'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
 });
 
 // Apply light theme to body and html when light theme class is active
@@ -72,12 +73,19 @@ globalStyle(`html.${lightTheme} body`, {
 	color: vars.color.text,
 	minHeight: "100vh",
 	fontSize: "var(--pref-font-size, 1rem)",
+	fontFamily: "'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+});
+
+// Global font family for all elements
+globalStyle("html, html *", {
+	fontFamily: "'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
 });
 
 // Ensure font sizes are applied globally when preference classes are active
 globalStyle("html body", {
 	fontSize: "var(--pref-font-size, 1rem)",
 	lineHeight: "1.5",
+	fontFamily: "'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
 });
 
 globalStyle("html h1", {
