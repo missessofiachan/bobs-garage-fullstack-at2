@@ -7,34 +7,25 @@
  * @since 1.0.0
  */
 
-import type { Request, Response } from "express";
-import { z } from "zod";
-import { invalidateCache } from "../middleware/cache.js";
-import { logCreate, logDelete, logUpdate, logUpload } from "../services/audit.service.js";
-import * as serviceService from "../services/service.service.js";
+import type { Request, Response } from 'express';
+import { invalidateCache } from '../middleware/cache.js';
+import { logCreate, logDelete, logUpdate, logUpload } from '../services/audit.service.js';
+import * as serviceService from '../services/service.service.js';
 import {
-	deleteOldUpload,
-	generatePublicUrl,
-	getUploadedFilename,
-} from "../services/upload.service.js";
+  deleteOldUpload,
+  generatePublicUrl,
+  getUploadedFilename,
+} from '../services/upload.service.js';
 import type {
-	CreateServiceRequest,
-	FileUploadRequest,
-	ServiceQueryParams,
-	UpdateServiceRequest,
-} from "../types/requests.js";
-import { sendNotFoundError, sendValidationError } from "../utils/errorResponse.js";
-import { handleControllerError } from "../utils/errors.js";
-import { createPaginationResponse } from "../utils/responses.js";
-import { findByIdOr404, parseIdParam } from "../utils/validation.js";
-
-const serviceSchema = z.object({
-	name: z.string().min(2),
-	price: z.coerce.number().nonnegative(),
-	description: z.string().min(2),
-	imageUrl: z.string().url().optional().default(""),
-	published: z.boolean().default(true),
-});
+  CreateServiceRequest,
+  FileUploadRequest,
+  ServiceQueryParams,
+  UpdateServiceRequest,
+} from '../types/requests.js';
+import { sendNotFoundError, sendValidationError } from '../utils/errorResponse.js';
+import { handleControllerError } from '../utils/errors.js';
+import { createPaginationResponse } from '../utils/responses.js';
+import { findByIdOr404, parseIdParam } from '../utils/validation.js';
 
 /**
  * @route GET /api/services
@@ -73,17 +64,17 @@ const serviceSchema = z.object({
  * }
  */
 export async function listServices(req: Request, res: Response) {
-	try {
-		const query = req.query as unknown as ServiceQueryParams;
-		const { services, total, page, limit } = await serviceService.listServices(query);
+  try {
+    const query = req.query as unknown as ServiceQueryParams;
+    const { services, total, page, limit } = await serviceService.listServices(query);
 
-		res.json({
-			data: services,
-			pagination: createPaginationResponse(page, limit, total),
-		});
-	} catch (err) {
-		handleControllerError(err, res);
-	}
+    res.json({
+      data: services,
+      pagination: createPaginationResponse(page, limit, total),
+    });
+  } catch (err) {
+    handleControllerError(err, res);
+  }
 }
 
 /**
@@ -98,14 +89,14 @@ export async function listServices(req: Request, res: Response) {
  * @returns {Object} 400 - Invalid ID format
  */
 export async function getServiceById(req: Request, res: Response) {
-	try {
-		const s = await findByIdOr404(req, res, (id) => serviceService.getServiceById(id));
-		if (!s) return; // Error response already sent
+  try {
+    const s = await findByIdOr404(req, res, (id) => serviceService.getServiceById(id));
+    if (!s) return; // Error response already sent
 
-		res.json(s);
-	} catch (err) {
-		handleControllerError(err, res);
-	}
+    res.json(s);
+  } catch (err) {
+    handleControllerError(err, res);
+  }
 }
 
 /**
@@ -125,22 +116,22 @@ export async function getServiceById(req: Request, res: Response) {
  * @returns {Object} 403 - Forbidden (not admin)
  */
 export async function createService(req: Request, res: Response) {
-	try {
-		const body = req.body as CreateServiceRequest;
-		const s = await serviceService.createService(body);
+  try {
+    const body = req.body as CreateServiceRequest;
+    const s = await serviceService.createService(body);
 
-		// Invalidate cache for services list
-		await invalidateCache("services");
+    // Invalidate cache for services list
+    await invalidateCache('services');
 
-		// Log audit event
-		await logCreate(req, "service", s.id, `Created service: ${s.name}`, s.toJSON());
+    // Log audit event
+    await logCreate(req, 'service', s.id, `Created service: ${s.name}`, s.toJSON());
 
-		res.status(201).json(s);
-	} catch (err) {
-		handleControllerError(err, res, {
-			uniqueConstraintMessage: "Duplicate entry",
-		});
-	}
+    res.status(201).json(s);
+  } catch (err) {
+    handleControllerError(err, res, {
+      uniqueConstraintMessage: 'Duplicate entry',
+    });
+  }
 }
 
 /**
@@ -158,35 +149,35 @@ export async function createService(req: Request, res: Response) {
  * @returns {Object} 404 - Service not found
  */
 export async function updateService(req: Request, res: Response) {
-	try {
-		const id = parseIdParam(req, res);
-		if (id === null) return; // Error response already sent
+  try {
+    const id = parseIdParam(req, res);
+    if (id === null) return; // Error response already sent
 
-		// Get previous state before update
-		const existingService = await serviceService.getServiceById(id);
-		if (!existingService) return sendNotFoundError(res);
-		const previousState = existingService.toJSON();
+    // Get previous state before update
+    const existingService = await serviceService.getServiceById(id);
+    if (!existingService) return sendNotFoundError(res);
+    const previousState = existingService.toJSON();
 
-		const body = req.body as UpdateServiceRequest;
-		const s = await serviceService.updateService(id, body);
-		if (!s) return sendNotFoundError(res);
+    const body = req.body as UpdateServiceRequest;
+    const s = await serviceService.updateService(id, body);
+    if (!s) return sendNotFoundError(res);
 
-		// Reload to get updated state
-		await s.reload();
-		const newState = s.toJSON();
+    // Reload to get updated state
+    await s.reload();
+    const newState = s.toJSON();
 
-		// Invalidate cache for this service and list
-		await invalidateCache("services", id);
+    // Invalidate cache for this service and list
+    await invalidateCache('services', id);
 
-		// Log audit event
-		await logUpdate(req, "service", id, `Updated service: ${s.name}`, previousState, newState);
+    // Log audit event
+    await logUpdate(req, 'service', id, `Updated service: ${s.name}`, previousState, newState);
 
-		res.json(s);
-	} catch (err) {
-		handleControllerError(err, res, {
-			uniqueConstraintMessage: "Duplicate entry",
-		});
-	}
+    res.json(s);
+  } catch (err) {
+    handleControllerError(err, res, {
+      uniqueConstraintMessage: 'Duplicate entry',
+    });
+  }
 }
 
 /**
@@ -203,29 +194,29 @@ export async function updateService(req: Request, res: Response) {
  * @returns {Object} 404 - Service not found
  */
 export async function deleteService(req: Request, res: Response) {
-	try {
-		const id = parseIdParam(req, res);
-		if (id === null) return; // Error response already sent
+  try {
+    const id = parseIdParam(req, res);
+    if (id === null) return; // Error response already sent
 
-		// Get service before deletion for audit log
-		const s = await serviceService.getServiceById(id);
-		if (!s) return sendNotFoundError(res);
+    // Get service before deletion for audit log
+    const s = await serviceService.getServiceById(id);
+    if (!s) return sendNotFoundError(res);
 
-		const previousState = s.toJSON();
+    const previousState = s.toJSON();
 
-		// Delete service (service layer handles favorites cleanup)
-		await serviceService.deleteService(id);
+    // Delete service (service layer handles favorites cleanup)
+    await serviceService.deleteService(id);
 
-		// Invalidate cache for this service and list
-		await invalidateCache("services", id);
+    // Invalidate cache for this service and list
+    await invalidateCache('services', id);
 
-		// Log audit event
-		await logDelete(req, "service", id, `Deleted service: ${s.name}`, previousState);
+    // Log audit event
+    await logDelete(req, 'service', id, `Deleted service: ${s.name}`, previousState);
 
-		res.status(204).send();
-	} catch (err) {
-		handleControllerError(err, res);
-	}
+    res.status(204).send();
+  } catch (err) {
+    handleControllerError(err, res);
+  }
 }
 
 /**
@@ -252,32 +243,32 @@ export async function deleteService(req: Request, res: Response) {
  * }
  */
 export async function uploadServiceImage(req: Request, res: Response) {
-	try {
-		const id = parseIdParam(req, res);
-		if (id === null) return; // Error response already sent
+  try {
+    const id = parseIdParam(req, res);
+    if (id === null) return; // Error response already sent
 
-		const filename = getUploadedFilename((req as unknown as FileUploadRequest).file);
-		if (!filename) {
-			return sendValidationError(res, "No file uploaded");
-		}
+    const filename = getUploadedFilename((req as unknown as FileUploadRequest).file);
+    if (!filename) {
+      return sendValidationError(res, 'No file uploaded');
+    }
 
-		const s = await serviceService.getServiceById(id);
-		if (!s) return sendNotFoundError(res);
+    const s = await serviceService.getServiceById(id);
+    if (!s) return sendNotFoundError(res);
 
-		// Delete old image if it exists
-		await deleteOldUpload(s.imageUrl);
+    // Delete old image if it exists
+    await deleteOldUpload(s.imageUrl);
 
-		const publicUrl = generatePublicUrl(filename, "services");
-		await serviceService.updateServiceImageUrl(id, publicUrl);
+    const publicUrl = generatePublicUrl(filename, 'services');
+    await serviceService.updateServiceImageUrl(id, publicUrl);
 
-		// Invalidate cache for this service
-		await invalidateCache("services", id);
+    // Invalidate cache for this service
+    await invalidateCache('services', id);
 
-		// Log audit event
-		await logUpload(req, "service", id, `Uploaded image for service: ${s.name}`);
+    // Log audit event
+    await logUpload(req, 'service', id, `Uploaded image for service: ${s.name}`);
 
-		res.status(200).json({ id, imageUrl: publicUrl });
-	} catch (err) {
-		handleControllerError(err, res);
-	}
+    res.status(200).json({ id, imageUrl: publicUrl });
+  } catch (err) {
+    handleControllerError(err, res);
+  }
 }

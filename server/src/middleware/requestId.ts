@@ -6,18 +6,18 @@
  * @since 1.0.0
  */
 
-import { randomUUID } from "node:crypto";
-import type { NextFunction, Request, Response } from "express";
+import { randomUUID } from 'node:crypto';
+import type { NextFunction, Request, Response } from 'express';
 
 /**
  * Extend Express Request type to include requestId
  */
 declare global {
-	namespace Express {
-		interface Request {
-			requestId?: string;
-		}
-	}
+  namespace Express {
+    interface Request {
+      requestId?: string;
+    }
+  }
 }
 
 /**
@@ -25,14 +25,14 @@ declare global {
  * The ID is included in response headers and logs for easier tracing
  */
 export function requestIdMiddleware(req: Request, res: Response, next: NextFunction): void {
-	// Use existing X-Request-ID header if present, otherwise generate a new UUID
-	const requestId = (req.headers["x-request-id"] as string) || randomUUID();
+  // Use existing X-Request-ID header if present, otherwise generate a new UUID
+  const requestId = (req.headers['x-request-id'] as string) || randomUUID();
 
-	// Attach to request object for use in controllers/logging
-	req.requestId = requestId;
+  // Attach to request object for use in controllers/logging
+  req.requestId = requestId;
 
-	// Include in response header for client tracing
-	res.setHeader("X-Request-ID", requestId);
+  // Include in response header for client tracing
+  res.setHeader('X-Request-ID', requestId);
 
-	next();
+  next();
 }

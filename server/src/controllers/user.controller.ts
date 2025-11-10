@@ -4,13 +4,13 @@
  * @version 1.0.0
  */
 
-import type { Request, Response } from "express";
-import { z } from "zod";
-import * as userService from "../services/user.service.js";
-import type { UpdateProfileRequest } from "../types/requests.js";
-import { sendNotFoundError, sendUnauthorizedError } from "../utils/errorResponse.js";
-import { handleControllerError } from "../utils/errors.js";
-import { getUserIdFromRequest } from "../utils/validation.js";
+import type { Request, Response } from 'express';
+import { z } from 'zod';
+import * as userService from '../services/user.service.js';
+import type { UpdateProfileRequest } from '../types/requests.js';
+import { sendNotFoundError, sendUnauthorizedError } from '../utils/errorResponse.js';
+import { handleControllerError } from '../utils/errors.js';
+import { getUserIdFromRequest } from '../utils/validation.js';
 
 /**
  * @route GET /api/users/me
@@ -34,23 +34,23 @@ import { getUserIdFromRequest } from "../utils/validation.js";
  * }
  */
 export async function getMyProfile(req: Request, res: Response) {
-	try {
-		const userId = getUserIdFromRequest(req);
-		if (!userId) return sendUnauthorizedError(res);
+  try {
+    const userId = getUserIdFromRequest(req);
+    if (!userId) return sendUnauthorizedError(res);
 
-		const user = await userService.getUserById(userId);
-		if (!user) return sendNotFoundError(res, "User not found");
+    const user = await userService.getUserById(userId);
+    if (!user) return sendNotFoundError(res, 'User not found');
 
-		res.json(user);
-	} catch (err) {
-		handleControllerError(err, res);
-	}
+    res.json(user);
+  } catch (err) {
+    handleControllerError(err, res);
+  }
 }
 
 // Update basic profile fields (email optional)
 const updateSchema = z.object({
-	email: z.string().email().optional(),
-	active: z.boolean().optional(),
+  email: z.string().email().optional(),
+  active: z.boolean().optional(),
 });
 
 /**
@@ -83,28 +83,28 @@ const updateSchema = z.object({
  * }
  */
 export async function updateProfile(req: Request, res: Response) {
-	try {
-		const userId = getUserIdFromRequest(req);
-		if (!userId) return sendUnauthorizedError(res);
+  try {
+    const userId = getUserIdFromRequest(req);
+    if (!userId) return sendUnauthorizedError(res);
 
-		const parsed = updateSchema.parse(req.body);
-		// Filter out undefined values to satisfy exactOptionalPropertyTypes
-		const payload: UpdateProfileRequest = {};
-		if (parsed.email !== undefined) payload.email = parsed.email;
-		if (parsed.active !== undefined) payload.active = parsed.active;
+    const parsed = updateSchema.parse(req.body);
+    // Filter out undefined values to satisfy exactOptionalPropertyTypes
+    const payload: UpdateProfileRequest = {};
+    if (parsed.email !== undefined) payload.email = parsed.email;
+    if (parsed.active !== undefined) payload.active = parsed.active;
 
-		const user = await userService.updateUserProfile(userId, payload);
-		if (!user) return sendNotFoundError(res, "User not found");
+    const user = await userService.updateUserProfile(userId, payload);
+    if (!user) return sendNotFoundError(res, 'User not found');
 
-		res.json({
-			id: user.id,
-			email: user.email,
-			role: user.role,
-			active: user.active,
-		});
-	} catch (err) {
-		handleControllerError(err, res, {
-			uniqueConstraintMessage: "Email already in use",
-		});
-	}
+    res.json({
+      id: user.id,
+      email: user.email,
+      role: user.role,
+      active: user.active,
+    });
+  } catch (err) {
+    handleControllerError(err, res, {
+      uniqueConstraintMessage: 'Email already in use',
+    });
+  }
 }

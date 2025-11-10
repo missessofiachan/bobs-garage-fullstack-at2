@@ -6,30 +6,30 @@
  * @since 1.0.0
  */
 
-import { User } from "../db/models/User.js";
-import type { UpdateProfileRequest } from "../types/requests.js";
+import { User } from '../db/models/User.js';
+import type { UpdateProfileRequest } from '../types/requests.js';
 
 /**
  * Get user profile by ID
  */
 export async function getUserById(id: number): Promise<User | null> {
-	return await User.findByPk(id, {
-		attributes: ["id", "email", "role", "active", "createdAt"],
-	});
+  return await User.findByPk(id, {
+    attributes: ['id', 'email', 'role', 'active', 'createdAt'],
+  });
 }
 
 /**
  * Update user profile by ID
  */
 export async function updateUserProfile(
-	id: number,
-	data: UpdateProfileRequest,
+  id: number,
+  data: UpdateProfileRequest
 ): Promise<User | null> {
-	const user = await User.findByPk(id);
-	if (!user) {
-		return null;
-	}
+  const user = await User.findByPk(id);
+  if (!user) {
+    return null;
+  }
 
-	await user.update(data);
-	return user;
+  await user.update(data);
+  return user;
 }

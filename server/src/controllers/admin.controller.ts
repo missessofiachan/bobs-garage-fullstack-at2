@@ -4,9 +4,9 @@
  * @version 1.0.0
  */
 
-import type { Request, Response } from "express";
-import * as metricsService from "../services/metrics.service.js";
-import { handleControllerError } from "../utils/errors.js";
+import type { Request, Response } from 'express';
+import * as metricsService from '../services/metrics.service.js';
+import { handleControllerError } from '../utils/errors.js';
 
 /**
  * @route GET /api/admin/metrics
@@ -30,10 +30,10 @@ import { handleControllerError } from "../utils/errors.js";
  * }
  */
 export async function getMetrics(_req: Request, res: Response) {
-	try {
-		const metrics = await metricsService.getDashboardMetrics();
-		res.json(metrics);
-	} catch (err) {
-		handleControllerError(err, res);
-	}
+  try {
+    const metrics = await metricsService.getDashboardMetrics();
+    res.json(metrics);
+  } catch (err) {
+    handleControllerError(err, res);
+  }
 }

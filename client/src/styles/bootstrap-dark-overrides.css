@@ -3,719 +3,791 @@
 /* Light Mode Overrides - Trans Pride Theme */
 html[data-bs-theme="light"],
 html[data-bs-theme="light"] body {
-	font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-	--bs-body-bg: #ffffff;
-	--bs-body-color: #111827;
-	--bs-body-color-rgb: 17, 24, 39;
-	--bs-emphasis-color: #000000;
-	--bs-emphasis-color-rgb: 0, 0, 0;
-	--bs-secondary-color: #4b5563;
-	--bs-secondary-color-rgb: 75, 85, 99;
-	--bs-secondary-bg: #f9fafb;
-	--bs-secondary-bg-rgb: 249, 250, 251;
-	--bs-tertiary-bg: #f3f4f6;
-	--bs-tertiary-bg-rgb: 243, 244, 246;
-	--bs-border-color: #d1d5db;
-	--bs-border-color-translucent: rgba(209, 213, 219, 0.175);
-	--bs-form-control-bg: #ffffff;
-	--bs-form-control-disabled-bg: #f3f4f6;
-	--bs-form-select-bg: #ffffff;
-	--bs-primary: #55cdfc; /* Trans pride flag blue */
-	--bs-primary-rgb: 85, 205, 252;
-	--bs-secondary: #f7a8b8; /* Trans pride flag pink */
-	--bs-secondary-rgb: 247, 168, 184;
-	--bs-link-color: #55cdfc;
-	--bs-link-hover-color: #3bb5e8;
-	--bs-info: #55cdfc; /* Use trans blue for info */
-	--bs-info-rgb: 85, 205, 252;
-	--bs-warning: #f7a8b8; /* Trans pride flag pink */
-	--bs-warning-rgb: 247, 168, 184;
-	--bs-danger: #f7a8b8; /* Trans pride flag pink */
-	--bs-danger-rgb: 247, 168, 184;
+  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --bs-body-bg: #ffffff;
+  --bs-body-color: #111827;
+  --bs-body-color-rgb: 17, 24, 39;
+  --bs-emphasis-color: #000000;
+  --bs-emphasis-color-rgb: 0, 0, 0;
+  --bs-secondary-color: #4b5563;
+  --bs-secondary-color-rgb: 75, 85, 99;
+  --bs-secondary-bg: #f9fafb;
+  --bs-secondary-bg-rgb: 249, 250, 251;
+  --bs-tertiary-bg: #f3f4f6;
+  --bs-tertiary-bg-rgb: 243, 244, 246;
+  --bs-border-color: #d1d5db;
+  --bs-border-color-translucent: rgba(209, 213, 219, 0.175);
+  --bs-form-control-bg: #ffffff;
+  --bs-form-control-disabled-bg: #f3f4f6;
+  --bs-form-select-bg: #ffffff;
+  --bs-primary: #55cdfc; /* Trans pride flag blue */
+  --bs-primary-rgb: 85, 205, 252;
+  --bs-secondary: #f7a8b8; /* Trans pride flag pink */
+  --bs-secondary-rgb: 247, 168, 184;
+  --bs-link-color: #55cdfc;
+  --bs-link-hover-color: #3bb5e8;
+  --bs-info: #55cdfc; /* Use trans blue for info */
+  --bs-info-rgb: 85, 205, 252;
+  --bs-warning: #f7a8b8; /* Trans pride flag pink */
+  --bs-warning-rgb: 247, 168, 184;
+  --bs-danger: #f7a8b8; /* Trans pride flag pink */
+  --bs-danger-rgb: 247, 168, 184;
+  --btn-login-bg: #ffd7a8;
+  --btn-login-border: #ffd7a8;
+  --btn-login-hover-bg: #ffcb91;
+  --btn-login-active-bg: #ffbf7a;
+  --btn-login-text: #1f2937;
+  --btn-login-shadow: 0 0.125rem 0.5rem rgba(255, 199, 143, 0.45);
+  --btn-login-hover-shadow: 0 0.25rem 0.65rem rgba(255, 199, 143, 0.55);
+  --btn-login-active-shadow: 0 0.1rem 0.4rem rgba(255, 190, 122, 0.5);
 }
 
 html[data-bs-theme="light"] .btn-primary {
-	background-color: #55cdfc;
-	border-color: #55cdfc;
-	color: #0a0a0a;
-	font-weight: 600;
+  background-color: #55cdfc;
+  border-color: #55cdfc;
+  color: #0a0a0a;
+  font-weight: 600;
 }
 
 html[data-bs-theme="light"] .btn-primary:hover {
-	background-color: #3bb5e8;
-	border-color: #3bb5e8;
-	color: #0a0a0a;
+  background-color: #3bb5e8;
+  border-color: #3bb5e8;
+  color: #0a0a0a;
+}
+
+html[data-bs-theme="light"] .btn-login {
+  background-color: var(--btn-login-bg);
+  border-color: var(--btn-login-border);
+  color: var(--btn-login-text);
+  font-weight: 600;
+  box-shadow: var(--btn-login-shadow);
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+html[data-bs-theme="light"] .btn-login:hover,
+html[data-bs-theme="light"] .btn-login:focus-visible {
+  background-color: var(--btn-login-hover-bg);
+  border-color: var(--btn-login-hover-bg);
+  color: var(--btn-login-text);
+  box-shadow: var(--btn-login-hover-shadow);
+}
+
+html[data-bs-theme="light"] .btn-login:active {
+  background-color: var(--btn-login-active-bg);
+  border-color: var(--btn-login-active-bg);
+  color: var(--btn-login-text);
+  box-shadow: var(--btn-login-active-shadow);
 }
 
 html[data-bs-theme="light"] .text-primary {
-	color: #55cdfc !important;
+  color: #55cdfc !important;
 }
 
 html[data-bs-theme="light"] .link-primary {
-	color: #55cdfc;
-	text-decoration: underline;
+  color: #55cdfc;
+  text-decoration: underline;
 }
 
 html[data-bs-theme="light"] .link-primary:hover {
-	color: #3bb5e8;
+  color: #3bb5e8;
 }
 
 html[data-bs-theme="light"] .form-control:focus,
 html[data-bs-theme="light"] .form-select:focus {
-	border-color: #55cdfc;
-	box-shadow: 0 0 0 0.25rem rgba(85, 205, 252, 0.25);
-	outline: 2px solid #55cdfc;
-	outline-offset: 2px;
+  border-color: #55cdfc;
+  box-shadow: 0 0 0 0.25rem rgba(85, 205, 252, 0.25);
+  outline: 2px solid #55cdfc;
+  outline-offset: 2px;
 }
 
 html[data-bs-theme="light"] .spinner-border {
-	border-color: #55cdfc;
-	border-right-color: transparent;
+  border-color: #55cdfc;
+  border-right-color: transparent;
 }
 
 html[data-bs-theme="light"] .spinner-grow {
-	background-color: #55cdfc;
+  background-color: #55cdfc;
 }
 
 /* Fix outline buttons in light mode */
 html[data-bs-theme="light"] .btn-outline-dark {
-	border-color: #111827 !important;
-	color: #111827 !important;
-	background-color: transparent;
+  border-color: #111827 !important;
+  color: #111827 !important;
+  background-color: transparent;
 }
 
 html[data-bs-theme="light"] .btn-outline-dark:hover {
-	background-color: #111827 !important;
-	border-color: #111827 !important;
-	color: #ffffff !important;
+  background-color: #111827 !important;
+  border-color: #111827 !important;
+  color: #ffffff !important;
 }
 
 html[data-bs-theme="light"] .btn-outline-secondary {
-	border-color: #f7a8b8 !important;
-	color: #f7a8b8 !important;
-	background-color: transparent;
+  border-color: #f7a8b8 !important;
+  color: #f7a8b8 !important;
+  background-color: transparent;
 }
 
 html[data-bs-theme="light"] .btn-outline-secondary:hover {
-	background-color: #f7a8b8 !important;
-	border-color: #f7a8b8 !important;
-	color: #0a0a0a !important;
+  background-color: #f7a8b8 !important;
+  border-color: #f7a8b8 !important;
+  color: #0a0a0a !important;
 }
 
 html[data-bs-theme="light"] .btn-outline-light {
-	border-color: #f3f4f6 !important;
-	color: #111827 !important;
-	background-color: transparent;
+  border-color: #f3f4f6 !important;
+  color: #111827 !important;
+  background-color: transparent;
 }
 
 html[data-bs-theme="light"] .btn-outline-light:hover {
-	background-color: #f3f4f6 !important;
-	border-color: #f3f4f6 !important;
-	color: #111827 !important;
+  background-color: #f3f4f6 !important;
+  border-color: #f3f4f6 !important;
+  color: #111827 !important;
 }
 
 html[data-bs-theme="light"] .btn-outline-primary {
-	border-color: #55cdfc !important;
-	color: #55cdfc !important;
-	background-color: transparent;
+  border-color: #55cdfc !important;
+  color: #55cdfc !important;
+  background-color: transparent;
 }
 
 html[data-bs-theme="light"] .btn-outline-primary:hover {
-	background-color: #55cdfc !important;
-	border-color: #55cdfc !important;
-	color: #0a0a0a !important;
+  background-color: #55cdfc !important;
+  border-color: #55cdfc !important;
+  color: #0a0a0a !important;
 }
 
 /* Trans pride pink accent for secondary buttons */
 html[data-bs-theme="light"] .btn-secondary {
-	background-color: #f7a8b8;
-	border-color: #f7a8b8;
-	color: #0a0a0a;
-	font-weight: 600;
+  background-color: #f7a8b8;
+  border-color: #f7a8b8;
+  color: #0a0a0a;
+  font-weight: 600;
 }
 
 html[data-bs-theme="light"] .btn-secondary:hover {
-	background-color: #f59bb0;
-	border-color: #f59bb0;
-	color: #0a0a0a;
+  background-color: #f59bb0;
+  border-color: #f59bb0;
+  color: #0a0a0a;
 }
 
 html[data-bs-theme="light"] .badge.bg-secondary {
-	background-color: #f7a8b8 !important;
-	color: #0a0a0a;
+  background-color: #f7a8b8 !important;
+  color: #0a0a0a;
 }
 
 html[data-bs-theme="light"] .text-secondary {
-	color: #f7a8b8 !important;
+  color: #f7a8b8 !important;
 }
 
 /* Warning styles - Trans pride pink */
 html[data-bs-theme="light"] .alert-warning {
-	background-color: rgba(247, 168, 184, 0.15) !important;
-	border-color: #f7a8b8 !important;
-	color: #111827 !important;
+  background-color: rgba(247, 168, 184, 0.15) !important;
+  border-color: #f7a8b8 !important;
+  color: #111827 !important;
 }
 
 html[data-bs-theme="light"] .text-warning {
-	color: #f7a8b8 !important;
+  color: #f7a8b8 !important;
 }
 
 html[data-bs-theme="light"] .btn-warning {
-	background-color: #f7a8b8 !important;
-	border-color: #f7a8b8 !important;
-	color: #0a0a0a !important;
-	font-weight: 600;
+  background-color: #f7a8b8 !important;
+  border-color: #f7a8b8 !important;
+  color: #0a0a0a !important;
+  font-weight: 600;
 }
 
 html[data-bs-theme="light"] .btn-warning:hover {
-	background-color: #f59bb0 !important;
-	border-color: #f59bb0 !important;
-	color: #0a0a0a !important;
+  background-color: #f59bb0 !important;
+  border-color: #f59bb0 !important;
+  color: #0a0a0a !important;
 }
 
 html[data-bs-theme="light"] .btn-outline-warning {
-	border-color: #f7a8b8 !important;
-	color: #f7a8b8 !important;
-	background-color: transparent;
+  border-color: #f7a8b8 !important;
+  color: #f7a8b8 !important;
+  background-color: transparent;
 }
 
 html[data-bs-theme="light"] .btn-outline-warning:hover {
-	background-color: #f7a8b8 !important;
-	border-color: #f7a8b8 !important;
-	color: #0a0a0a !important;
+  background-color: #f7a8b8 !important;
+  border-color: #f7a8b8 !important;
+  color: #0a0a0a !important;
 }
 
 /* Danger styles - Trans pride pink */
 html[data-bs-theme="light"] .alert-danger {
-	background-color: rgba(247, 168, 184, 0.15) !important;
-	border-color: #f7a8b8 !important;
-	color: #111827 !important;
+  background-color: rgba(247, 168, 184, 0.15) !important;
+  border-color: #f7a8b8 !important;
+  color: #111827 !important;
 }
 
 html[data-bs-theme="light"] .text-danger {
-	color: #f7a8b8 !important;
+  color: #f7a8b8 !important;
 }
 
 html[data-bs-theme="light"] .btn-danger {
-	background-color: #f7a8b8 !important;
-	border-color: #f7a8b8 !important;
-	color: #0a0a0a !important;
-	font-weight: 600;
+  background-color: #f7a8b8 !important;
+  border-color: #f7a8b8 !important;
+  color: #0a0a0a !important;
+  font-weight: 600;
 }
 
 html[data-bs-theme="light"] .btn-danger:hover {
-	background-color: #f59bb0 !important;
-	border-color: #f59bb0 !important;
-	color: #0a0a0a !important;
+  background-color: #f59bb0 !important;
+  border-color: #f59bb0 !important;
+  color: #0a0a0a !important;
 }
 
 html[data-bs-theme="light"] .btn-outline-danger {
-	border-color: #f7a8b8 !important;
-	color: #f7a8b8 !important;
-	background-color: transparent;
+  border-color: #f7a8b8 !important;
+  color: #f7a8b8 !important;
+  background-color: transparent;
 }
 
 html[data-bs-theme="light"] .btn-outline-danger:hover {
-	background-color: #f7a8b8 !important;
-	border-color: #f7a8b8 !important;
-	color: #0a0a0a !important;
+  background-color: #f7a8b8 !important;
+  border-color: #f7a8b8 !important;
+  color: #0a0a0a !important;
 }
 
 html[data-bs-theme="light"] .badge.bg-danger {
-	background-color: #f7a8b8 !important;
-	color: #0a0a0a;
+  background-color: #f7a8b8 !important;
+  color: #0a0a0a;
 }
 
 /* Bootstrap Dark Mode Overrides - Trans Pride Theme */
 
 html[data-bs-theme="dark"],
 html[data-bs-theme="dark"] body {
-	font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-	--bs-body-bg: #121212; /* true dark background */
-	--bs-body-color: #f3f4f6; /* improved contrast - 12.6:1 */
-	--bs-body-color-rgb: 243, 244, 246;
-	--bs-emphasis-color: #ffffff;
-	--bs-emphasis-color-rgb: 255, 255, 255;
-	--bs-secondary-color: #d1d5db; /* improved contrast - 7.1:1 (was #9ca3af) */
-	--bs-secondary-color-rgb: 209, 213, 219;
-	--bs-secondary-bg: #1f2937; /* panel color - improved visibility */
-	--bs-secondary-bg-rgb: 31, 41, 55;
-	--bs-tertiary-bg: #374151;
-	--bs-tertiary-bg-rgb: 55, 65, 81;
-	--bs-border-color: #374151; /* improved visibility */
-	--bs-border-color-translucent: rgba(55, 65, 81, 0.175);
-	--bs-form-control-bg: #1f2937;
-	--bs-form-control-disabled-bg: #374151;
-	--bs-form-select-bg: #1f2937;
-	--bs-primary: #7dd3fc; /* Trans pride flag blue - lighter for better contrast (4.5:1 on #121212) */
-	--bs-primary-rgb: 125, 211, 252;
-	--bs-secondary: #f7a8b8; /* Trans pride flag pink */
-	--bs-secondary-rgb: 247, 168, 184;
-	--bs-link-color: #7dd3fc;
-	--bs-link-hover-color: #93daff;
-	--bs-info: #7dd3fc; /* Use trans blue for info */
-	--bs-info-rgb: 125, 211, 252;
-	--bs-warning: #f7a8b8; /* Trans pride flag pink */
-	--bs-warning-rgb: 247, 168, 184;
-	--bs-danger: #f7a8b8; /* Trans pride flag pink */
-	--bs-danger-rgb: 247, 168, 184;
+  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --bs-body-bg: #121212; /* true dark background */
+  --bs-body-color: #f3f4f6; /* improved contrast - 12.6:1 */
+  --bs-body-color-rgb: 243, 244, 246;
+  --bs-emphasis-color: #ffffff;
+  --bs-emphasis-color-rgb: 255, 255, 255;
+  --bs-secondary-color: #d1d5db; /* improved contrast - 7.1:1 (was #9ca3af) */
+  --bs-secondary-color-rgb: 209, 213, 219;
+  --bs-secondary-bg: #1f2937; /* panel color - improved visibility */
+  --bs-secondary-bg-rgb: 31, 41, 55;
+  --bs-tertiary-bg: #374151;
+  --bs-tertiary-bg-rgb: 55, 65, 81;
+  --bs-border-color: #374151; /* improved visibility */
+  --bs-border-color-translucent: rgba(55, 65, 81, 0.175);
+  --bs-form-control-bg: #1f2937;
+  --bs-form-control-disabled-bg: #374151;
+  --bs-form-select-bg: #1f2937;
+  --bs-primary: #7dd3fc; /* Trans pride flag blue - lighter for better contrast (4.5:1 on #121212) */
+  --bs-primary-rgb: 125, 211, 252;
+  --bs-secondary: #f7a8b8; /* Trans pride flag pink */
+  --bs-secondary-rgb: 247, 168, 184;
+  --bs-link-color: #7dd3fc;
+  --bs-link-hover-color: #93daff;
+  --bs-info: #7dd3fc; /* Use trans blue for info */
+  --bs-info-rgb: 125, 211, 252;
+  --bs-warning: #f7a8b8; /* Trans pride flag pink */
+  --bs-warning-rgb: 247, 168, 184;
+  --bs-danger: #f7a8b8; /* Trans pride flag pink */
+  --bs-danger-rgb: 247, 168, 184;
+  --btn-login-bg: #ffd7a8;
+  --btn-login-border: #ffd7a8;
+  --btn-login-hover-bg: #ffcb91;
+  --btn-login-active-bg: #ffbf7a;
+  --btn-login-text: #111827;
+  --btn-login-shadow: 0 0.125rem 0.5rem rgba(255, 199, 143, 0.4);
+  --btn-login-hover-shadow: 0 0.25rem 0.65rem rgba(255, 199, 143, 0.5);
+  --btn-login-active-shadow: 0 0.1rem 0.4rem rgba(255, 190, 122, 0.45);
 }
 
 html[data-bs-theme="dark"] .card {
-	background-color: #1f2937; /* panel color - improved visibility */
-	border-color: #374151;
-	color: #f3f4f6; /* improved contrast */
+  background-color: #1f2937; /* panel color - improved visibility */
+  border-color: #374151;
+  color: #f3f4f6; /* improved contrast */
 }
 
 html[data-bs-theme="dark"] .table {
-	--bs-table-bg: #1f2937;
-	--bs-table-color: #f3f4f6; /* improved contrast */
-	--bs-table-border-color: #374151;
-	--bs-table-striped-bg: #374151;
-	--bs-table-hover-bg: #374151;
+  --bs-table-bg: #1f2937;
+  --bs-table-color: #f3f4f6; /* improved contrast */
+  --bs-table-border-color: #374151;
+  --bs-table-striped-bg: #374151;
+  --bs-table-hover-bg: #374151;
 }
 
 html[data-bs-theme="dark"] .form-control,
 html[data-bs-theme="dark"] .form-select {
-	background-color: #1f2937;
-	border-color: #374151;
-	color: #f3f4f6; /* improved contrast */
+  background-color: #1f2937;
+  border-color: #374151;
+  color: #f3f4f6; /* improved contrast */
 }
 
 html[data-bs-theme="dark"] .form-control:focus,
 html[data-bs-theme="dark"] .form-select:focus {
-	background-color: #1f2937;
-	border-color: #7dd3fc; /* lighter trans flag blue for better contrast */
-	color: #f3f4f6;
-	box-shadow: 0 0 0 0.25rem rgba(125, 211, 252, 0.25);
-	outline: 2px solid #7dd3fc;
-	outline-offset: 2px;
+  background-color: #1f2937;
+  border-color: #7dd3fc; /* lighter trans flag blue for better contrast */
+  color: #f3f4f6;
+  box-shadow: 0 0 0 0.25rem rgba(125, 211, 252, 0.25);
+  outline: 2px solid #7dd3fc;
+  outline-offset: 2px;
 }
 
 html[data-bs-theme="dark"] .list-group-item {
-	background-color: #1f2937;
-	border-color: #374151;
-	color: #f3f4f6; /* improved contrast */
+  background-color: #1f2937;
+  border-color: #374151;
+  color: #f3f4f6; /* improved contrast */
 }
 
 html[data-bs-theme="dark"] .dropdown-menu {
-	background-color: #1f2937;
-	border-color: #374151;
+  background-color: #1f2937;
+  border-color: #374151;
 }
 
 html[data-bs-theme="dark"] .dropdown-item {
-	color: #f3f4f6; /* improved contrast */
+  color: #f3f4f6; /* improved contrast */
 }
 
 html[data-bs-theme="dark"] .dropdown-item:hover,
 html[data-bs-theme="dark"] .dropdown-item:focus {
-	background-color: #374151;
-	color: #ffffff; /* maximum contrast on hover */
+  background-color: #374151;
+  color: #ffffff; /* maximum contrast on hover */
 }
 
 html[data-bs-theme="dark"] .modal-content {
-	background-color: #1f2937;
-	border-color: #374151;
-	color: #f3f4f6; /* improved contrast */
+  background-color: #1f2937;
+  border-color: #374151;
+  color: #f3f4f6; /* improved contrast */
 }
 
 html[data-bs-theme="dark"] .alert {
-	border-color: #374151;
+  border-color: #374151;
 }
 
 html[data-bs-theme="dark"] .navbar {
-	background-color: #1f2937 !important;
+  background-color: #1f2937 !important;
 }
 
 html[data-bs-theme="dark"] .bg-light {
-	background-color: #1f2937 !important;
+  background-color: #1f2937 !important;
 }
 
 html[data-bs-theme="dark"] .text-body-secondary {
-	color: #d1d5db !important; /* improved contrast - 7.1:1 */
+  color: #d1d5db !important; /* improved contrast - 7.1:1 */
 }
 
 html[data-bs-theme="dark"] .btn-primary {
-	background-color: #7dd3fc; /* lighter for better contrast */
-	border-color: #7dd3fc;
-	color: #0a0a0a; /* darker text for 4.5:1 contrast on light blue */
-	font-weight: 600; /* bold helps with contrast */
+  background-color: #7dd3fc; /* lighter for better contrast */
+  border-color: #7dd3fc;
+  color: #0a0a0a; /* darker text for 4.5:1 contrast on light blue */
+  font-weight: 600; /* bold helps with contrast */
 }
 
 html[data-bs-theme="dark"] .btn-primary:hover {
-	background-color: #93daff;
-	border-color: #93daff;
-	color: #0a0a0a;
+  background-color: #93daff;
+  border-color: #93daff;
+  color: #0a0a0a;
+}
+
+html[data-bs-theme="dark"] .btn-login {
+  background-color: var(--btn-login-bg);
+  border-color: var(--btn-login-border);
+  color: var(--btn-login-text);
+  font-weight: 600;
+  box-shadow: var(--btn-login-shadow);
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+html[data-bs-theme="dark"] .btn-login:hover,
+html[data-bs-theme="dark"] .btn-login:focus-visible {
+  background-color: var(--btn-login-hover-bg);
+  border-color: var(--btn-login-hover-bg);
+  color: var(--btn-login-text);
+  box-shadow: var(--btn-login-hover-shadow);
+}
+
+html[data-bs-theme="dark"] .btn-login:active {
+  background-color: var(--btn-login-active-bg);
+  border-color: var(--btn-login-active-bg);
+  color: var(--btn-login-text);
+  box-shadow: var(--btn-login-active-shadow);
 }
 
 html[data-bs-theme="dark"] .text-primary {
-	color: #7dd3fc !important; /* lighter for better contrast */
+  color: #7dd3fc !important; /* lighter for better contrast */
 }
 
 html[data-bs-theme="dark"] .link-primary {
-	color: #7dd3fc;
-	text-decoration: underline; /* WCAG requirement for links */
+  color: #7dd3fc;
+  text-decoration: underline; /* WCAG requirement for links */
 }
 
 html[data-bs-theme="dark"] .link-primary:hover {
-	color: #93daff;
+  color: #93daff;
 }
 
 /* Bootstrap spinner override to use trans pride colors */
 html[data-bs-theme="dark"] .spinner-border {
-	border-color: #7dd3fc; /* lighter for better visibility */
-	border-right-color: transparent;
+  border-color: #7dd3fc; /* lighter for better visibility */
+  border-right-color: transparent;
 }
 
 html[data-bs-theme="dark"] .spinner-grow {
-	background-color: #7dd3fc;
+  background-color: #7dd3fc;
 }
 
 /* Fix outline buttons visibility in dark mode */
 html[data-bs-theme="dark"] .btn-outline-dark {
-	border-color: #374151 !important;
-	color: #f3f4f6 !important;
-	background-color: transparent;
+  border-color: #374151 !important;
+  color: #f3f4f6 !important;
+  background-color: transparent;
 }
 
 html[data-bs-theme="dark"] .btn-outline-dark:hover {
-	background-color: #374151 !important;
-	border-color: #374151 !important;
-	color: #ffffff !important;
+  background-color: #374151 !important;
+  border-color: #374151 !important;
+  color: #ffffff !important;
 }
 
 html[data-bs-theme="dark"] .btn-outline-secondary {
-	border-color: #f7a8b8 !important;
-	color: #f7a8b8 !important;
-	background-color: transparent;
+  border-color: #f7a8b8 !important;
+  color: #f7a8b8 !important;
+  background-color: transparent;
 }
 
 html[data-bs-theme="dark"] .btn-outline-secondary:hover {
-	background-color: #f7a8b8 !important;
-	border-color: #f7a8b8 !important;
-	color: #0a0a0a !important;
+  background-color: #f7a8b8 !important;
+  border-color: #f7a8b8 !important;
+  color: #0a0a0a !important;
 }
 
 html[data-bs-theme="dark"] .btn-outline-light {
-	border-color: #f3f4f6 !important;
-	color: #f3f4f6 !important;
-	background-color: transparent;
+  border-color: #f3f4f6 !important;
+  color: #f3f4f6 !important;
+  background-color: transparent;
 }
 
 html[data-bs-theme="dark"] .btn-outline-light:hover {
-	background-color: #f3f4f6 !important;
-	border-color: #f3f4f6 !important;
-	color: #121212 !important;
+  background-color: #f3f4f6 !important;
+  border-color: #f3f4f6 !important;
+  color: #121212 !important;
 }
 
 html[data-bs-theme="dark"] .btn-outline-primary {
-	border-color: #7dd3fc !important;
-	color: #7dd3fc !important;
-	background-color: transparent;
+  border-color: #7dd3fc !important;
+  color: #7dd3fc !important;
+  background-color: transparent;
 }
 
 html[data-bs-theme="dark"] .btn-outline-primary:hover {
-	background-color: #7dd3fc !important;
-	border-color: #7dd3fc !important;
-	color: #0a0a0a !important;
+  background-color: #7dd3fc !important;
+  border-color: #7dd3fc !important;
+  color: #0a0a0a !important;
 }
 
 /* Trans pride pink accent for secondary buttons in dark mode */
 html[data-bs-theme="dark"] .btn-secondary {
-	background-color: #f7a8b8;
-	border-color: #f7a8b8;
-	color: #0a0a0a;
-	font-weight: 600;
+  background-color: #f7a8b8;
+  border-color: #f7a8b8;
+  color: #0a0a0a;
+  font-weight: 600;
 }
 
 html[data-bs-theme="dark"] .btn-secondary:hover {
-	background-color: #f9b0c2;
-	border-color: #f9b0c2;
-	color: #0a0a0a;
+  background-color: #f9b0c2;
+  border-color: #f9b0c2;
+  color: #0a0a0a;
 }
 
 html[data-bs-theme="dark"] .btn-outline-secondary {
-	border-color: #f7a8b8 !important;
-	color: #f7a8b8 !important;
-	background-color: transparent;
+  border-color: #f7a8b8 !important;
+  color: #f7a8b8 !important;
+  background-color: transparent;
 }
 
 html[data-bs-theme="dark"] .btn-outline-secondary:hover {
-	background-color: #f7a8b8 !important;
-	border-color: #f7a8b8 !important;
-	color: #0a0a0a !important;
+  background-color: #f7a8b8 !important;
+  border-color: #f7a8b8 !important;
+  color: #0a0a0a !important;
 }
 
 html[data-bs-theme="dark"] .badge.bg-secondary {
-	background-color: #f7a8b8 !important;
-	color: #0a0a0a;
+  background-color: #f7a8b8 !important;
+  color: #0a0a0a;
 }
 
 html[data-bs-theme="dark"] .text-secondary {
-	color: #f7a8b8 !important;
+  color: #f7a8b8 !important;
 }
 
 /* Warning styles - Trans pride pink */
 html[data-bs-theme="dark"] .alert-warning {
-	background-color: rgba(247, 168, 184, 0.15) !important;
-	border-color: #f7a8b8 !important;
-	color: #f3f4f6 !important;
+  background-color: rgba(247, 168, 184, 0.15) !important;
+  border-color: #f7a8b8 !important;
+  color: #f3f4f6 !important;
 }
 
 html[data-bs-theme="dark"] .text-warning {
-	color: #f7a8b8 !important;
+  color: #f7a8b8 !important;
 }
 
 html[data-bs-theme="dark"] .btn-warning {
-	background-color: #f7a8b8 !important;
-	border-color: #f7a8b8 !important;
-	color: #0a0a0a !important;
-	font-weight: 600;
+  background-color: #f7a8b8 !important;
+  border-color: #f7a8b8 !important;
+  color: #0a0a0a !important;
+  font-weight: 600;
 }
 
 html[data-bs-theme="dark"] .btn-warning:hover {
-	background-color: #f9b0c2 !important;
-	border-color: #f9b0c2 !important;
-	color: #0a0a0a !important;
+  background-color: #f9b0c2 !important;
+  border-color: #f9b0c2 !important;
+  color: #0a0a0a !important;
 }
 
 html[data-bs-theme="dark"] .btn-outline-warning {
-	border-color: #f7a8b8 !important;
-	color: #f7a8b8 !important;
-	background-color: transparent;
+  border-color: #f7a8b8 !important;
+  color: #f7a8b8 !important;
+  background-color: transparent;
 }
 
 html[data-bs-theme="dark"] .btn-outline-warning:hover {
-	background-color: #f7a8b8 !important;
-	border-color: #f7a8b8 !important;
-	color: #0a0a0a !important;
+  background-color: #f7a8b8 !important;
+  border-color: #f7a8b8 !important;
+  color: #0a0a0a !important;
 }
 
 /* Danger styles - Trans pride pink */
 html[data-bs-theme="dark"] .alert-danger {
-	background-color: rgba(247, 168, 184, 0.15) !important;
-	border-color: #f7a8b8 !important;
-	color: #f3f4f6 !important;
+  background-color: rgba(247, 168, 184, 0.15) !important;
+  border-color: #f7a8b8 !important;
+  color: #f3f4f6 !important;
 }
 
 html[data-bs-theme="dark"] .text-danger {
-	color: #f7a8b8 !important;
+  color: #f7a8b8 !important;
 }
 
 html[data-bs-theme="dark"] .btn-danger {
-	background-color: #f7a8b8 !important;
-	border-color: #f7a8b8 !important;
-	color: #0a0a0a !important;
-	font-weight: 600;
+  background-color: #f7a8b8 !important;
+  border-color: #f7a8b8 !important;
+  color: #0a0a0a !important;
+  font-weight: 600;
 }
 
 html[data-bs-theme="dark"] .btn-danger:hover {
-	background-color: #f9b0c2 !important;
-	border-color: #f9b0c2 !important;
-	color: #0a0a0a !important;
+  background-color: #f9b0c2 !important;
+  border-color: #f9b0c2 !important;
+  color: #0a0a0a !important;
 }
 
 html[data-bs-theme="dark"] .btn-outline-danger {
-	border-color: #f7a8b8 !important;
-	color: #f7a8b8 !important;
-	background-color: transparent;
+  border-color: #f7a8b8 !important;
+  color: #f7a8b8 !important;
+  background-color: transparent;
 }
 
 html[data-bs-theme="dark"] .btn-outline-danger:hover {
-	background-color: #f7a8b8 !important;
-	border-color: #f7a8b8 !important;
-	color: #0a0a0a !important;
+  background-color: #f7a8b8 !important;
+  border-color: #f7a8b8 !important;
+  color: #0a0a0a !important;
 }
 
 html[data-bs-theme="dark"] .badge.bg-danger {
-	background-color: #f7a8b8 !important;
-	color: #0a0a0a;
+  background-color: #f7a8b8 !important;
+  color: #0a0a0a;
 }
 
 /* Progress bar overrides - Trans pride pink for danger/warning */
 html[data-bs-theme="dark"] .progress-bar-danger,
 html[data-bs-theme="dark"] .progress-bar[class*="danger"] {
-	background-color: #f7a8b8 !important;
+  background-color: #f7a8b8 !important;
 }
 
 html[data-bs-theme="dark"] .progress-bar-warning,
 html[data-bs-theme="dark"] .progress-bar[class*="warning"] {
-	background-color: #f7a8b8 !important;
+  background-color: #f7a8b8 !important;
 }
 
 /* Bootstrap 5 ProgressBar variant classes - React Bootstrap uses bg-* classes */
 html[data-bs-theme="dark"] .progress .bg-danger,
 html[data-bs-theme="dark"] .progress-bar.bg-danger {
-	background-color: #f7a8b8 !important;
+  background-color: #f7a8b8 !important;
 }
 
 html[data-bs-theme="dark"] .progress .bg-warning,
 html[data-bs-theme="dark"] .progress-bar.bg-warning {
-	background-color: #f7a8b8 !important;
+  background-color: #f7a8b8 !important;
 }
 
 /* Ensure progress bars use the CSS variable in dark mode */
 html[data-bs-theme="dark"] .progress-bar {
-	--bs-progress-bar-bg: var(--bs-danger);
+  --bs-progress-bar-bg: var(--bs-danger);
 }
 
 /* Improve focus visibility for navbar brand while keeping colors */
 .navbar-brand:focus,
 .navbar-brand:focus-visible {
-	outline: 2px solid #55cdfc !important;
-	outline-offset: 2px !important;
-	border-radius: 4px !important;
+  outline: 2px solid #55cdfc !important;
+  outline-offset: 2px !important;
+  border-radius: 4px !important;
 }
 
 html[data-bs-theme="dark"] .navbar-brand:focus,
 html[data-bs-theme="dark"] .navbar-brand:focus-visible {
-	outline: 2px solid #7dd3fc !important;
+  outline: 2px solid #7dd3fc !important;
 }
 
 /* Toast styling with Trans Pride colors */
 /* Blue (#55CDFC) for success - good messages */
 .toast.bg-success {
-	background-color: #55cdfc !important;
-	color: #ffffff !important;
+  background-color: #55cdfc !important;
+  color: #ffffff !important;
 }
 
 .toast.bg-success .toast-header {
-	background-color: rgba(85, 205, 252, 0.9) !important;
-	color: #ffffff !important;
-	border-bottom-color: rgba(255, 255, 255, 0.2) !important;
+  background-color: rgba(85, 205, 252, 0.9) !important;
+  color: #ffffff !important;
+  border-bottom-color: rgba(255, 255, 255, 0.2) !important;
 }
 
 .toast.bg-success .btn-close {
-	filter: invert(1) grayscale(100%) brightness(200%);
+  filter: invert(1) grayscale(100%) brightness(200%);
 }
 
 /* Pink (#F7A8B8) for danger/error - bad messages */
 .toast.bg-danger {
-	background-color: #f7a8b8 !important;
-	color: #ffffff !important;
+  background-color: #f7a8b8 !important;
+  color: #ffffff !important;
 }
 
 .toast.bg-danger .toast-header {
-	background-color: rgba(247, 168, 184, 0.9) !important;
-	color: #ffffff !important;
-	border-bottom-color: rgba(255, 255, 255, 0.2) !important;
+  background-color: rgba(247, 168, 184, 0.9) !important;
+  color: #ffffff !important;
+  border-bottom-color: rgba(255, 255, 255, 0.2) !important;
 }
 
 .toast.bg-danger .btn-close {
-	filter: invert(1) grayscale(100%) brightness(200%);
+  filter: invert(1) grayscale(100%) brightness(200%);
 }
 
 /* Pink (#F7A8B8) for warning - warning messages */
 .toast.bg-warning {
-	background-color: #f7a8b8 !important;
-	color: #ffffff !important;
+  background-color: #f7a8b8 !important;
+  color: #ffffff !important;
 }
 
 .toast.bg-warning .toast-header {
-	background-color: rgba(247, 168, 184, 0.9) !important;
-	color: #ffffff !important;
-	border-bottom-color: rgba(255, 255, 255, 0.2) !important;
+  background-color: rgba(247, 168, 184, 0.9) !important;
+  color: #ffffff !important;
+  border-bottom-color: rgba(255, 255, 255, 0.2) !important;
 }
 
 .toast.bg-warning .btn-close {
-	filter: invert(1) grayscale(100%) brightness(200%);
+  filter: invert(1) grayscale(100%) brightness(200%);
 }
 
 /* Pink hover highlight for navigation links */
 .navbar-nav .nav-link:hover {
-	background-color: #f7a8b8 !important;
-	color: #ffffff !important;
-	border-radius: 4px;
-	transition:
-		background-color 0.2s ease,
-		color 0.2s ease;
+  background-color: #f7a8b8 !important;
+  color: #ffffff !important;
+  border-radius: 4px;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .navbar-nav .nav-link:focus,
 .navbar-nav .nav-link:focus-visible {
-	outline: 3px solid #f7a8b8 !important;
-	outline-offset: 2px;
-	border-radius: 4px;
-	background-color: rgba(247, 168, 184, 0.2) !important;
+  outline: 3px solid #f7a8b8 !important;
+  outline-offset: 2px;
+  border-radius: 4px;
+  background-color: rgba(247, 168, 184, 0.2) !important;
 }
 
 /* Ensure text remains visible on hover */
 .navbar-nav .nav-link:hover * {
-	color: #ffffff !important;
+  color: #ffffff !important;
 }
 
 /* Active navigation link styling - Trans pride pink */
 .navbar-nav .nav-link[style*="#F7A8B8"],
 .navbar-nav .nav-link[style*="color: #F7A8B8"] {
-	color: #f7a8b8 !important;
+  color: #f7a8b8 !important;
 }
 
 .navbar-nav .nav-link[style*="#F7A8B8"] svg,
 .navbar-nav .nav-link[style*="color: #F7A8B8"] svg,
 .navbar-nav .nav-link[style*="#F7A8B8"] span,
 .navbar-nav .nav-link[style*="color: #F7A8B8"] span {
-	color: #f7a8b8 !important;
+  color: #f7a8b8 !important;
 }
 
 /* Dropdown menu styling - Trans pride blue */
 .navbar-nav .dropdown-menu {
-	border-color: rgba(85, 205, 252, 0.2) !important;
-	box-shadow: 0 4px 6px rgba(85, 205, 252, 0.1) !important;
+  border-color: rgba(85, 205, 252, 0.2) !important;
+  box-shadow: 0 4px 6px rgba(85, 205, 252, 0.1) !important;
 }
 
 html[data-bs-theme="dark"] .navbar-nav .dropdown-menu {
-	border-color: rgba(125, 211, 252, 0.2) !important;
-	box-shadow: 0 4px 6px rgba(125, 211, 252, 0.1) !important;
+  border-color: rgba(125, 211, 252, 0.2) !important;
+  box-shadow: 0 4px 6px rgba(125, 211, 252, 0.1) !important;
 }
 
 /* Dropdown item hover - Trans pride blue */
 .navbar-nav .dropdown-item:hover {
-	background-color: rgba(85, 205, 252, 0.1) !important;
-	color: #55cdfc !important;
+  background-color: rgba(85, 205, 252, 0.1) !important;
+  color: #55cdfc !important;
 }
 
 html[data-bs-theme="dark"] .navbar-nav .dropdown-item:hover {
-	background-color: rgba(125, 211, 252, 0.15) !important;
-	color: #7dd3fc !important;
+  background-color: rgba(125, 211, 252, 0.15) !important;
+  color: #7dd3fc !important;
 }
 
 .navbar-nav .dropdown-item:hover svg,
 .navbar-nav .dropdown-item:hover span {
-	color: inherit !important;
+  color: inherit !important;
 }
 
 /* Active dropdown item styling - Trans pride blue */
 .navbar-nav .dropdown-item.active,
 .navbar-nav .dropdown-item[active="true"] {
-	background-color: rgba(85, 205, 252, 0.2) !important;
-	color: #55cdfc !important;
+  background-color: rgba(85, 205, 252, 0.2) !important;
+  color: #55cdfc !important;
 }
 
 html[data-bs-theme="dark"] .navbar-nav .dropdown-item.active,
 html[data-bs-theme="dark"] .navbar-nav .dropdown-item[active="true"] {
-	background-color: rgba(125, 211, 252, 0.25) !important;
-	color: #7dd3fc !important;
+  background-color: rgba(125, 211, 252, 0.25) !important;
+  color: #7dd3fc !important;
 }
 
 .navbar-nav .dropdown-item.active svg,
 .navbar-nav .dropdown-item.active span,
 .navbar-nav .dropdown-item[active="true"] svg,
 .navbar-nav .dropdown-item[active="true"] span {
-	color: inherit !important;
+  color: inherit !important;
 }
 
 /* Dropdown header styling */
 .navbar-nav .dropdown-header {
-	color: #55cdfc !important;
-	font-weight: 600;
+  color: #55cdfc !important;
+  font-weight: 600;
 }
 
 html[data-bs-theme="dark"] .navbar-nav .dropdown-header {
-	color: #7dd3fc !important;
+  color: #7dd3fc !important;
 }
 
 /* Active dropdown title styling */
 .navbar-nav .dropdown-toggle[style*="#F7A8B8"] svg,
 .navbar-nav .dropdown-toggle[style*="#F7A8B8"] span {
-	color: #f7a8b8 !important;
+  color: #f7a8b8 !important;
 }

@@ -11,13 +11,13 @@
  * @returns Object with offset and limit values
  */
 export function calculatePaginationParams(
-	page: number | string | undefined,
-	limit: number | string | undefined,
+  page: number | string | undefined,
+  limit: number | string | undefined
 ): { offset: number; limit: number } {
-	const pageNum = Number(page) || 1;
-	const limitNum = Number(limit) || 20;
-	const actualLimit = Math.min(limitNum, 100); // Cap at 100 per page
-	const offset = (pageNum - 1) * actualLimit;
+  const pageNum = Number(page) || 1;
+  const limitNum = Number(limit) || 20;
+  const actualLimit = Math.min(limitNum, 100); // Cap at 100 per page
+  const offset = (pageNum - 1) * actualLimit;
 
-	return { offset, limit: actualLimit };
+  return { offset, limit: actualLimit };
 }

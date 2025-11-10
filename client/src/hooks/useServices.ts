@@ -4,15 +4,15 @@
  * @version 2.0.0 (Refactored with generic hooks)
  */
 
-import type { ServiceDTO } from "../api/types";
-import { createResourceHooks } from "./useResourceQuery";
+import type { ServiceDTO } from '../api/types';
+import { createResourceHooks } from './useResourceQuery';
 
 // Create services hooks using the generic factory
 const servicesHooks = createResourceHooks<ServiceDTO>({
-	resource: "services",
-	basePath: "/services",
-	staleTime: 30_000,
-	uploadFieldName: "image",
+  resource: 'services',
+  basePath: '/services',
+  staleTime: 30_000,
+  uploadFieldName: 'image',
 });
 
 // Export with renamed functions for backward compatibility

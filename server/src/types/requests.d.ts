@@ -4,17 +4,17 @@
  * @version 1.0.0
  */
 
-import type { Request } from "express";
-import type { JwtPayload } from "./global.d.js";
+import type { Request } from 'express';
+import type { JwtPayload } from './global.d.js';
 
 // Extend Express Request with typed body and query
 declare global {
-	namespace Express {
-		interface Request {
-			user?: JwtPayload;
-			// Add typed body and query helpers
-		}
-	}
+  namespace Express {
+    interface Request {
+      user?: JwtPayload;
+      // Add typed body and query helpers
+    }
+  }
 }
 
 // ============================================================================
@@ -22,23 +22,23 @@ declare global {
 // ============================================================================
 
 export interface CreateServiceRequest {
-	name: string;
-	price: number;
-	description: string;
-	imageUrl?: string;
-	published?: boolean;
+  name: string;
+  price: number;
+  description: string;
+  imageUrl?: string;
+  published?: boolean;
 }
 
 export interface UpdateServiceRequest extends Partial<CreateServiceRequest> {}
 
 export interface ServiceQueryParams {
-	q?: string; // Search query
-	minPrice?: number;
-	maxPrice?: number;
-	active?: boolean | string; // Published filter
-	sort?: string; // Format: "field:direction" (e.g., "price:DESC")
-	page?: number;
-	limit?: number;
+  q?: string; // Search query
+  minPrice?: number;
+  maxPrice?: number;
+  active?: boolean | string; // Published filter
+  sort?: string; // Format: "field:direction" (e.g., "price:DESC")
+  page?: number;
+  limit?: number;
 }
 
 // ============================================================================
@@ -46,11 +46,11 @@ export interface ServiceQueryParams {
 // ============================================================================
 
 export interface CreateStaffRequest {
-	name: string;
-	role?: string;
-	bio?: string;
-	photoUrl?: string;
-	active?: boolean;
+  name: string;
+  role?: string;
+  bio?: string;
+  photoUrl?: string;
+  active?: boolean;
 }
 
 export interface UpdateStaffRequest extends Partial<CreateStaffRequest> {}
@@ -60,14 +60,14 @@ export interface UpdateStaffRequest extends Partial<CreateStaffRequest> {}
 // ============================================================================
 
 export interface RegisterRequest {
-	email: string;
-	password: string;
+  email: string;
+  password: string;
 }
 
 export interface LoginRequest {
-	email: string;
-	password: string;
-	rememberMe?: boolean;
+  email: string;
+  password: string;
+  rememberMe?: boolean;
 }
 
 // ============================================================================
@@ -75,8 +75,8 @@ export interface LoginRequest {
 // ============================================================================
 
 export interface UpdateProfileRequest {
-	email?: string;
-	active?: boolean;
+  email?: string;
+  active?: boolean;
 }
 
 // ============================================================================
@@ -84,24 +84,24 @@ export interface UpdateProfileRequest {
 // ============================================================================
 
 export interface CreateUserRequest {
-	email: string;
-	password: string;
-	role?: "user" | "admin";
-	active?: boolean;
+  email: string;
+  password: string;
+  role?: 'user' | 'admin';
+  active?: boolean;
 }
 
 export interface UpdateUserRequest {
-	email?: string;
-	password?: string;
-	role?: "user" | "admin";
-	active?: boolean;
+  email?: string;
+  password?: string;
+  role?: 'user' | 'admin';
+  active?: boolean;
 }
 
 export interface UserQueryParams {
-	page?: number;
-	limit?: number;
-	role?: "user" | "admin";
-	active?: boolean;
+  page?: number;
+  limit?: number;
+  role?: 'user' | 'admin';
+  active?: boolean;
 }
 
 // ============================================================================
@@ -109,6 +109,6 @@ export interface UserQueryParams {
 // ============================================================================
 
 export interface FileUploadRequest extends Request {
-	file?: Express.Multer.File;
-	files?: Express.Multer.File[];
+  file?: Express.Multer.File;
+  files?: Express.Multer.File[];
 }

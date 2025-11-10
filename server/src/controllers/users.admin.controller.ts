@@ -4,29 +4,29 @@
  * @version 1.0.0
  */
 
-import type { Request, Response } from "express";
-import { z } from "zod";
-import { User } from "../db/models/User.js";
-import type { CreateUserRequest, UpdateUserRequest, UserQueryParams } from "../types/requests.js";
-import { sendNotFoundError } from "../utils/errorResponse.js";
-import { handleControllerError } from "../utils/errors.js";
-import { hashPassword } from "../utils/hash.js";
-import { calculatePaginationParams } from "../utils/pagination.js";
-import { createPaginationResponse } from "../utils/responses.js";
-import { findByIdOr404, parseIdParam } from "../utils/validation.js";
+import type { Request, Response } from 'express';
+import { z } from 'zod';
+import { User } from '../db/models/User.js';
+import type { CreateUserRequest, UpdateUserRequest, UserQueryParams } from '../types/requests.js';
+import { sendNotFoundError } from '../utils/errorResponse.js';
+import { handleControllerError } from '../utils/errors.js';
+import { hashPassword } from '../utils/hash.js';
+import { calculatePaginationParams } from '../utils/pagination.js';
+import { createPaginationResponse } from '../utils/responses.js';
+import { findByIdOr404, parseIdParam } from '../utils/validation.js';
 
 const createSchema = z.object({
-	email: z.string().email(),
-	password: z.string().min(8),
-	role: z.enum(["user", "admin"]).default("user"),
-	active: z.boolean().default(true),
+  email: z.string().email(),
+  password: z.string().min(8),
+  role: z.enum(['user', 'admin']).default('user'),
+  active: z.boolean().default(true),
 });
 
 const updateSchema = z.object({
-	email: z.string().email().optional(),
-	password: z.string().min(8).optional(),
-	role: z.enum(["user", "admin"]).optional(),
-	active: z.boolean().optional(),
+  email: z.string().email().optional(),
+  password: z.string().min(8).optional(),
+  role: z.enum(['user', 'admin']).optional(),
+  active: z.boolean().optional(),
 });
 
 /**
@@ -64,31 +64,31 @@ const updateSchema = z.object({
  * }
  */
 export async function listUsers(req: Request, res: Response) {
-	try {
-		const query = req.query as unknown as UserQueryParams;
-		const { page = 1, limit = 20, role, active } = query;
+  try {
+    const query = req.query as unknown as UserQueryParams;
+    const { page = 1, limit = 20, role, active } = query;
 
-		const where: Record<string, unknown> = {};
-		if (role) where.role = role;
-		if (typeof active !== "undefined") where.active = active;
+    const where: Record<string, unknown> = {};
+    if (role) where.role = role;
+    if (typeof active !== 'undefined') where.active = active;
 
-		const { offset, limit: actualLimit } = calculatePaginationParams(page, limit);
+    const { offset, limit: actualLimit } = calculatePaginationParams(page, limit);
 
-		const { count, rows: users } = await User.findAndCountAll({
-			where,
-			attributes: ["id", "email", "role", "active", "createdAt"],
-			limit: actualLimit,
-			offset,
-			order: [["createdAt", "DESC"]],
-		});
+    const { count, rows: users } = await User.findAndCountAll({
+      where,
+      attributes: ['id', 'email', 'role', 'active', 'createdAt'],
+      limit: actualLimit,
+      offset,
+      order: [['createdAt', 'DESC']],
+    });
 
-		res.json({
-			data: users,
-			pagination: createPaginationResponse(Number(page), actualLimit, count),
-		});
-	} catch (err) {
-		handleControllerError(err, res);
-	}
+    res.json({
+      data: users,
+      pagination: createPaginationResponse(Number(page), actualLimit, count),
+    });
+  } catch (err) {
+    handleControllerError(err, res);
+  }
 }
 
 /**
@@ -105,18 +105,18 @@ export async function listUsers(req: Request, res: Response) {
  * @returns {Object} 404 - User not found
  */
 export async function getUserById(req: Request, res: Response) {
-	try {
-		const user = await findByIdOr404(req, res, (id) =>
-			User.findByPk(id, {
-				attributes: ["id", "email", "role", "active", "createdAt"],
-			}),
-		);
-		if (!user) return; // Error response already sent
+  try {
+    const user = await findByIdOr404(req, res, (id) =>
+      User.findByPk(id, {
+        attributes: ['id', 'email', 'role', 'active', 'createdAt'],
+      })
+    );
+    if (!user) return; // Error response already sent
 
-		res.json(user);
-	} catch (err) {
-		handleControllerError(err, res);
-	}
+    res.json(user);
+  } catch (err) {
+    handleControllerError(err, res);
+  }
 }
 
 /**
@@ -136,26 +136,26 @@ export async function getUserById(req: Request, res: Response) {
  * @returns {Object} 409 - Email already in use
  */
 export async function createUser(req: Request, res: Response) {
-	try {
-		const payload = createSchema.parse(req.body) as CreateUserRequest;
-		const passwordHash = await hashPassword(payload.password);
-		const user = await User.create({
-			email: payload.email,
-			passwordHash,
-			role: payload.role,
-			active: payload.active,
-		});
-		res.status(201).json({
-			id: user.id,
-			email: user.email,
-			role: user.role,
-			active: user.active,
-		});
-	} catch (err) {
-		handleControllerError(err, res, {
-			uniqueConstraintMessage: "Email already in use",
-		});
-	}
+  try {
+    const payload = createSchema.parse(req.body) as CreateUserRequest;
+    const passwordHash = await hashPassword(payload.password);
+    const user = await User.create({
+      email: payload.email,
+      passwordHash,
+      role: payload.role,
+      active: payload.active,
+    });
+    res.status(201).json({
+      id: user.id,
+      email: user.email,
+      role: user.role,
+      active: user.active,
+    });
+  } catch (err) {
+    handleControllerError(err, res, {
+      uniqueConstraintMessage: 'Email already in use',
+    });
+  }
 }
 
 /**
@@ -177,36 +177,36 @@ export async function createUser(req: Request, res: Response) {
  * @returns {Object} 409 - Email already in use
  */
 export async function updateUser(req: Request, res: Response) {
-	try {
-		const id = parseIdParam(req, res);
-		if (id === null) return; // Error response already sent
+  try {
+    const id = parseIdParam(req, res);
+    if (id === null) return; // Error response already sent
 
-		const payload = updateSchema.parse(req.body) as UpdateUserRequest;
-		const user = await User.findByPk(id);
-		if (!user) return sendNotFoundError(res);
+    const payload = updateSchema.parse(req.body) as UpdateUserRequest;
+    const user = await User.findByPk(id);
+    if (!user) return sendNotFoundError(res);
 
-		if (payload.password) {
-			const passwordHash = await hashPassword(payload.password);
-			await user.update({ passwordHash });
-		}
+    if (payload.password) {
+      const passwordHash = await hashPassword(payload.password);
+      await user.update({ passwordHash });
+    }
 
-		await user.update({
-			email: payload.email ?? user.email,
-			role: payload.role ?? user.role,
-			active: payload.active ?? user.active,
-		});
+    await user.update({
+      email: payload.email ?? user.email,
+      role: payload.role ?? user.role,
+      active: payload.active ?? user.active,
+    });
 
-		res.json({
-			id: user.id,
-			email: user.email,
-			role: user.role,
-			active: user.active,
-		});
-	} catch (err) {
-		handleControllerError(err, res, {
-			uniqueConstraintMessage: "Email already in use",
-		});
-	}
+    res.json({
+      id: user.id,
+      email: user.email,
+      role: user.role,
+      active: user.active,
+    });
+  } catch (err) {
+    handleControllerError(err, res, {
+      uniqueConstraintMessage: 'Email already in use',
+    });
+  }
 }
 
 /**
@@ -223,16 +223,16 @@ export async function updateUser(req: Request, res: Response) {
  * @returns {Object} 404 - User not found
  */
 export async function deleteUser(req: Request, res: Response) {
-	try {
-		const id = parseIdParam(req, res);
-		if (id === null) return; // Error response already sent
+  try {
+    const id = parseIdParam(req, res);
+    if (id === null) return; // Error response already sent
 
-		const user = await User.findByPk(id);
-		if (!user) return sendNotFoundError(res);
+    const user = await User.findByPk(id);
+    if (!user) return sendNotFoundError(res);
 
-		await user.destroy();
-		res.status(204).send();
-	} catch (err) {
-		handleControllerError(err, res);
-	}
+    await user.destroy();
+    res.status(204).send();
+  } catch (err) {
+    handleControllerError(err, res);
+  }
 }

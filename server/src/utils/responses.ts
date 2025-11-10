@@ -5,28 +5,28 @@
  */
 
 export type ApiSuccess<T> = {
-	success: true;
-	data: T;
-	error: null;
-	meta?: Record<string, unknown>;
+  success: true;
+  data: T;
+  error: null;
+  meta?: Record<string, unknown>;
 };
 export type ApiError = {
-	success: false;
-	data: null;
-	error: { code: string; message: string };
+  success: false;
+  data: null;
+  error: { code: string; message: string };
 };
 
 export const ok = <T>(data: T, meta?: Record<string, unknown>): ApiSuccess<T> =>
-	({
-		success: true,
-		data,
-		error: null,
-		...(meta ? { meta } : {}),
-	}) as ApiSuccess<T>;
+  ({
+    success: true,
+    data,
+    error: null,
+    ...(meta ? { meta } : {}),
+  }) as ApiSuccess<T>;
 export const err = (code: string, message: string): ApiError => ({
-	success: false,
-	data: null,
-	error: { code, message },
+  success: false,
+  data: null,
+  error: { code, message },
 });
 
 /**
@@ -37,19 +37,19 @@ export const err = (code: string, message: string): ApiError => ({
  * @returns Pagination metadata object
  */
 export function createPaginationResponse(
-	page: number,
-	limit: number,
-	total: number,
+  page: number,
+  limit: number,
+  total: number
 ): {
-	page: number;
-	limit: number;
-	total: number;
-	pages: number;
+  page: number;
+  limit: number;
+  total: number;
+  pages: number;
 } {
-	return {
-		page: Number(page),
-		limit,
-		total,
-		pages: Math.ceil(total / limit),
-	};
+  return {
+    page: Number(page),
+    limit,
+    total,
+    pages: Math.ceil(total / limit),
+  };
 }

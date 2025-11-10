@@ -4,12 +4,12 @@
  * @version 1.0.0
  */
 
-import type { Request, Response } from "express";
-import { Favorite } from "../db/models/Favorite.js";
-import { Service } from "../db/models/Service.js";
-import { sendConflictError, sendNotFoundError } from "../utils/errorResponse.js";
-import { handleControllerError } from "../utils/errors.js";
-import { requireAuth } from "../utils/validation.js";
+import type { Request, Response } from 'express';
+import { Favorite } from '../db/models/Favorite.js';
+import { Service } from '../db/models/Service.js';
+import { sendConflictError, sendNotFoundError } from '../utils/errorResponse.js';
+import { handleControllerError } from '../utils/errors.js';
+import { requireAuth } from '../utils/validation.js';
 
 /**
  * @route GET /api/users/me/favorites
@@ -34,27 +34,27 @@ import { requireAuth } from "../utils/validation.js";
  * ]
  */
 export async function listFavorites(req: Request, res: Response) {
-	try {
-		const userId = requireAuth(req, res);
-		if (!userId) return; // Error response already sent
+  try {
+    const userId = requireAuth(req, res);
+    if (!userId) return; // Error response already sent
 
-		const favorites = await Favorite.findAll({
-			where: { userId },
-			include: [
-				{
-					model: Service,
-					attributes: ["id", "name", "price", "description", "imageUrl"],
-				},
-			],
-			order: [["createdAt", "DESC"]],
-		});
+    const favorites = await Favorite.findAll({
+      where: { userId },
+      include: [
+        {
+          model: Service,
+          attributes: ['id', 'name', 'price', 'description', 'imageUrl'],
+        },
+      ],
+      order: [['createdAt', 'DESC']],
+    });
 
-		// Return just the service data for easier frontend consumption
-		const services = favorites.map((fav) => fav.service);
-		res.json(services);
-	} catch (err) {
-		handleControllerError(err, res);
-	}
+    // Return just the service data for easier frontend consumption
+    const services = favorites.map((fav) => fav.service);
+    res.json(services);
+  } catch (err) {
+    handleControllerError(err, res);
+  }
 }
 
 /**
@@ -80,40 +80,40 @@ export async function listFavorites(req: Request, res: Response) {
  * }
  */
 export async function addFavorite(req: Request, res: Response) {
-	try {
-		const userId = requireAuth(req, res);
-		if (!userId) return; // Error response already sent
+  try {
+    const userId = requireAuth(req, res);
+    if (!userId) return; // Error response already sent
 
-		const serviceId = Number(req.params.serviceId);
-		if (!Number.isFinite(serviceId)) {
-			return res.status(400).json({ message: "Invalid service ID" });
-		}
+    const serviceId = Number(req.params.serviceId);
+    if (!Number.isFinite(serviceId)) {
+      return res.status(400).json({ message: 'Invalid service ID' });
+    }
 
-		// Verify service exists
-		const service = await Service.findByPk(serviceId);
-		if (!service) {
-			return sendNotFoundError(res, "Service not found");
-		}
+    // Verify service exists
+    const service = await Service.findByPk(serviceId);
+    if (!service) {
+      return sendNotFoundError(res, 'Service not found');
+    }
 
-		// Check if already favorited
-		const existing = await Favorite.findOne({
-			where: { userId, serviceId },
-		});
+    // Check if already favorited
+    const existing = await Favorite.findOne({
+      where: { userId, serviceId },
+    });
 
-		if (existing) {
-			return sendConflictError(res, "Service already in favorites");
-		}
+    if (existing) {
+      return sendConflictError(res, 'Service already in favorites');
+    }
 
-		// Create favorite
-		const favorite = await Favorite.create({ userId, serviceId });
-		res.status(201).json({
-			id: favorite.id,
-			serviceId: favorite.serviceId,
-			createdAt: favorite.createdAt,
-		});
-	} catch (err) {
-		handleControllerError(err, res);
-	}
+    // Create favorite
+    const favorite = await Favorite.create({ userId, serviceId });
+    res.status(201).json({
+      id: favorite.id,
+      serviceId: favorite.serviceId,
+      createdAt: favorite.createdAt,
+    });
+  } catch (err) {
+    handleControllerError(err, res);
+  }
 }
 
 /**
@@ -136,29 +136,29 @@ export async function addFavorite(req: Request, res: Response) {
  * // Response: 204 No Content
  */
 export async function removeFavorite(req: Request, res: Response) {
-	try {
-		const userId = requireAuth(req, res);
-		if (!userId) return; // Error response already sent
+  try {
+    const userId = requireAuth(req, res);
+    if (!userId) return; // Error response already sent
 
-		const serviceId = Number(req.params.serviceId);
-		if (!Number.isFinite(serviceId)) {
-			return res.status(400).json({ message: "Invalid service ID" });
-		}
+    const serviceId = Number(req.params.serviceId);
+    if (!Number.isFinite(serviceId)) {
+      return res.status(400).json({ message: 'Invalid service ID' });
+    }
 
-		// Find and delete favorite
-		const favorite = await Favorite.findOne({
-			where: { userId, serviceId },
-		});
+    // Find and delete favorite
+    const favorite = await Favorite.findOne({
+      where: { userId, serviceId },
+    });
 
-		if (!favorite) {
-			return sendNotFoundError(res, "Favorite not found");
-		}
+    if (!favorite) {
+      return sendNotFoundError(res, 'Favorite not found');
+    }
 
-		await favorite.destroy();
-		res.status(204).send();
-	} catch (err) {
-		handleControllerError(err, res);
-	}
+    await favorite.destroy();
+    res.status(204).send();
+  } catch (err) {
+    handleControllerError(err, res);
+  }
 }
 
 /**
@@ -183,21 +183,21 @@ export async function removeFavorite(req: Request, res: Response) {
  * }
  */
 export async function checkFavorite(req: Request, res: Response) {
-	try {
-		const userId = requireAuth(req, res);
-		if (!userId) return; // Error response already sent
+  try {
+    const userId = requireAuth(req, res);
+    if (!userId) return; // Error response already sent
 
-		const serviceId = Number(req.params.serviceId);
-		if (!Number.isFinite(serviceId)) {
-			return res.status(400).json({ message: "Invalid service ID" });
-		}
+    const serviceId = Number(req.params.serviceId);
+    if (!Number.isFinite(serviceId)) {
+      return res.status(400).json({ message: 'Invalid service ID' });
+    }
 
-		const favorite = await Favorite.findOne({
-			where: { userId, serviceId },
-		});
+    const favorite = await Favorite.findOne({
+      where: { userId, serviceId },
+    });
 
-		res.json({ isFavorited: !!favorite });
-	} catch (err) {
-		handleControllerError(err, res);
-	}
+    res.json({ isFavorited: !!favorite });
+  } catch (err) {
+    handleControllerError(err, res);
+  }
 }

@@ -7,164 +7,164 @@
  * @since 1.0.0
  */
 
-import path from "node:path";
+import path from 'node:path';
 // // express app, middleware, routes wiring
-import express, { type Application } from "express";
-import { env } from "./config/env.js";
-import { sequelize } from "./config/sequelize.js";
-import { winstonLogger } from "./config/winston.js";
-import * as HealthController from "./controllers/health.controller.js";
-import { applyCompression } from "./middleware/compression.js";
-import { applyETag } from "./middleware/etag.js";
-import { metricsMiddleware } from "./middleware/metrics.js";
-import { morganMiddleware } from "./middleware/morganLogger.js";
+import express, { type Application } from 'express';
+import { env } from './config/env.js';
+import { sequelize } from './config/sequelize.js';
+import { winstonLogger } from './config/winston.js';
+import * as HealthController from './controllers/health.controller.js';
+import { applyCompression } from './middleware/compression.js';
+import { applyETag } from './middleware/etag.js';
+import { metricsMiddleware } from './middleware/metrics.js';
+import { morganMiddleware } from './middleware/morganLogger.js';
 import {
-	requestPerformanceMiddleware,
-	setupQueryPerformanceMonitoring,
-} from "./middleware/queryPerformance.js";
-import { perUserLimiter } from "./middleware/rateLimit.js";
-import { requestIdMiddleware } from "./middleware/requestId.js";
-import { requestResponseLoggingMiddleware } from "./middleware/requestResponseLogging.js";
-import { sanitizeInput } from "./middleware/sanitize.js";
-import { applySecurity } from "./middleware/security.js";
-import { ROOT_UPLOAD_DIR_ABS, UPLOADS_PUBLIC_PATH } from "./middleware/upload.js";
-import v1Routes from "./routes/v1/index.js";
-import { getMetrics, register } from "./services/metrics.service.js";
+  requestPerformanceMiddleware,
+  setupQueryPerformanceMonitoring,
+} from './middleware/queryPerformance.js';
+import { perUserLimiter } from './middleware/rateLimit.js';
+import { requestIdMiddleware } from './middleware/requestId.js';
+import { requestResponseLoggingMiddleware } from './middleware/requestResponseLogging.js';
+import { sanitizeInput } from './middleware/sanitize.js';
+import { applySecurity } from './middleware/security.js';
+import { ROOT_UPLOAD_DIR_ABS, UPLOADS_PUBLIC_PATH } from './middleware/upload.js';
+import v1Routes from './routes/v1/index.js';
+import { getMetrics, register } from './services/metrics.service.js';
 
 // Build Express app (no network listeners here)
 export function createApp(): Application {
-	const app = express();
+  const app = express();
 
-	// Setup query performance monitoring
-	setupQueryPerformanceMonitoring();
+  // Setup query performance monitoring
+  setupQueryPerformanceMonitoring();
 
-	// Request ID middleware - should be first to track all requests
-	app.use(requestIdMiddleware);
+  // Request ID middleware - should be first to track all requests
+  app.use(requestIdMiddleware);
 
-	// Request performance monitoring
-	app.use(requestPerformanceMiddleware);
+  // Request performance monitoring
+  app.use(requestPerformanceMiddleware);
 
-	// Prometheus metrics middleware (if enabled)
-	if (env.METRICS_ENABLED) {
-		app.use(metricsMiddleware);
-	}
+  // Prometheus metrics middleware (if enabled)
+  if (env.METRICS_ENABLED) {
+    app.use(metricsMiddleware);
+  }
 
-	// Request/response logging middleware (if enabled)
-	app.use(requestResponseLoggingMiddleware);
+  // Request/response logging middleware (if enabled)
+  app.use(requestResponseLoggingMiddleware);
 
-	// Use Winston + Morgan for HTTP request logging
-	app.use(morganMiddleware);
+  // Use Winston + Morgan for HTTP request logging
+  app.use(morganMiddleware);
 
-	applySecurity(app);
+  applySecurity(app);
 
-	// Apply compression (gzip/brotli) - should be early in the middleware chain
-	applyCompression(app);
+  // Apply compression (gzip/brotli) - should be early in the middleware chain
+  applyCompression(app);
 
-	// Apply ETag for conditional requests
-	applyETag(app);
+  // Apply ETag for conditional requests
+  applyETag(app);
 
-	// JSON body parser - skip for multipart/form-data (handled by multer)
-	app.use((req, res, next) => {
-		const contentType = req.get("content-type") || "";
-		// Skip JSON parsing for multipart/form-data requests (file uploads)
-		if (contentType.includes("multipart/form-data")) {
-			return next();
-		}
-		express.json({ limit: env.BODY_PARSER_LIMIT })(req, res, next);
-	});
+  // JSON body parser - skip for multipart/form-data (handled by multer)
+  app.use((req, res, next) => {
+    const contentType = req.get('content-type') || '';
+    // Skip JSON parsing for multipart/form-data requests (file uploads)
+    if (contentType.includes('multipart/form-data')) {
+      return next();
+    }
+    express.json({ limit: env.BODY_PARSER_LIMIT })(req, res, next);
+  });
 
-	// Input sanitization middleware - sanitize all user inputs to prevent XSS
-	// Must be after body parser but before routes
-	app.use(sanitizeInput);
+  // Input sanitization middleware - sanitize all user inputs to prevent XSS
+  // Must be after body parser but before routes
+  app.use(sanitizeInput);
 
-	// Serve uploaded files as static content
-	app.use(
-		UPLOADS_PUBLIC_PATH,
-		express.static(ROOT_UPLOAD_DIR_ABS, {
-			fallthrough: true,
-			setHeaders(res, filePath) {
-				// Allow cross-origin embedding of uploaded images (client runs on a different origin in dev)
-				// Override helmet's Cross-Origin-Resource-Policy for this route.
-				res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
-				// Permit any origin to fetch these assets (images are public by definition). This is safe for static images.
-				res.setHeader("Access-Control-Allow-Origin", "*");
-				// Basic security: no sniffing
-				res.setHeader("X-Content-Type-Options", "nosniff");
-				if (path.extname(filePath).match(/\.(png|jpe?g|gif|webp|svg)$/i)) {
-					res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
-				}
-			},
-		}),
-	);
+  // Serve uploaded files as static content
+  app.use(
+    UPLOADS_PUBLIC_PATH,
+    express.static(ROOT_UPLOAD_DIR_ABS, {
+      fallthrough: true,
+      setHeaders(res, filePath) {
+        // Allow cross-origin embedding of uploaded images (client runs on a different origin in dev)
+        // Override helmet's Cross-Origin-Resource-Policy for this route.
+        res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+        // Permit any origin to fetch these assets (images are public by definition). This is safe for static images.
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        // Basic security: no sniffing
+        res.setHeader('X-Content-Type-Options', 'nosniff');
+        if (path.extname(filePath).match(/\.(png|jpe?g|gif|webp|svg)$/i)) {
+          res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+        }
+      },
+    })
+  );
 
-	// Prometheus metrics endpoint
-	if (env.METRICS_ENABLED) {
-		app.get("/metrics", async (_req, res) => {
-			try {
-				res.setHeader("Content-Type", register.contentType);
-				const metrics = await getMetrics();
-				res.end(metrics);
-			} catch (err) {
-				winstonLogger.error(`Error generating metrics: ${err}`);
-				res.status(500).end();
-			}
-		});
-	}
+  // Prometheus metrics endpoint
+  if (env.METRICS_ENABLED) {
+    app.get('/metrics', async (_req, res) => {
+      try {
+        res.setHeader('Content-Type', register.contentType);
+        const metrics = await getMetrics();
+        res.end(metrics);
+      } catch (err) {
+        winstonLogger.error(`Error generating metrics: ${err}`);
+        res.status(500).end();
+      }
+    });
+  }
 
-	// API versioning - v1 routes (primary)
-	// Use per-user rate limiting: authenticated users get higher limits, unauthenticated users use IP-based limits
-	app.use("/api/v1", perUserLimiter, v1Routes);
+  // API versioning - v1 routes (primary)
+  // Use per-user rate limiting: authenticated users get higher limits, unauthenticated users use IP-based limits
+  app.use('/api/v1', perUserLimiter, v1Routes);
 
-	// Legacy API routes (backward compatibility - mount same routes at /api)
-	// This ensures /api/* still works for existing frontend clients
-	app.use("/api", perUserLimiter, v1Routes);
+  // Legacy API routes (backward compatibility - mount same routes at /api)
+  // This ensures /api/* still works for existing frontend clients
+  app.use('/api', perUserLimiter, v1Routes);
 
-	app.get("/db-status", async (_req, res) => {
-		try {
-			await sequelize.authenticate();
-			res.status(200).json({ status: "connected" });
-		} catch (err) {
-			res.status(500).json({ status: "disconnected", error: (err as Error).message });
-		}
-	});
+  app.get('/db-status', async (_req, res) => {
+    try {
+      await sequelize.authenticate();
+      res.status(200).json({ status: 'connected' });
+    } catch (err) {
+      res.status(500).json({ status: 'disconnected', error: (err as Error).message });
+    }
+  });
 
-	// Enhanced health check endpoint
-	app.get("/health", HealthController.healthCheck);
+  // Enhanced health check endpoint
+  app.get('/health', HealthController.healthCheck);
 
-	// 404 handler with structured error response
-	app.use((req, res) => {
-		const requestId = res.getHeader("X-Request-ID") as string | undefined;
-		res.status(404).json({
-			error: {
-				code: "NOT_FOUND",
-				message: "Not Found",
-				requestId,
-				timestamp: new Date().toISOString(),
-				path: req.path,
-			},
-		});
-	});
+  // 404 handler with structured error response
+  app.use((req, res) => {
+    const requestId = res.getHeader('X-Request-ID') as string | undefined;
+    res.status(404).json({
+      error: {
+        code: 'NOT_FOUND',
+        message: 'Not Found',
+        requestId,
+        timestamp: new Date().toISOString(),
+        path: req.path,
+      },
+    });
+  });
 
-	// Global error handler
-	app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
-		const requestId = res.getHeader("X-Request-ID") as string | undefined;
-		winstonLogger.error(
-			`Unhandled error in request pipeline [${requestId || "unknown"}]: ${err instanceof Error ? err.message : String(err)}`,
-		);
+  // Global error handler
+  app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+    const requestId = res.getHeader('X-Request-ID') as string | undefined;
+    winstonLogger.error(
+      `Unhandled error in request pipeline [${requestId || 'unknown'}]: ${err instanceof Error ? err.message : String(err)}`
+    );
 
-		// Use structured error response
-		const errorResponse = {
-			error: {
-				code: "INTERNAL_ERROR",
-				message: "Internal server error",
-				requestId,
-				timestamp: new Date().toISOString(),
-				path: _req.path,
-			},
-		};
+    // Use structured error response
+    const errorResponse = {
+      error: {
+        code: 'INTERNAL_ERROR',
+        message: 'Internal server error',
+        requestId,
+        timestamp: new Date().toISOString(),
+        path: _req.path,
+      },
+    };
 
-		res.status(500).json(errorResponse);
-	});
+    res.status(500).json(errorResponse);
+  });
 
-	return app;
+  return app;
 }

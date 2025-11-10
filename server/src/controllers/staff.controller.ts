@@ -4,33 +4,24 @@
  * @version 1.0.0
  */
 
-import type { Request, Response } from "express";
-import { z } from "zod";
-import { invalidateCache } from "../middleware/cache.js";
-import { logCreate, logDelete, logUpdate, logUpload } from "../services/audit.service.js";
-import * as staffService from "../services/staff.service.js";
+import type { Request, Response } from 'express';
+import { invalidateCache } from '../middleware/cache.js';
+import { logCreate, logDelete, logUpdate, logUpload } from '../services/audit.service.js';
+import * as staffService from '../services/staff.service.js';
 import {
-	deleteOldUpload,
-	generatePublicUrl,
-	getUploadedFilename,
-} from "../services/upload.service.js";
+  deleteOldUpload,
+  generatePublicUrl,
+  getUploadedFilename,
+} from '../services/upload.service.js';
 import type {
-	CreateStaffRequest,
-	FileUploadRequest,
-	UpdateStaffRequest,
-} from "../types/requests.js";
-import { sendNotFoundError, sendValidationError } from "../utils/errorResponse.js";
-import { handleControllerError } from "../utils/errors.js";
-import { createPaginationResponse } from "../utils/responses.js";
-import { findByIdOr404, parseIdParam } from "../utils/validation.js";
-
-const staffSchema = z.object({
-	name: z.string().min(1),
-	role: z.string().optional().default("Staff"),
-	bio: z.string().optional().default(""),
-	photoUrl: z.string().url().optional().default(""),
-	active: z.boolean().optional().default(true),
-});
+  CreateStaffRequest,
+  FileUploadRequest,
+  UpdateStaffRequest,
+} from '../types/requests.js';
+import { sendNotFoundError, sendValidationError } from '../utils/errorResponse.js';
+import { handleControllerError } from '../utils/errors.js';
+import { createPaginationResponse } from '../utils/responses.js';
+import { findByIdOr404, parseIdParam } from '../utils/validation.js';
 
 /**
  * @route GET /api/staff
@@ -64,24 +55,24 @@ const staffSchema = z.object({
  * }
  */
 export async function listStaff(req: Request, res: Response) {
-	try {
-		const query = req.query as { page?: number; limit?: number };
-		const { page = 1, limit = 20 } = query;
+  try {
+    const query = req.query as { page?: number; limit?: number };
+    const { page = 1, limit = 20 } = query;
 
-		const {
-			staff,
-			total,
-			page: actualPage,
-			limit: actualLimit,
-		} = await staffService.listStaff(page, limit);
+    const {
+      staff,
+      total,
+      page: actualPage,
+      limit: actualLimit,
+    } = await staffService.listStaff(page, limit);
 
-		res.json({
-			data: staff,
-			pagination: createPaginationResponse(actualPage, actualLimit, total),
-		});
-	} catch (err) {
-		handleControllerError(err, res);
-	}
+    res.json({
+      data: staff,
+      pagination: createPaginationResponse(actualPage, actualLimit, total),
+    });
+  } catch (err) {
+    handleControllerError(err, res);
+  }
 }
 
 /**
@@ -96,14 +87,14 @@ export async function listStaff(req: Request, res: Response) {
  * @returns {Object} 400 - Invalid ID format
  */
 export async function getStaffById(req: Request, res: Response) {
-	try {
-		const s = await findByIdOr404(req, res, (id) => staffService.getStaffById(id));
-		if (!s) return; // Error response already sent
+  try {
+    const s = await findByIdOr404(req, res, (id) => staffService.getStaffById(id));
+    if (!s) return; // Error response already sent
 
-		res.json(s);
-	} catch (err) {
-		handleControllerError(err, res);
-	}
+    res.json(s);
+  } catch (err) {
+    handleControllerError(err, res);
+  }
 }
 
 /**
@@ -123,22 +114,22 @@ export async function getStaffById(req: Request, res: Response) {
  * @returns {Object} 403 - Forbidden (not admin)
  */
 export async function createStaff(req: Request, res: Response) {
-	try {
-		const body = req.body as CreateStaffRequest;
-		const s = await staffService.createStaff(body);
+  try {
+    const body = req.body as CreateStaffRequest;
+    const s = await staffService.createStaff(body);
 
-		// Invalidate cache for staff list
-		await invalidateCache("staff");
+    // Invalidate cache for staff list
+    await invalidateCache('staff');
 
-		// Log audit event
-		await logCreate(req, "staff", s.id, `Created staff member: ${s.name}`, s.toJSON());
+    // Log audit event
+    await logCreate(req, 'staff', s.id, `Created staff member: ${s.name}`, s.toJSON());
 
-		res.status(201).json(s);
-	} catch (err) {
-		handleControllerError(err, res, {
-			uniqueConstraintMessage: "Duplicate entry",
-		});
-	}
+    res.status(201).json(s);
+  } catch (err) {
+    handleControllerError(err, res, {
+      uniqueConstraintMessage: 'Duplicate entry',
+    });
+  }
 }
 
 /**
@@ -156,35 +147,35 @@ export async function createStaff(req: Request, res: Response) {
  * @returns {Object} 404 - Staff member not found
  */
 export async function updateStaff(req: Request, res: Response) {
-	try {
-		const id = parseIdParam(req, res);
-		if (id === null) return; // Error response already sent
+  try {
+    const id = parseIdParam(req, res);
+    if (id === null) return; // Error response already sent
 
-		// Get previous state before update
-		const existingStaff = await staffService.getStaffById(id);
-		if (!existingStaff) return sendNotFoundError(res);
-		const previousState = existingStaff.toJSON();
+    // Get previous state before update
+    const existingStaff = await staffService.getStaffById(id);
+    if (!existingStaff) return sendNotFoundError(res);
+    const previousState = existingStaff.toJSON();
 
-		const body = req.body as UpdateStaffRequest;
-		const s = await staffService.updateStaff(id, body);
-		if (!s) return sendNotFoundError(res);
+    const body = req.body as UpdateStaffRequest;
+    const s = await staffService.updateStaff(id, body);
+    if (!s) return sendNotFoundError(res);
 
-		// Reload to get updated state
-		await s.reload();
-		const newState = s.toJSON();
+    // Reload to get updated state
+    await s.reload();
+    const newState = s.toJSON();
 
-		// Invalidate cache for this staff member and list
-		await invalidateCache("staff", id);
+    // Invalidate cache for this staff member and list
+    await invalidateCache('staff', id);
 
-		// Log audit event
-		await logUpdate(req, "staff", id, `Updated staff member: ${s.name}`, previousState, newState);
+    // Log audit event
+    await logUpdate(req, 'staff', id, `Updated staff member: ${s.name}`, previousState, newState);
 
-		res.json(s);
-	} catch (err) {
-		handleControllerError(err, res, {
-			uniqueConstraintMessage: "Duplicate entry",
-		});
-	}
+    res.json(s);
+  } catch (err) {
+    handleControllerError(err, res, {
+      uniqueConstraintMessage: 'Duplicate entry',
+    });
+  }
 }
 
 /**
@@ -201,29 +192,29 @@ export async function updateStaff(req: Request, res: Response) {
  * @returns {Object} 404 - Staff member not found
  */
 export async function deleteStaff(req: Request, res: Response) {
-	try {
-		const id = parseIdParam(req, res);
-		if (id === null) return; // Error response already sent
+  try {
+    const id = parseIdParam(req, res);
+    if (id === null) return; // Error response already sent
 
-		// Get staff before deletion for audit log
-		const s = await staffService.getStaffById(id);
-		if (!s) return sendNotFoundError(res);
+    // Get staff before deletion for audit log
+    const s = await staffService.getStaffById(id);
+    if (!s) return sendNotFoundError(res);
 
-		const previousState = s.toJSON();
+    const previousState = s.toJSON();
 
-		// Delete staff member
-		await staffService.deleteStaff(id);
+    // Delete staff member
+    await staffService.deleteStaff(id);
 
-		// Invalidate cache for this staff member and list
-		await invalidateCache("staff", id);
+    // Invalidate cache for this staff member and list
+    await invalidateCache('staff', id);
 
-		// Log audit event
-		await logDelete(req, "staff", id, `Deleted staff member: ${s.name}`, previousState);
+    // Log audit event
+    await logDelete(req, 'staff', id, `Deleted staff member: ${s.name}`, previousState);
 
-		res.status(204).send();
-	} catch (err) {
-		handleControllerError(err, res);
-	}
+    res.status(204).send();
+  } catch (err) {
+    handleControllerError(err, res);
+  }
 }
 
 /**
@@ -250,32 +241,32 @@ export async function deleteStaff(req: Request, res: Response) {
  * }
  */
 export async function uploadStaffPhoto(req: Request, res: Response) {
-	try {
-		const id = parseIdParam(req, res);
-		if (id === null) return; // Error response already sent
+  try {
+    const id = parseIdParam(req, res);
+    if (id === null) return; // Error response already sent
 
-		const filename = getUploadedFilename((req as unknown as FileUploadRequest).file);
-		if (!filename) {
-			return sendValidationError(res, "No file uploaded");
-		}
+    const filename = getUploadedFilename((req as unknown as FileUploadRequest).file);
+    if (!filename) {
+      return sendValidationError(res, 'No file uploaded');
+    }
 
-		const s = await staffService.getStaffById(id);
-		if (!s) return sendNotFoundError(res);
+    const s = await staffService.getStaffById(id);
+    if (!s) return sendNotFoundError(res);
 
-		// Delete old photo if it exists
-		await deleteOldUpload(s.photoUrl);
+    // Delete old photo if it exists
+    await deleteOldUpload(s.photoUrl);
 
-		const publicUrl = generatePublicUrl(filename, "staff");
-		await staffService.updateStaffPhotoUrl(id, publicUrl);
+    const publicUrl = generatePublicUrl(filename, 'staff');
+    await staffService.updateStaffPhotoUrl(id, publicUrl);
 
-		// Invalidate cache for this staff member
-		await invalidateCache("staff", id);
+    // Invalidate cache for this staff member
+    await invalidateCache('staff', id);
 
-		// Log audit event
-		await logUpload(req, "staff", id, `Uploaded photo for staff member: ${s.name}`);
+    // Log audit event
+    await logUpload(req, 'staff', id, `Uploaded photo for staff member: ${s.name}`);
 
-		res.status(200).json({ id, photoUrl: publicUrl });
-	} catch (err) {
-		handleControllerError(err, res);
-	}
+    res.status(200).json({ id, photoUrl: publicUrl });
+  } catch (err) {
+    handleControllerError(err, res);
+  }
 }

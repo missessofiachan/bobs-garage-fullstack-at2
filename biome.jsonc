@@ -1,7 +1,9 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
-  "organizeImports": {
-    "enabled": true
+  "$schema": "https://biomejs.dev/schemas/2.3.4/schema.json",
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
   },
   "linter": {
     "enabled": true,
@@ -16,11 +18,17 @@
       },
       "style": {
         "noNonNullAssertion": "off",
-        "useNodejsImportProtocol": "off"
+        "useNodejsImportProtocol": "on",
+        "useImportType": "on",
+        "useConst": "warn",
+        "noParameterAssign": "warn"
       },
       "correctness": {
         "useExhaustiveDependencies": "warn",
-        "noUnusedVariables": "warn"
+        "noUnusedVariables": "warn",
+        "noUnusedImports": "warn",
+        "noUnusedFunctionParameters": "warn",
+        "noUndeclaredVariables": "warn"
       },
       "a11y": {
         "useKeyWithClickEvents": "warn",
@@ -37,6 +45,9 @@
     "lineEnding": "lf"
   },
   "javascript": {
+    "parser": {
+      "unsafeParameterDecoratorsEnabled": true
+    },
     "formatter": {
       "jsxQuoteStyle": "double",
       "quoteProperties": "asNeeded",
@@ -55,30 +66,44 @@
       "indentWidth": 2
     }
   },
+  "css": {
+    "formatter": {
+      "enabled": true,
+      "indentWidth": 2
+    }
+  },
+  "html": {
+    "formatter": {
+      "enabled": true,
+      "indentWidth": 2,
+      "lineWidth": 100
+    }
+  },
   "files": {
     "ignoreUnknown": false,
-    "ignore": [
-      "node_modules",
-      "dist",
-      "build",
-      "coverage",
-      ".next",
-      ".cache",
-      "*.min.js",
-      "*.min.css",
-      "package-lock.json",
-      "yarn.lock",
-      "client/dist",
-      "client/build",
-      "server/dist",
-      "docs/jsdoc",
-      "tsconfig*.json",
-      ".vscode/tasks.json"
+    "includes": [
+      "**",
+      "!!**/node_modules",
+      "!!**/dist",
+      "!!**/build",
+      "!!**/coverage",
+      "!!**/.next",
+      "!!**/.cache",
+      "!!**/*.min.js",
+      "!!**/*.min.css",
+      "!!**/package-lock.json",
+      "!!**/yarn.lock",
+      "!!**/client/dist",
+      "!!**/client/build",
+      "!!**/server/dist",
+      "!!**/docs/jsdoc",
+      "!!**/tsconfig*.json",
+      "!!**/.vscode/tasks.json"
     ]
   },
   "overrides": [
     {
-      "include": ["*.test.ts", "*.test.tsx", "*.spec.ts", "*.spec.tsx"],
+      "includes": ["*.test.ts", "*.test.tsx", "*.spec.ts", "*.spec.tsx"],
       "linter": {
         "rules": {
           "suspicious": {
@@ -88,12 +113,30 @@
       }
     },
     {
-      "include": ["server/**/*.ts"],
+      "includes": ["server/**/*.ts"],
       "linter": {
         "rules": {
           "style": {
             "noParameterAssign": "off"
           }
+        }
+      }
+    },
+    {
+      "includes": ["**/*.test.ts", "**/*.spec.ts"],
+      "linter": {
+        "rules": {
+          "correctness": {
+            "useExhaustiveDependencies": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["**/*.css"],
+      "css": {
+        "linter": {
+          "enabled": false
         }
       }
     }

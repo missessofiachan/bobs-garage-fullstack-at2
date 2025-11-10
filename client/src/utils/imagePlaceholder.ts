@@ -9,8 +9,8 @@
  * Can be used for services, staff, or any other missing images
  */
 export const IMAGE_PLACEHOLDER =
-	"data:image/svg+xml;utf8," +
-	encodeURIComponent(`
+  'data:image/svg+xml;utf8,' +
+  encodeURIComponent(`
 		<svg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'>
 			<rect width='100%' height='100%' fill='#dee2e6'/>
 			<g fill='#6c757d' font-family='Arial, Helvetica, sans-serif' font-size='20' font-weight='500'>
@@ -26,18 +26,18 @@ export const IMAGE_PLACEHOLDER =
  * @returns The image URL or placeholder if no image is provided
  */
 export function getImageSrc(imageUrl: string | undefined | null, baseUrl?: string): string {
-	if (!imageUrl || imageUrl.trim() === "") {
-		return IMAGE_PLACEHOLDER;
-	}
+  if (!imageUrl || imageUrl.trim() === '') {
+    return IMAGE_PLACEHOLDER;
+  }
 
-	if (imageUrl.startsWith("http")) {
-		return imageUrl;
-	}
+  if (imageUrl.startsWith('http')) {
+    return imageUrl;
+  }
 
-	if (baseUrl) {
-		const separator = imageUrl.startsWith("/") ? "" : "/";
-		return `${baseUrl}${separator}${imageUrl}`;
-	}
+  if (baseUrl) {
+    const separator = imageUrl.startsWith('/') ? '' : '/';
+    return `${baseUrl}${separator}${imageUrl}`;
+  }
 
-	return imageUrl;
+  return imageUrl;
 }

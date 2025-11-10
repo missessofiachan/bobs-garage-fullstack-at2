@@ -4,17 +4,17 @@
  * @version 1.0.0
  */
 
-import { z } from "zod";
+import { z } from 'zod';
 
 export const registerSchema = z.object({
-	email: z.string().email(),
-	password: z.string().min(8),
+  email: z.string().email(),
+  password: z.string().min(8),
 });
 
 export const loginSchema = z.object({
-	email: z.string().email(),
-	password: z.string().min(1),
-	rememberMe: z.boolean().optional(),
+  email: z.string().email(),
+  password: z.string().min(1),
+  rememberMe: z.boolean().optional(),
 });
 
 export default { registerSchema, loginSchema };

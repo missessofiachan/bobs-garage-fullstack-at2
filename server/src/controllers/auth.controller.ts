@@ -7,11 +7,11 @@
  * @since 1.0.0
  */
 
-import type { Request, Response } from "express";
-import { env } from "../config/env.js";
-import * as authService from "../services/auth.service.js";
-import type { LoginRequest, RegisterRequest } from "../types/requests.js";
-import { handleControllerError } from "../utils/errors.js";
+import type { Request, Response } from 'express';
+import { env } from '../config/env.js';
+import * as authService from '../services/auth.service.js';
+import type { LoginRequest, RegisterRequest } from '../types/requests.js';
+import { handleControllerError } from '../utils/errors.js';
 
 /**
  * @route POST /api/auth/register
@@ -39,16 +39,16 @@ import { handleControllerError } from "../utils/errors.js";
  * }
  */
 export async function register(req: Request, res: Response) {
-	try {
-		const { email, password } = req.body as RegisterRequest;
-		const user = await authService.registerUser(email, password);
-		res.status(201).json(user);
-	} catch (err) {
-		handleControllerError(err, res, {
-			uniqueConstraintMessage: "Email already registered",
-			developmentErrorDetails: true,
-		});
-	}
+  try {
+    const { email, password } = req.body as RegisterRequest;
+    const user = await authService.registerUser(email, password);
+    res.status(201).json(user);
+  } catch (err) {
+    handleControllerError(err, res, {
+      uniqueConstraintMessage: 'Email already registered',
+      developmentErrorDetails: true,
+    });
+  }
 }
 
 /**
@@ -79,31 +79,31 @@ export async function register(req: Request, res: Response) {
  * // Cookie expires in 90 days if rememberMe is true, otherwise 7 days
  */
 export async function login(req: Request, res: Response) {
-	try {
-		const { email, password, rememberMe } = req.body as LoginRequest;
-		const result = await authService.loginUser(email, password);
+  try {
+    const { email, password, rememberMe } = req.body as LoginRequest;
+    const result = await authService.loginUser(email, password);
 
-		if (!result) {
-			return res.status(401).json({ message: "Invalid credentials" });
-		}
+    if (!result) {
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
 
-		const isProd = env.NODE_ENV === "production";
-		// Set cookie expiration based on rememberMe flag
-		// Default: 7 days, Remember Me: 90 days
-		const maxAge = rememberMe ? 90 * 24 * 60 * 60 * 1000 : 7 * 24 * 60 * 60 * 1000;
+    const isProd = env.NODE_ENV === 'production';
+    // Set cookie expiration based on rememberMe flag
+    // Default: 7 days, Remember Me: 90 days
+    const maxAge = rememberMe ? 90 * 24 * 60 * 60 * 1000 : 7 * 24 * 60 * 60 * 1000;
 
-		res
-			.cookie("refresh_token", result.refresh, {
-				httpOnly: true,
-				secure: isProd,
-				sameSite: "lax",
-				path: "/api", // Allow cookie to be sent to all API endpoints
-				maxAge,
-			})
-			.json({ access: result.access });
-	} catch (err) {
-		handleControllerError(err, res, { developmentErrorDetails: true });
-	}
+    res
+      .cookie('refresh_token', result.refresh, {
+        httpOnly: true,
+        secure: isProd,
+        sameSite: 'lax',
+        path: '/api', // Allow cookie to be sent to all API endpoints
+        maxAge,
+      })
+      .json({ access: result.access });
+  } catch (err) {
+    handleControllerError(err, res, { developmentErrorDetails: true });
+  }
 }
 
 /**
@@ -122,19 +122,19 @@ export async function login(req: Request, res: Response) {
  * }
  */
 export async function refresh(req: Request, res: Response) {
-	try {
-		const token = req.cookies?.refresh_token;
-		if (!token) return res.status(401).json({ message: "No refresh token" });
+  try {
+    const token = req.cookies?.refresh_token;
+    if (!token) return res.status(401).json({ message: 'No refresh token' });
 
-		const access = await authService.refreshAccessToken(token);
-		res.json({ access });
-	} catch (err) {
-		// Handle refresh token errors
-		if (err instanceof Error && err.message === "Invalid or expired refresh token") {
-			return res.status(401).json({ message: err.message });
-		}
-		handleControllerError(err, res, { developmentErrorDetails: true });
-	}
+    const access = await authService.refreshAccessToken(token);
+    res.json({ access });
+  } catch (err) {
+    // Handle refresh token errors
+    if (err instanceof Error && err.message === 'Invalid or expired refresh token') {
+      return res.status(401).json({ message: err.message });
+    }
+    handleControllerError(err, res, { developmentErrorDetails: true });
+  }
 }
 
 /**
@@ -151,16 +151,16 @@ export async function refresh(req: Request, res: Response) {
  *   "message": "Logged out successfully"
  * }
  */
-export async function logout(req: Request, res: Response) {
-	const isProd = env.NODE_ENV === "production";
-	// Clear the refresh token cookie
-	res
-		.cookie("refresh_token", "", {
-			httpOnly: true,
-			secure: isProd,
-			sameSite: "lax",
-			path: "/api",
-			maxAge: 0, // Immediately expire the cookie
-		})
-		.json({ message: "Logged out successfully" });
+export async function logout(_req: Request, res: Response) {
+  const isProd = env.NODE_ENV === 'production';
+  // Clear the refresh token cookie
+  res
+    .cookie('refresh_token', '', {
+      httpOnly: true,
+      secure: isProd,
+      sameSite: 'lax',
+      path: '/api',
+      maxAge: 0, // Immediately expire the cookie
+    })
+    .json({ message: 'Logged out successfully' });
 }
