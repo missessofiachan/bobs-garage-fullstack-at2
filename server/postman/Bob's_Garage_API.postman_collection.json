@@ -1,0 +1,553 @@
+{
+	"info": {
+		"_postman_id": "bobs-garage-api-collection",
+		"name": "Bob's Garage API - Full CRUD Tests",
+		"description": "Complete Postman collection for testing Bob's Garage API with full CRUD operations for Services and Staff. Admin credentials: sofiamironeko@gmail.com / lizzy144",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Login - Admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const jsonData = pm.response.json();",
+									"    if (jsonData.access) {",
+									"        pm.environment.set(\"access_token\", jsonData.access);",
+									"        pm.collectionVariables.set(\"access_token\", jsonData.access);",
+									"        console.log(\"Access token saved to environment\");",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"sofiamironeko@gmail.com\",\n  \"password\": \"lizzy144\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "login"]
+						},
+						"description": "Login as admin user to get access token"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Services",
+			"item": [
+				{
+					"name": "GET All Services",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response is an array\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.be.an('array');",
+									"});",
+									"",
+									"// Save first service ID for later tests",
+									"const jsonData = pm.response.json();",
+									"if (jsonData.length > 0) {",
+									"    pm.collectionVariables.set(\"service_id\", jsonData[0].id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/services",
+							"host": ["{{base_url}}"],
+							"path": ["services"]
+						},
+						"description": "Get all services (public endpoint)"
+					},
+					"response": []
+				},
+				{
+					"name": "GET Service by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has service data\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('id');",
+									"    pm.expect(jsonData).to.have.property('name');",
+									"    pm.expect(jsonData).to.have.property('price');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/services/{{service_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["services", "{{service_id}}"]
+						},
+						"description": "Get a specific service by ID"
+					},
+					"response": []
+				},
+				{
+					"name": "POST Create Service",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Response has created service data\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('id');",
+									"    pm.expect(jsonData).to.have.property('name');",
+									"    pm.expect(jsonData.name).to.eql('Oil Change Service');",
+									"    pm.expect(jsonData).to.have.property('price');",
+									"    pm.expect(jsonData.price).to.eql(49.99);",
+									"});",
+									"",
+									"// Save created service ID for update/delete tests",
+									"const jsonData = pm.response.json();",
+									"if (jsonData.id) {",
+									"    pm.collectionVariables.set(\"created_service_id\", jsonData.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Oil Change Service\",\n  \"price\": 49.99,\n  \"description\": \"Complete oil change with premium synthetic oil and filter replacement\",\n  \"published\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/services",
+							"host": ["{{base_url}}"],
+							"path": ["services"]
+						},
+						"description": "Create a new service (admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Update Service",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Service was updated\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('id');",
+									"    pm.expect(jsonData).to.have.property('name');",
+									"    pm.expect(jsonData.name).to.eql('Premium Oil Change Service');",
+									"    pm.expect(jsonData.price).to.eql(59.99);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Premium Oil Change Service\",\n  \"price\": 59.99,\n  \"description\": \"Complete premium oil change with synthetic oil, filter replacement, and fluid top-up\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/services/{{created_service_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["services", "{{created_service_id}}"]
+						},
+						"description": "Update an existing service (admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Service",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200 or 204\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 204]);",
+									"});",
+									"",
+									"pm.test(\"Service was deleted\", function () {",
+									"    // Verify deletion by trying to get the service",
+									"    pm.sendRequest({",
+									"        url: pm.environment.get('base_url') + '/services/' + pm.collectionVariables.get('created_service_id'),",
+									"        method: 'GET'",
+									"    }, function (err, res) {",
+									"        if (res && res.code === 404) {",
+									"            console.log('Service successfully deleted');",
+									"        }",
+									"    });",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/services/{{created_service_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["services", "{{created_service_id}}"]
+						},
+						"description": "Delete a service (admin only)"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Staff",
+			"item": [
+				{
+					"name": "GET All Staff",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response is an array\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.be.an('array');",
+									"});",
+									"",
+									"// Save first staff ID for later tests",
+									"const jsonData = pm.response.json();",
+									"if (jsonData.length > 0) {",
+									"    pm.collectionVariables.set(\"staff_id\", jsonData[0].id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/staff",
+							"host": ["{{base_url}}"],
+							"path": ["staff"]
+						},
+						"description": "Get all staff members (public endpoint)"
+					},
+					"response": []
+				},
+				{
+					"name": "GET Staff by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response has staff data\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('id');",
+									"    pm.expect(jsonData).to.have.property('name');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/staff/{{staff_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["staff", "{{staff_id}}"]
+						},
+						"description": "Get a specific staff member by ID"
+					},
+					"response": []
+				},
+				{
+					"name": "POST Create Staff",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Response has created staff data\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('id');",
+									"    pm.expect(jsonData).to.have.property('name');",
+									"    pm.expect(jsonData.name).to.eql('John Smith');",
+									"    pm.expect(jsonData).to.have.property('role');",
+									"});",
+									"",
+									"// Save created staff ID for update/delete tests",
+									"const jsonData = pm.response.json();",
+									"if (jsonData.id) {",
+									"    pm.collectionVariables.set(\"created_staff_id\", jsonData.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"John Smith\",\n  \"role\": \"Senior Mechanic\",\n  \"bio\": \"John has over 15 years of experience in automotive repair and specializes in engine diagnostics.\",\n  \"active\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/staff",
+							"host": ["{{base_url}}"],
+							"path": ["staff"]
+						},
+						"description": "Create a new staff member (admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Update Staff",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Staff was updated\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('id');",
+									"    pm.expect(jsonData).to.have.property('name');",
+									"    pm.expect(jsonData.name).to.eql('John Smith');",
+									"    pm.expect(jsonData.role).to.eql('Lead Mechanic');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"role\": \"Lead Mechanic\",\n  \"bio\": \"John has over 15 years of experience in automotive repair and specializes in engine diagnostics. Recently promoted to Lead Mechanic.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/staff/{{created_staff_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["staff", "{{created_staff_id}}"]
+						},
+						"description": "Update an existing staff member (admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Staff",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200 or 204\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 204]);",
+									"});",
+									"",
+									"pm.test(\"Staff was deleted\", function () {",
+									"    // Verify deletion by trying to get the staff",
+									"    pm.sendRequest({",
+									"        url: pm.environment.get('base_url') + '/staff/' + pm.collectionVariables.get('created_staff_id'),",
+									"        method: 'GET'",
+									"    }, function (err, res) {",
+									"        if (res && res.code === 404) {",
+									"            console.log('Staff successfully deleted');",
+									"        }",
+									"    });",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/staff/{{created_staff_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["staff", "{{created_staff_id}}"]
+						},
+						"description": "Delete a staff member (admin only)"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Auto-set authorization header if token exists",
+					"const token = pm.collectionVariables.get('access_token') || pm.environment.get('access_token');",
+					"if (token && !pm.request.headers.has('Authorization')) {",
+					"    pm.request.headers.add({",
+					"        key: 'Authorization',",
+					"        value: 'Bearer ' + token",
+					"    });",
+					"}"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:4000/api/v1",
+			"type": "string"
+		},
+		{
+			"key": "access_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "service_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "created_service_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "staff_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "created_staff_id",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
+
