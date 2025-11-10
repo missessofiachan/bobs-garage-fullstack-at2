@@ -10,8 +10,8 @@ import { Alert, Button, Card, Col, Form, Image, InputGroup, Row, Table } from "r
 import { MdBuild, MdSort, MdViewList, MdViewModule } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import Autocomplete from "../components/ui/Autocomplete";
 import FavouriteButton from "../components/FavouriteButton";
+import Autocomplete from "../components/ui/Autocomplete";
 import Loading from "../components/ui/Loading";
 import usePageTitle from "../hooks/usePageTitle";
 import { useServiceFilters } from "../hooks/useServiceFilters";

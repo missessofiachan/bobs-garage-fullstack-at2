@@ -109,9 +109,7 @@ export default function Autocomplete({
 		switch (e.key) {
 			case "ArrowDown":
 				e.preventDefault();
-				setHighlightedIndex((prev) =>
-					prev < suggestions.length - 1 ? prev + 1 : prev,
-				);
+				setHighlightedIndex((prev) => (prev < suggestions.length - 1 ? prev + 1 : prev));
 				break;
 			case "ArrowUp":
 				e.preventDefault();
@@ -135,9 +133,7 @@ export default function Autocomplete({
 	// Scroll highlighted item into view
 	useEffect(() => {
 		if (highlightedIndex >= 0 && suggestionsRef.current) {
-			const highlightedElement = suggestionsRef.current.children[
-				highlightedIndex
-			] as HTMLElement;
+			const highlightedElement = suggestionsRef.current.children[highlightedIndex] as HTMLElement;
 			if (highlightedElement) {
 				highlightedElement.scrollIntoView({
 					block: "nearest",
@@ -208,10 +204,7 @@ export default function Autocomplete({
 									index === highlightedIndex
 										? "var(--bs-primary-bg-subtle)"
 										: "var(--bs-secondary-bg-subtle)",
-								borderBottom:
-									index < suggestions.length - 1
-										? "1px solid var(--bs-border-color)"
-										: "none",
+								borderBottom: index < suggestions.length - 1 ? "1px solid var(--bs-border-color)" : "none",
 							}}
 						>
 							<div className="fw-semibold" style={{ fontSize: "0.95rem" }}>
@@ -230,9 +223,7 @@ export default function Autocomplete({
 									{highlightSearch(service.description, value)}
 								</div>
 							)}
-							<div className="text-primary small mt-1">
-								{formatCurrency(service.price)}
-							</div>
+							<div className="text-primary small mt-1">{formatCurrency(service.price)}</div>
 						</div>
 					))}
 				</div>
@@ -240,4 +231,3 @@ export default function Autocomplete({
 		</div>
 	);
 }
-
