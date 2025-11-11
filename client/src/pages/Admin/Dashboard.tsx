@@ -102,7 +102,7 @@ export default function Dashboard() {
               </div>
             </Card.Body>
             <Card.Footer className="bg-transparent border-top-0 pt-0">
-              <Link to="/admin/users" className="btn btn-sm btn-outline-primary">
+              <Link to="/admin/users" className="btn btn-sm btn-primary">
                 Manage Users →
               </Link>
             </Card.Footer>
@@ -137,7 +137,7 @@ export default function Dashboard() {
               </div>
             </Card.Body>
             <Card.Footer className="bg-transparent border-top-0 pt-0">
-              <Link to="/admin/services" className="btn btn-sm btn-outline-success">
+              <Link to="/admin/services" className="btn btn-sm btn-profile">
                 Manage Services →
               </Link>
             </Card.Footer>
@@ -168,7 +168,7 @@ export default function Dashboard() {
               </div>
             </Card.Body>
             <Card.Footer className="bg-transparent border-top-0 pt-0">
-              <Link to="/admin/staff" className="btn btn-sm btn-outline-info">
+              <Link to="/admin/staff" className="btn btn-sm btn-login">
                 Manage Staff →
               </Link>
             </Card.Footer>

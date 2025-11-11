@@ -8,18 +8,40 @@ import { motion } from 'framer-motion';
 import type { MouseEvent } from 'react';
 import { Button } from 'react-bootstrap';
 import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai';
+import { Link } from 'react-router-dom';
 import { useToast } from '../components/ui/ToastProvider';
 import { useFavorites } from '../hooks/useFavorites';
 import { formatErrorMessageWithId } from '../utils/errorFormatter';
 
 export default function FavouriteButton({ id }: { id: number }) {
-  const { isFavorite, addFavorite, removeFavorite } = useFavorites();
+  const { isFavorite, addFavorite, removeFavorite, isAuthenticated } = useFavorites();
   const { notify } = useToast();
   const isFav = isFavorite(id);
 
   const handleToggle = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     event.stopPropagation();
+
+    if (!isAuthenticated) {
+      notify({
+        variant: 'secondary',
+        body: (
+          <span>
+            Please{' '}
+            <Link to="/login" className="text-decoration-none fw-semibold">
+              log in
+            </Link>{' '}
+            or{' '}
+            <Link to="/register" className="text-decoration-none fw-semibold">
+              register
+            </Link>{' '}
+            to save favourites.
+          </span>
+        ),
+      });
+      return;
+    }
+
     try {
       if (isFav) {
         await removeFavorite(id);

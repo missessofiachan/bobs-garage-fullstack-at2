@@ -1,10 +1,10 @@
-import { createContext, useCallback, useContext, useState } from 'react';
+import { createContext, type ReactNode, useCallback, useContext, useState } from 'react';
 import { Toast, ToastContainer } from 'react-bootstrap';
 
 export type ToastMsg = {
   id: number;
   title?: string;
-  body: string;
+  body: ReactNode;
   variant?: string;
   requestId?: string;
 };

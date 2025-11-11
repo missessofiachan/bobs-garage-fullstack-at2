@@ -81,11 +81,9 @@ export default function Footer() {
 
   return (
     <footer
-      className="mt-auto py-4"
+      className="mt-auto py-4 bg-body-secondary text-body"
       style={{
         borderTop: '1px solid var(--bs-border-color)',
-        backgroundColor: 'var(--bs-body-bg)',
-        color: 'var(--bs-body-color)',
       }}
     >
       <Container>

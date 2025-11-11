@@ -63,5 +63,6 @@ export function useFavorites() {
     isFavorite,
     isAdding: addFavoriteMutation.isPending,
     isRemoving: removeFavoriteMutation.isPending,
+    isAuthenticated,
   };
 }

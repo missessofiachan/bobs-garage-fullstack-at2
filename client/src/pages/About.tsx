@@ -469,7 +469,7 @@ export default function About() {
                 <Link to="/services" className="btn btn-primary btn-lg me-2 mb-2">
                   View Our Services
                 </Link>
-                <Link to="/" className="btn btn-outline-secondary btn-lg mb-2">
+                <Link to="/" className="btn btn-secondary btn-lg mb-2">
                   Back to Home
                 </Link>
               </Col>

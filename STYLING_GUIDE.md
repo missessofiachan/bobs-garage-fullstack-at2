@@ -1,166 +1,191 @@
-# 🎨 Bob's Garage Styling Guide
+Absolutely! Here is a refined, easier-to-follow version of the Bob's Garage Styling Guide, updated with the new Trans Pride-inspired colours and a cleaner layout. It keeps the same design-system philosophy (accessibility-first, type-safe, responsive) and adds a quick-start path.
 
-A comprehensive design system guide featuring a beautiful Trans Pride color scheme, accessibility-first approach, and modern CSS-in-JS architecture. Use this guide to implement the same styling system in your other projects.
+# 🎨 Bob's Garage Styling Guide 2.0
 
-## 📋 Table of Contents
-
-1. [Overview](#overview)
-2. [Color Palette](#color-palette)
-3. [Typography](#typography)
-4. [Spacing & Layout](#spacing--layout)
-5. [Theme System](#theme-system)
-6. [Layout & Structure](#layout--structure)
-7. [Component Patterns](#component-patterns)
-8. [Animation Patterns](#animation-patterns)
-9. [Accessibility Features](#accessibility-features)
-10. [Implementation Guide](#implementation-guide)
+A design system guide with a Trans Pride colour scheme, accessibility-first approach, and modern CSS-in-JS architecture. Use this guide to implement the same styling system across your projects.
 
 ---
 
-## Overview
+## Table of Contents
+
+1. Overview
+2. Colour Palette
+3. Typography
+4. Spacing & Layout
+5. Theme System
+6. Layout & Structure
+7. Component Patterns
+8. Animation Patterns
+9. Accessibility Features
+10. Implementation Guide
+11. Bootstrap Integration
+12. Best Practices
+13. Resources
+14. License
+
+---
+
+## 1) Overview
 
 This design system uses:
-- **Vanilla Extract** - Zero-runtime CSS-in-JS with TypeScript support
-- **Sprinkles** - Utility-first CSS framework built on Vanilla Extract
-- **Bootstrap 5** - Component library with custom theme overrides
-- **WCAG AA Compliant** - All colors meet accessibility standards
+- Vanilla Extract for zero-runtime CSS-in-JS with TypeScript support
+- Sprinkles for utility-first spacing and layout
+- Bootstrap 5 with theme overrides
+- WCAG AA compliant color contrasts (12.6:1 baseline targets)
 
-### Key Features
-
-- ✅ **Trans Pride Color Scheme** - Beautiful blue (#55CDFC) and pink (#F7A8B8) accents
-- ✅ **True Dark Mode** - Proper dark background (#121212) with improved contrast
-- ✅ **Accessibility First** - WCAG AA compliant with 12.6:1 contrast ratios
-- ✅ **Type-Safe** - Full TypeScript support for all design tokens
-- ✅ **Responsive** - Mobile-first breakpoint system
-- ✅ **Customizable** - Easy to adapt for different brand colors
+Key features:
+- Trans Pride colour scheme (blue and pink accents)
+- True dark mode with accessible contrast
+- Type-safe tokens and theme contracts
+- Responsive, mobile-first by default
+- Easy brand customization
 
 ---
 
-## Color Palette
+## 2) Colour Palette
 
-### Brand Colors (Trans Pride Theme)
+Brand Colours (Trans Pride Theme)
+- Primary Blue (Brand)
+  - Light Mode: #55CDFC
+  - Dark Mode:  #7DD3FC
+  - Hover (Light): #3BB5E8
+  - Hover (Dark):  #93DAFF
+- Accent Pink (Secondary)
+  - All Modes: #F7A8B8
+  - Hover (Light): #F59BB0
+  - Hover (Dark):  #F9B0C2
 
-#### Primary Blue (Brand)
-- **Light Mode**: `#55CDFC` - Trans pride flag blue
-- **Dark Mode**: `#7DD3FC` - Lighter blue for better contrast on dark background
-- **Hover**: `#3BB5E8` (light) / `#93DAFF` (dark)
+Neutral / Supporting
+- Light Theme Background: #ffffff
+- Light Text: #111827
+- Muted Text: #6b7280
+- Light Border: #e5e7eb
 
-#### Accent Pink (Secondary)
-- **All Modes**: `#F7A8B8` - Trans pride flag pink
-- **Hover**: `#F59BB0` (light) / `#F9B0C2` (dark)
+- Dark Theme Background: #121212
+- Dark Text: #f3f4f6
+- Dark Muted: #d1d5db
+- Dark Border: #374151
 
-### Neutral Colors
+Semantic Colors
+- Success: #10b981
+- Error:   #ef4444
+- Warning: #F7A8B8
+- Info:    #55CDFC
 
-#### Light Theme
-```typescript
-{
-  bg: "#ffffff",           // Main background
-  text: "#111827",         // Primary text (gray-900)
-  muted: "#6b7280",        // Secondary text (gray-500)
-  border: "#e5e7eb",       // Borders (gray-200)
-}
+Gray Scale (extended)
+- gray-50:  #f9fafb
+- gray-100: #f3f4f6
+- gray-200: #e5e7eb
+- gray-300: #d1d5db
+- gray-400: #9ca3af
+- gray-500: #6b7280
+- gray-600: #4b5563
+- gray-700: #374151
+- gray-800: #1f2937
+- gray-900: #111827
+
+Code-friendly colour tokens (TypeScript)
+```ts
+// src/styles/tokens.css.ts
+export const colors = {
+  brand: {
+    light: "#55CDFC",
+    dark:  "#7DD3FC",
+    hoverLight: "#3BB5E8",
+    hoverDark:  "#93DAFF",
+  },
+  accent: {
+    pink: "#F7A8B8",
+    pinkHoverLight: "#F59BB0",
+    pinkHoverDark:  "#F9B0C2",
+  },
+  bg: {
+    light: "#ffffff",
+    dark:  "#121212",
+  },
+  text: {
+    light: "#111827",
+    dark:  "#f3f4f6",
+  },
+  border: {
+    light: "#e5e7eb",
+    dark:  "#374151",
+  },
+  neutral: {
+    muted: "#6b7280",
+  },
+  // semantic
+  success: "#10b981",
+  error:   "#ef4444",
+  info:    "#55CDFC",
+  warning: "#F7A8B8",
+};
 ```
 
-#### Dark Theme
-```typescript
-{
-  bg: "#121212",           // True dark background
-  text: "#f3f4f6",         // Primary text (12.6:1 contrast)
-  muted: "#d1d5db",        // Secondary text (7.1:1 contrast)
-  border: "#374151",       // Borders (gray-700)
-}
+Typography, for quick reference
+```ts
+// fonts
+export const typography = {
+  fontFamily: '"Inter", system-ui, -apple-system, "Segoe UI", Roboto',
+  sizes: {
+    xs: "0.75rem",
+    sm: "0.875rem",
+    base: "1rem",
+    lg: "1.125rem",
+    xl: "1.25rem",
+    "2xl": "1.5rem",
+    "3xl": "1.875rem",
+    "4xl": "2.25rem",
+    "5xl": "3rem",
+  },
+  weights: {
+    normal: 400,
+    medium: 500,
+    semibold: 600,
+    bold: 700,
+  },
+};
 ```
 
-### Semantic Colors
-
-- **Success**: `#10b981` (green)
-- **Error**: `#ef4444` (red)
-- **Warning**: `#F7A8B8` (Trans pride pink)
-- **Info**: `#55CDFC` (Trans pride blue)
-
-
-### Gray Scale
-
-```typescript
-gray-50:  "#f9fafb"
-gray-100: "#f3f4f6"
-gray-200: "#e5e7eb"
-gray-300: "#d1d5db"
-gray-400: "#9ca3af"
-gray-500: "#6b7280"
-gray-600: "#4b5563"
-gray-700: "#374151"
-gray-800: "#1f2937"
-gray-900: "#111827"
-```
+WCAG-friendly tones
+- Light: ensure contrast > 4.5:1 (text vs background)
+- Dark: ensure contrast > 7:1 for body text, higher for headlines
 
 ---
 
-## Typography
-FONT = inter 
+## 3) Typography
 
-### Font Sizes
+- Font: Inter (or your preferred clean sans)
+- Sizes: xs → 0.75rem, base → 1rem, up to 5xl
+- Weights: normal 400, medium 500, semibold 600, bold 700
+- Usage examples provided with Vanilla Extract + Sprinkles
 
-```typescript
-{
-  xs: "0.75rem",    // 12px
-  sm: "0.875rem",   // 14px
-  base: "1rem",     // 16px
-  lg: "1.125rem",   // 18px
-  xl: "1.25rem",    // 20px
-  "2xl": "1.5rem",  // 24px
-  "3xl": "1.875rem", // 30px
-  "4xl": "2.25rem",  // 36px
-  "5xl": "3rem",     // 48px
-}
-```
-
-### Font Weights
-
-```typescript
-{
-  normal: "400",
-  medium: "500",
-  semibold: "600",
-  bold: "700",
-}
-```
-
-### Usage Examples
-
+Code example (inline + Sprinkles)
 ```tsx
-// Using Vanilla Extract
 import { style } from "@vanilla-extract/css";
-
-const heading = style({
-  fontSize: "2rem",
-  fontWeight: "600",
-  color: vars.color.text,
-});
-
-// Using Sprinkles
 import { sprinkles } from "./styles/sprinkles.css";
 
-<div className={sprinkles({ fontSize: "xl", fontWeight: "bold" })}>
-  Heading
-</div>
+const heading = style({
+  fontSize: typography.sizes["2xl"],
+  fontWeight: typography.weights.semibold,
+  color: "var(--text-color)",
+});
 ```
 
 ---
 
-## Spacing & Layout
+## 4) Spacing & Layout
 
-### Spacing Scale
-
-```typescript
+Spacing scale (typical, mobile-first)
+```ts
 {
   "0": "0",
-  "1": "4px",    // xs
-  "2": "8px",    // sm
+  "1": "4px",
+  "2": "8px",
   "3": "12px",
-  "4": "16px",   // md
+  "4": "16px",
   "5": "20px",
-  "6": "24px",   // lg
+  "6": "24px",
   "8": "32px",
   "10": "40px",
   "12": "48px",
@@ -170,9 +195,8 @@ import { sprinkles } from "./styles/sprinkles.css";
 }
 ```
 
-### Border Radius
-
-```typescript
+Border Radius
+```ts
 {
   none: "0",
   sm: "4px",
@@ -183,20 +207,18 @@ import { sprinkles } from "./styles/sprinkles.css";
 }
 ```
 
-### Shadows
-
-```typescript
+Shadows
+```ts
 {
-  sm: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
-  md: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
-  lg: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
-  xl: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+  sm: "0 1px 2px rgba(0,0,0,0.05)",
+  md: "0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06)",
+  lg: "0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05)",
+  xl: "0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04)",
 }
 ```
 
-### Breakpoints
-
-```typescript
+Breakpoints (mobile-first)
+```ts
 {
   sm: "640px",
   md: "768px",
@@ -206,55 +228,30 @@ import { sprinkles } from "./styles/sprinkles.css";
 }
 ```
 
-### Usage Examples
-
+Sprinkles usage (spacing)
 ```tsx
-// Using Sprinkles for spacing
 import { sprinkles } from "./styles/sprinkles.css";
 
-<div className={sprinkles({
-  padding: "md",      // 16px
-  margin: "lg",       // 24px
-  gap: "sm",         // 8px
-  borderRadius: "md", // 8px
-})}>
+<div className={sprinkles({ padding: "md", margin: "lg", gap: "sm" })}>
   Content
 </div>
 ```
 
 ---
 
-## Theme System
+## 5) Theme System
 
-### Theme Variables Contract
-
-```typescript
+Theme contract
+```ts
 export const vars = createThemeContract({
-  color: {
-    bg: null,
-    text: null,
-    muted: null,
-    brand: null,
-    border: null,
-    accent: null,
-  },
-  space: {
-    xs: null,
-    sm: null,
-    md: null,
-    lg: null,
-  },
-  radius: {
-    sm: null,
-    md: null,
-    lg: null,
-  },
+  color: { bg: null, text: null, border: null, brand: null, accent: null, muted: null },
+  space: { xs: null, sm: null, md: null, lg: null },
+  radius: { sm: null, md: null, lg: null },
 });
 ```
 
-### Light Theme
-
-```typescript
+Light Theme (brand-aware)
+```ts
 export const lightTheme = createTheme(vars, {
   color: {
     bg: "#ffffff",
@@ -269,36 +266,29 @@ export const lightTheme = createTheme(vars, {
 });
 ```
 
-### Dark Theme
-
-```typescript
+Dark Theme
+```ts
 export const darkTheme = createTheme(vars, {
   color: {
-    bg: "#121212",        // True dark background
-    text: "#f3f4f6",      // High contrast (12.6:1)
-    muted: "#d1d5db",     // Good contrast (7.1:1)
-    brand: "#7dd3fc",     // Lighter blue for dark mode
-    accent: "#F7A8B8",    // Trans pride pink
-    border: "#374151",    // Visible borders
+    bg: "#121212",
+    text: "#f3f4f6",
+    muted: "#d1d5db",
+    brand: "#7DD3FC",
+    accent: "#F7A8B8",
+    border: "#374151",
   },
   space: { xs: "4px", sm: "8px", md: "16px", lg: "24px" },
   radius: { sm: "4px", md: "8px", lg: "12px" },
 });
 ```
 
-### Applying Themes
-
+Applying themes (example)
 ```tsx
-// Apply theme class to HTML element
 import { lightTheme, darkTheme } from "./styles/theme.css";
 
-// Light mode
-document.documentElement.className = lightTheme;
+document.documentElement.className = lightTheme; // or darkTheme
 
-// Dark mode
-document.documentElement.className = darkTheme;
-
-// Using theme variables in components
+// Use vars in components
 import { vars } from "./styles/theme.css";
 import { style } from "@vanilla-extract/css";
 
@@ -313,693 +303,264 @@ const card = style({
 
 ---
 
-## Layout & Structure
+## 6) Layout & Structure
 
-### Main App Layout
-
-The application uses a flexbox-based layout structure:
-
+Main App Layout (flex column)
 ```tsx
-<div
-  style={{
-    display: "flex",
-    flexDirection: "column",
-    minHeight: "100vh",
-  }}
->
-  {/* Skip to main content link */}
-  <a href="#main-content" className="visually-hidden-focusable">
-    Skip to main content
-  </a>
-  
-  {/* Navigation */}
+<div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+  <a href="#main-content" className="visually-hidden-focusable">Skip to main content</a>
+
   <NavBar />
-  
-  {/* Main Content Area */}
   <Container id="main-content" className="py-4" style={{ flex: 1 }}>
-    {/* Page content goes here */}
+    {/* Page content */}
   </Container>
-  
-  {/* Footer */}
+
   <Footer />
 </div>
 ```
 
-**Key Features:**
-- Flexbox column layout ensures footer stays at bottom
-- Skip-to-content link for keyboard navigation
-- Main content area uses `flex: 1` to fill available space
-- Container with padding (`py-4`) for consistent spacing
+Page patterns
+- Hero Section
+- Filter/Controls (Bootstrap grid)
+- Responsive Card Grid
+- Card with Image
+- Dashboard Layout (cards with stats)
 
-### Page Layout Patterns
-
-#### Hero Section Pattern
-
-Hero sections combine icons, headings, and descriptive text:
-
-```tsx
-<div className="mb-5">
-  <div className="d-flex align-items-center gap-3 mb-4">
-    <MdBuild size={48} className="text-primary" />
-    <div>
-      <h1 className="mb-0">Page Title</h1>
-      <p className="text-muted mb-0">
-        Descriptive text about the page content.
-      </p>
-    </div>
-  </div>
-</div>
-```
-
-**Characteristics:**
-- Large icon (48px) in brand color
-- Flexbox layout with gap spacing
-- Heading with no bottom margin
-- Muted descriptive text
-
-#### Filter/Controls Section
-
-Filter sections use Bootstrap's grid system:
-
-```tsx
-<Row className="g-3 align-items-end">
-  <Col xs={12} md={6} lg={4}>
-    <Form.Label className="small text-muted">Label</Form.Label>
-    <InputGroup>
-      <InputGroup.Text>
-        <MdSearch />
-      </InputGroup.Text>
-      <Form.Control type="text" placeholder="Search..." />
-    </InputGroup>
-  </Col>
-  {/* More filter columns */}
-</Row>
-```
-
-**Characteristics:**
-- Responsive columns (xs={12} md={6} lg={4})
-- Gap spacing (`g-3`)
-- Input groups with icons
-- Small, muted labels
-
-### Grid Layout Patterns
-
-#### Responsive Card Grid
-
-The standard pattern for displaying cards in a grid:
-
+Example: Responsive Card Grid
 ```tsx
 <Row xs={1} sm={2} md={3} lg={4} className="g-4">
   {items.map((item) => (
     <Col key={item.id}>
-      <Card className="h-100 shadow-sm">
-        {/* Card content */}
-      </Card>
+      <Card className="h-100 shadow-sm"> {/* content */} </Card>
     </Col>
   ))}
 </Row>
 ```
 
-**Breakpoints:**
-- `xs={1}` - 1 column on mobile
-- `sm={2}` - 2 columns on small screens
-- `md={3}` - 3 columns on medium screens
-- `lg={4}` - 4 columns on large screens
-- `g-4` - Consistent gap between cards
+Navigation & Footer
+- Theme-aware backgrounds
+- Active states in Trans Pride pink
+- Accessible focus states
 
-**Card Features:**
-- `h-100` - Equal height cards
-- `shadow-sm` - Subtle shadow for depth
+---
 
-#### Card with Image
+## 7) Component Patterns
 
-Standard card pattern with image header:
+Buttons
+- Primary (Trans Pride Blue)
+- Secondary (Trans Pride Pink)
 
-```tsx
-<Card className="h-100 shadow-sm">
-  <div
-    style={{
-      position: "relative",
-      width: "100%",
-      height: 200,
-      overflow: "hidden",
-      backgroundColor: "#f3f4f6", // Placeholder background
-    }}
-  >
-    <Image
-      src={imageSrc}
-      alt={item.name}
-      fluid
-      style={{
-        width: "100%",
-        height: "100%",
-        objectFit: "cover",
-      }}
-      loading="lazy"
-    />
-    {/* Overlay buttons */}
-    <div style={{ position: "absolute", top: 8, right: 8 }}>
-      <FavouriteButton id={item.id} />
-    </div>
-  </div>
-  <Card.Body>
-    <Card.Title className="mb-2">{item.name}</Card.Title>
-    <div className="fw-bold text-primary fs-5 mb-2">
-      {formatCurrency(item.price)}
-    </div>
-    <Card.Text className="text-muted small">
-      {item.description}
-    </Card.Text>
-  </Card.Body>
-</Card>
-```
-
-**Image Container:**
-- Fixed height (200px) for consistent layout
-- `objectFit: "cover"` for proper image scaling
-- Placeholder background color
-- Overlay buttons positioned absolutely
-
-**Card Body:**
-- Title with bottom margin
-- Price in primary color, bold, larger font
-- Description in muted text, small size
-
-### Dashboard Layout Pattern
-
-Statistics cards in a dashboard:
-
-```tsx
-<Row className="g-4 mb-4">
-  <Col md={4}>
-    <Card className="h-100 shadow-sm">
-      <Card.Body>
-        <div className="d-flex justify-content-between align-items-start">
-          <div className="flex-grow-1">
-            <Card.Title className="text-muted small text-uppercase mb-2">
-              Label
-            </Card.Title>
-            <h3 className="mb-1">{value}</h3>
-            <div className="small text-muted">
-              <span className="text-success">{active} active</span>
-              {" • "}
-              <span className="text-danger">{inactive} inactive</span>
-            </div>
-          </div>
-          <div className="fs-1 text-primary opacity-25">👥</div>
-        </div>
-      </Card.Body>
-      <Card.Footer className="bg-transparent border-top-0 pt-0">
-        <Link to="/path" className="btn btn-sm btn-outline-primary">
-          Action →
-        </Link>
-      </Card.Footer>
-    </Card>
-  </Col>
-</Row>
-```
-
-**Characteristics:**
-- 3-column layout on medium+ screens
-- Flexbox for content alignment
-- Large emoji/icon with opacity
-- Transparent footer with action button
-
-### Navigation Structure
-
-NavBar with responsive collapse:
-
-```tsx
-<Navbar
-  bg={theme}
-  data-bs-theme={theme}
-  expand="lg"
-  className="shadow-sm"
-  role="navigation"
->
-  <Container>
-    <Navbar.Brand as={Link} to="/">
-      <FaTools className="text-primary" />
-      Brand Name
-    </Navbar.Brand>
-    <Navbar.Toggle aria-controls="basic-navbar-nav" />
-    <Navbar.Collapse id="basic-navbar-nav">
-      <Nav className="me-auto">
-        <Nav.Link as={Link} to="/path" active={isActive("/path")}>
-          <MdHome /> Home
-        </Nav.Link>
-      </Nav>
-      <Nav>
-        {/* User menu */}
-      </Nav>
-    </Navbar.Collapse>
-  </Container>
-</Navbar>
-```
-
-**Features:**
-- Theme-aware background
-- Responsive collapse on mobile
-- Icon + text navigation items
-- Active state styling in Trans Pride pink
-
-### Footer Layout
-
-Footer with multiple columns:
-
-```tsx
-<footer
-  className="mt-auto py-4"
-  style={{
-    borderTop: "1px solid var(--bs-border-color)",
-    backgroundColor: "var(--bs-body-bg)",
-  }}
->
-  <Container>
-    <Row className="g-4">
-      <Col xs={12} md={4}>
-        <h5><strong>Brand Name</strong></h5>
-        <div className="d-flex align-items-start mb-2">
-          <MdLocationOn size={20} className="text-primary me-2" />
-          <div>Address</div>
-        </div>
-      </Col>
-      {/* More columns */}
-    </Row>
-  </Container>
-</footer>
-```
-
-**Features:**
-- `mt-auto` pushes footer to bottom
-- Responsive columns
-- Icon + text information rows
-- Theme-aware colors using CSS variables
-
-### List/Table View Pattern
-
-Alternative to grid view for data display:
-
-```tsx
-<Table hover responsive>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Price</th>
-      <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    {items.map((item) => (
-      <tr key={item.id}>
-        <td>{item.name}</td>
-        <td className="fw-bold text-primary">
-          {formatCurrency(item.price)}
-        </td>
-        <td>
-          <ButtonGroup size="sm">
-            <Button variant="outline-primary">Edit</Button>
-            <Button variant="outline-danger">Delete</Button>
-          </ButtonGroup>
-        </td>
-      </tr>
-    ))}
-  </tbody>
-</Table>
-```
-
-**Features:**
-- Hover effects for rows
-- Responsive table (scrolls on mobile)
-- Primary color for important values
-- Button groups for actions
-
-## Component Patterns
-
-### Button Styles
-
-#### Primary Button (Trans Pride Blue)
-
+Light mode primary
 ```css
-/* Light Mode */
 .btn-primary {
-  background-color: #55cdfc;
-  border-color: #55cdfc;
+  background-color: #55CDFC;
+  border-color: #55CDFC;
   color: #0a0a0a;
   font-weight: 600;
 }
+.btn-primary:hover { background-color: #3BB5E8; border-color: #3BB5E8; }
+```
 
-.btn-primary:hover {
-  background-color: #3bb5e8;
-  border-color: #3bb5e8;
-}
-
-/* Dark Mode */
+Dark mode primary
+```css
 .btn-primary {
-  background-color: #7dd3fc;
-  border-color: #7dd3fc;
+  background-color: #7DD3FC;
+  border-color: #7DD3FC;
   color: #0a0a0a;
 }
 ```
 
-#### Secondary Button (Trans Pride Pink)
-
+Secondary button
 ```css
 .btn-secondary {
-  background-color: #f7a8b8;
-  border-color: #f7a8b8;
+  background-color: #F7A8B8;
+  border-color: #F7A8B8;
   color: #0a0a0a;
   font-weight: 600;
 }
-
-.btn-secondary:hover {
-  background-color: #f59bb0;
-  border-color: #f59bb0;
-}
+.btn-secondary:hover { background-color: #F59BB0; border-color: #F59BB0; }
 ```
 
-### Form Inputs
-
+Form Inputs
 ```css
-/* Focus state with Trans Pride Blue */
 .form-control:focus,
 .form-select:focus {
-  border-color: #55cdfc;
+  border-color: #55CDFC;
   box-shadow: 0 0 0 0.25rem rgba(85, 205, 252, 0.25);
-  outline: 2px solid #55cdfc;
-  outline-offset: 2px;
-}
-
-/* Dark Mode */
-.form-control:focus {
-  border-color: #7dd3fc;
-  box-shadow: 0 0 0 0.25rem rgba(125, 211, 252, 0.25);
+  outline: 2px solid #55CDFC;
 }
 ```
 
-### Navigation Links
-
+Navigation Links
 ```css
-/* Hover effect with Trans Pride Pink */
-.nav-link:hover {
-  background-color: #f7a8b8;
-  color: #ffffff;
-  border-radius: 4px;
-  transition: background-color 0.2s ease, color 0.2s ease;
-}
-
-/* Focus state for accessibility */
-.nav-link:focus,
-.nav-link:focus-visible {
-  outline: 3px solid #f7a8b8;
-  outline-offset: 2px;
-  border-radius: 4px;
-}
+.nav-link:hover { background-color: #F7A8B8; color: #fff; border-radius: 4px; }
+.nav-link:focus-visible { outline: 3px solid #F7A8B8; outline-offset: 2px; border-radius: 4px; }
 ```
 
-### Alert/Error Display
-
+Alerts & Loading
 ```tsx
 <Alert variant="danger" className="d-flex align-items-center justify-content-between">
   <div>Error message</div>
-  <Button size="sm" variant="outline-light" onClick={handleRetry}>
-    Retry
-  </Button>
+  <Button size="sm" variant="outline-light" onClick={handleRetry}>Retry</Button>
 </Alert>
-```
 
-### Loading States
-
-```tsx
 <div className="d-flex justify-content-center align-items-center py-5">
-  <Spinner animation="border" role="status" className="text-primary">
-    <span className="visually-hidden">Loading...</span>
-  </Spinner>
+  <Spinner animation="border" role="status" className="text-primary" />
   <span className="ms-3">Loading message...</span>
 </div>
 ```
 
-### Cards
-
+Cards (light/dark)
 ```css
-/* Light Mode */
-.card {
-  background-color: #ffffff;
-  border-color: #e5e7eb;
-  color: #111827;
-  border-radius: 8px;
-}
-
-/* Dark Mode */
-.card {
-  background-color: #1f2937;
-  border-color: #374151;
-  color: #f3f4f6;
-}
+.card { background-color: #ffffff; border-color: #e5e7eb; color: #111827; border-radius: 8px; }
+.dark .card { background-color: #1f2937; border-color: #374151; color: #f3f4f6; }
 ```
 
 ---
 
-## Animation Patterns
+## 8) Animation Patterns
 
-This design system uses **Framer Motion** for smooth, performant animations.
-
-### Page Transitions
-
-Fade in animation for page loads:
-
+Framer Motion for transitions
+- Page Transitions
 ```tsx
 import { motion } from "framer-motion";
 
-<motion.div
-  initial={{ opacity: 0 }}
-  animate={{ opacity: 1 }}
-  transition={{ duration: 0.5 }}
->
+<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
   {/* Page content */}
 </motion.div>
 ```
 
-### Fade In Up Animation
-
-Standard entrance animation for sections:
-
+- Fade In Up
 ```tsx
-const fadeInUp = {
-  initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.5 },
-};
+const fadeInUp = { initial: { opacity: 0, y: 20 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.5 } };
 
 <motion.div {...fadeInUp} transition={{ delay: 0.2 }}>
   {/* Content */}
 </motion.div>
 ```
 
-### Staggered Grid Animations
-
-Animate grid items one after another:
-
+- Hover lift
 ```tsx
-const staggerContainer = {
-  initial: { opacity: 1 },
-  animate: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1, // 0.1s delay between each item
-    },
-  },
-};
-
-<motion.div variants={staggerContainer} initial="initial" animate="animate">
-  <Row>
-    {items.map((item) => (
-      <Col key={item.id}>
-        <motion.div variants={fadeInUp}>
-          <Card>{/* Card content */}</Card>
-        </motion.div>
-      </Col>
-    ))}
-  </Row>
+<motion.div whileHover={{ y: -5 }} transition={{ type: "spring", stiffness: 300 }}>
+  <Card> {/* Card content */} </Card>
 </motion.div>
 ```
 
-### Hover Effects
-
-Lift effect on card hover:
-
+- Theme Toggle
 ```tsx
-<motion.div
-  whileHover={{ y: -5 }}
-  transition={{ type: "spring", stiffness: 300 }}
->
-  <Card>
-    {/* Card content */}
-  </Card>
-</motion.div>
-```
-
-**Properties:**
-- `y: -5` - Moves card up 5px on hover
-- `type: "spring"` - Natural spring animation
-- `stiffness: 300` - Controls spring tension
-
-### Theme Toggle Animation
-
-Animated theme toggle button:
-
-```tsx
-import { motion } from "framer-motion";
-
-<motion.button
-  whileHover={{ scale: 1.1 }}
-  whileTap={{ scale: 0.9 }}
-  onClick={toggleTheme}
->
+<motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} onClick={toggleTheme}>
   {theme === "light" ? <MdDarkMode /> : <MdLightMode />}
 </motion.button>
 ```
 
-### Reduced Motion Support
-
-Always respect user preferences:
-
+- Reduced Motion
 ```tsx
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-<motion.div
-  animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
-  transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.5 }}
->
+<motion.div animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }} transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.5 }}>
   {/* Content */}
 </motion.div>
 ```
 
-## Accessibility Features
+---
 
-### Contrast Ratios
+## 9) Accessibility Features
 
-All text colors meet WCAG AA standards:
-- **Light Mode**: 
-  - Primary text (#111827 on #ffffff): 16.8:1
-  - Muted text (#6b7280 on #ffffff): 4.5:1
-- **Dark Mode**:
-  - Primary text (#f3f4f6 on #121212): 12.6:1 ✅
-  - Muted text (#d1d5db on #121212): 7.1:1 ✅
+- Contrast: WCAG AA targets (light/dark modes)
+- Focus indicators: clear keyboard focus rings
+- Skip-to-content: visible for keyboard users
+- Reduced Motion: respect user system preference
+- Semantic HTML: appropriate headings, lists, buttons, and ARIA where needed
 
-### Focus Indicators
-
-All interactive elements have visible focus indicators:
-- 2-3px outline in brand color
-- 2px offset for visibility
-- Rounded corners for modern look
-
-### Reduced Motion Support
-
-```typescript
-export const reducedMotion = style({
-  vars: {
-    "--transition-duration": "0s",
-    "--animation-duration": "0s",
-  },
-});
-```
-
-### High Contrast Mode
-
-```typescript
+High contrast helpers (example)
+```ts
 export const highContrast = style({});
-
 globalStyle(`html.${highContrast}`, {
   filter: "contrast(1.5) brightness(1.1)",
 });
 ```
 
-### Font Size Preferences
-
-Users can adjust font sizes:
-- Small: 0.875rem base
-- Medium: 1rem base (default)
-- Large: 1.125rem base
+Font size preferences
+- Small: 0.875rem
+- Medium: 1rem (default)
+- Large: 1.125rem
 
 ---
 
-## Implementation Guide
+## 10) Implementation Guide
 
-### Step 1: Install Dependencies
-
+Step 1: Install dependencies
 ```bash
 npm install @vanilla-extract/css @vanilla-extract/sprinkles framer-motion
 # or
 yarn add @vanilla-extract/css @vanilla-extract/sprinkles framer-motion
 ```
 
-**Note:** Framer Motion is optional but recommended for the smooth animations that make this design system special.
-
-### Step 2: Create Design Tokens
-
-Create `src/styles/tokens.css.ts`:
-
-```typescript
+Step 2: Design tokens
+```ts
+// src/styles/tokens.css.ts
 export const tokens = {
-  space: {
-    "0": "0",
-    "1": "4px",
-    "2": "8px",
-    "4": "16px",
-    "6": "24px",
-    // ... rest of spacing scale
-  },
+  space: { "0": "0", "1": "4px", "2": "8px", "4": "16px", "6": "24px", "8": "32px", "10": "40px" },
   colors: {
-    // Your color palette
     brand: "#55CDFC",
+    brandDark: "#7DD3FC",
+    brandHover: "#3BB5E8",
     accent: "#F7A8B8",
-    // ... rest of colors
+    accentHover: "#F59BB0",
+    bg: { light: "#ffffff", dark: "#121212" },
+    text: { light: "#111827", dark: "#f3f4f6" },
+    border: { light: "#e5e7eb", dark: "#374151" },
+    muted: "#6b7280",
+    success: "#10b981",
+    error: "#ef4444",
+    info: "#55CDFC",
+    warning: "#F7A8B8",
   },
-  // ... rest of tokens
-} as const;
+  radius: { sm: "4px", md: "8px", lg: "12px" },
+};
 ```
 
-### Step 3: Create Theme Contract
-
-Create `src/styles/theme.css.ts`:
-
-```typescript
+Step 3: Theme contract
+```ts
+// src/styles/theme.css.ts
 import { createTheme, createThemeContract } from "@vanilla-extract/css";
 
 export const vars = createThemeContract({
-  color: {
-    bg: null,
-    text: null,
-    brand: null,
-    // ... rest of theme variables
-  },
+  color: { bg: null, text: null, border: null, brand: null, accent: null, muted: null },
+  space: { xs: null, sm: null, md: null, lg: null },
+  radius: { sm: null, md: null, lg: null },
 });
 
 export const lightTheme = createTheme(vars, {
   color: {
     bg: "#ffffff",
     text: "#111827",
+    muted: "#6b7280",
     brand: "#55CDFC",
-    // ... rest of light theme
+    accent: "#F7A8B8",
+    border: "#e5e7eb",
   },
+  space: { xs: "4px", sm: "8px", md: "16px", lg: "24px" },
+  radius: { sm: "4px", md: "8px", lg: "12px" },
 });
 
 export const darkTheme = createTheme(vars, {
   color: {
     bg: "#121212",
     text: "#f3f4f6",
-    brand: "#7dd3fc",
-    // ... rest of dark theme
+    muted: "#d1d5db",
+    brand: "#7DD3FC",
+    accent: "#F7A8B8",
+    border: "#374151",
   },
+  space: { xs: "4px", sm: "8px", md: "16px", lg: "24px" },
+  radius: { sm: "4px", md: "8px", lg: "12px" },
 });
 ```
 
-### Step 4: Create Sprinkles Utilities
-
-Create `src/styles/sprinkles.css.ts`:
-
-```typescript
+Step 4: Sprinkles utilities
+```ts
+// src/styles/sprinkles.css.ts
 import { createSprinkles, defineProperties } from "@vanilla-extract/sprinkles";
 import { tokens } from "./tokens.css";
 
@@ -1014,11 +575,11 @@ const spaceProperties = defineProperties({
 export const sprinkles = createSprinkles(spaceProperties);
 ```
 
-### Step 5: Configure Build Tool
-
-For Vite, add to `vite.config.ts`:
-
-```typescript
+Step 5: Build tool integration (Vite)
+```ts
+// vite.config.ts
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
 import { vanillaExtractPlugin } from "@vanilla-extract/vite-plugin";
 
 export default defineConfig({
@@ -1026,10 +587,9 @@ export default defineConfig({
 });
 ```
 
-### Step 6: Apply Theme
-
+Step 6: Theme application in app
 ```tsx
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { lightTheme, darkTheme } from "./styles/theme.css";
 
 function App() {
@@ -1043,75 +603,55 @@ function App() {
 }
 ```
 
-### Step 7: Customize for Your Brand
-
-To adapt this system for different brand colors:
-
-1. **Update Color Tokens**: Replace Trans Pride colors with your brand colors
-2. **Adjust Contrast**: Ensure dark mode colors maintain accessibility
-3. **Update Theme Variables**: Modify `lightTheme` and `darkTheme` objects
-4. **Test Contrast Ratios**: Use tools like [WebAIM Contrast Checker](https://webaim.org/resources/contrastchecker/)
-
-### Example: Custom Brand Colors
-
-```typescript
-// Replace Trans Pride colors with your brand
-export const lightTheme = createTheme(vars, {
-  color: {
-    bg: "#ffffff",
-    text: "#111827",
-    brand: "#YOUR_BRAND_COLOR",  // Your primary color
-    accent: "#YOUR_ACCENT_COLOR", // Your secondary color
-    // ... rest stays the same
-  },
-});
-```
+Step 7: Brand customization
+- Replace brand and accent tokens with your brand colors
+- Re-check contrast and accessibility
+- Update theme overrides accordingly
 
 ---
 
-## Bootstrap Integration
+## 11) Bootstrap Integration
 
-This design system includes comprehensive Bootstrap overrides. To use with Bootstrap:
-
+If you use Bootstrap with this system:
 1. Import Bootstrap CSS
-2. Import `bootstrap-dark-overrides.css`
-3. Set `data-bs-theme="light"` or `data-bs-theme="dark"` on HTML element
+2. Import bootstrap-dark-overrides.css
+3. Use data-bs-theme on the root
 
 ```tsx
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./styles/bootstrap-dark-overrides.css";
 
-// Apply theme
 document.documentElement.setAttribute("data-bs-theme", "dark");
 ```
 
 ---
 
-## Best Practices
+## 12) Best Practices
 
-1. **Always Use Theme Variables**: Never hardcode colors, use `vars.color.brand`
-2. **Test Contrast**: Verify all text meets WCAG AA standards
-3. **Support Dark Mode**: Always provide dark mode variants
-4. **Use Sprinkles**: Prefer utility classes for spacing and layout
-5. **Type Safety**: Leverage TypeScript for autocomplete and errors
-6. **Accessibility First**: Always include focus indicators and proper contrast
-
----
-
-## Resources
-
-- [Vanilla Extract Documentation](https://vanilla-extract.style/)
-- [Sprinkles Documentation](https://vanilla-extract.style/documentation/packages/sprinkles/)
-- [WCAG Contrast Guidelines](https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html)
-- [WebAIM Contrast Checker](https://webaim.org/resources/contrastchecker/)
+- Always use theme variables (no hard-coded colours)
+- Test WCAG contrast (AA or higher as needed)
+- Include dark mode variants
+- Prefer Sprinkles for spacing and layout
+- Ensure type safety across tokens
+- Prioritize accessibility in all components
 
 ---
 
-## License
+## 13) Resources
 
-This styling guide is part of the Bob's Garage project and can be freely used and adapted for your own projects.
+- Vanilla Extract: https://vanilla-extract.style/
+- Sprinkles: https://vanilla-extract.style/documentation/packages/sprinkles/
+- WCAG Contrast: https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html
+- WebAIM Contrast Checker: https://webaim.org/resources/contrastchecker/
 
 ---
 
-**Happy Styling! 🎨✨**
+## 14) License
 
+This styling guide is part of the Bob's Garage project and can be freely used and adapted.
+
+---
+
+Happy styling! 🎨✨
+
+If you’d like, I can tailor this to your exact brand (e.g., add a brand color map, adjust typography scale, or generate a ready-to-run Vite project scaffold).

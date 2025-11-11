@@ -75,7 +75,7 @@ export default function Home() {
             <Link className="btn btn-primary btn-lg" to="/services">
               View Services
             </Link>
-            <Link className="btn btn-outline-secondary btn-lg" to="/about">
+            <Link className="btn btn-secondary btn-lg" to="/about">
               About Us
             </Link>
             {!accessToken && (
@@ -84,7 +84,7 @@ export default function Home() {
               </Link>
             )}
             {accessToken && (
-              <Link className="btn btn-outline-success btn-lg" to="/profile">
+              <Link className="btn btn-profile btn-lg" to="/profile">
                 Profile
               </Link>
             )}
@@ -385,7 +385,7 @@ export default function Home() {
                 <Link to="/services" className="btn btn-primary btn-lg me-2">
                   Book a Service
                 </Link>
-                <Link to="/about" className="btn btn-outline-secondary btn-lg">
+                <Link to="/about" className="btn btn-secondary btn-lg">
                   Learn More
                 </Link>
               </Col>
