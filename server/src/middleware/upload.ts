@@ -50,7 +50,12 @@ const ALLOWED_IMAGE_TYPES = {
 } as const;
 
 /**
- * Check if file buffer matches expected magic bytes
+ * Check if file buffer matches expected magic bytes for the given MIME type
+ * Validates file signatures to prevent file spoofing
+ *
+ * @param buffer - File buffer to check
+ * @param mimeType - Expected MIME type
+ * @returns True if magic bytes match the MIME type
  */
 function validateMagicBytes(buffer: Buffer, mimeType: string): boolean {
   const typeConfig = ALLOWED_IMAGE_TYPES[mimeType as keyof typeof ALLOWED_IMAGE_TYPES];
@@ -82,7 +87,11 @@ function validateMagicBytes(buffer: Buffer, mimeType: string): boolean {
 }
 
 /**
- * Validate file extension matches MIME type
+ * Validate that file extension matches the declared MIME type
+ *
+ * @param filename - Original filename with extension
+ * @param mimeType - Declared MIME type
+ * @returns True if extension matches allowed extensions for the MIME type
  */
 function validateFileExtension(filename: string, mimeType: string): boolean {
   const ext = path.extname(filename).toLowerCase();
@@ -107,6 +116,12 @@ for (const dir of [ROOT_UPLOAD_DIR, STAFF_UPLOAD_DIR, SERVICES_UPLOAD_DIR]) {
   }
 }
 
+/**
+ * Generate a unique filename with timestamp and random suffix
+ *
+ * @param originalName - Original filename
+ * @returns New filename with timestamp and random suffix, preserving extension
+ */
 function filenameWithTimestamp(originalName: string) {
   const ext = path.extname(originalName).toLowerCase();
   const base = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
@@ -126,6 +141,11 @@ const servicesStorage = multer.diskStorage({
 /**
  * Enhanced image file filter with strict validation
  * Validates MIME type, file extension, and magic bytes
+ * This is called by Multer before file is saved to disk
+ *
+ * @param _req - Express request object
+ * @param file - Multer file object
+ * @param cb - Multer callback function
  */
 function imageFileFilter(_req: Request, file: Express.Multer.File, cb: multer.FileFilterCallback) {
   // Check if MIME type is in allowed list

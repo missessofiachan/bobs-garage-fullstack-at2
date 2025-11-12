@@ -9,6 +9,12 @@
 import { Card, Col, ProgressBar, Row } from 'react-bootstrap';
 import { useSystemHealth } from '../../hooks/useSystemHealth';
 
+/**
+ * Format uptime in seconds to human-readable string
+ *
+ * @param seconds - Uptime in seconds
+ * @returns Formatted uptime (e.g., "2d 5h", "3h 45m", "30m")
+ */
 function formatUptime(seconds: number): string {
   const days = Math.floor(seconds / 86400);
   const hours = Math.floor((seconds % 86400) / 3600);
@@ -18,6 +24,12 @@ function formatUptime(seconds: number): string {
   return `${minutes}m`;
 }
 
+/**
+ * Format bytes to human-readable string with appropriate unit
+ *
+ * @param bytes - Number of bytes
+ * @returns Formatted string (e.g., "1.5 KB", "2.3 MB", "1.2 GB")
+ */
 function formatBytes(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
@@ -25,24 +37,48 @@ function formatBytes(bytes: number): string {
   return `${(bytes / (1024 * 1024 * 1024)).toFixed(1)} GB`;
 }
 
+/**
+ * Get Bootstrap variant color for system status
+ *
+ * @param status - System status string
+ * @returns Bootstrap variant color
+ */
 function getStatusColor(status: string): 'success' | 'warning' | 'danger' {
   if (status === 'healthy') return 'success';
   if (status === 'degraded') return 'warning';
   return 'danger';
 }
 
+/**
+ * Get Bootstrap variant color for memory usage percentage
+ *
+ * @param percentage - Memory usage percentage (0-100)
+ * @returns Bootstrap variant color
+ */
 function getMemoryVariant(percentage: number): 'success' | 'warning' | 'danger' {
   if (percentage < 70) return 'success';
   if (percentage < 85) return 'warning';
   return 'danger';
 }
 
+/**
+ * Get Bootstrap variant color for cache status
+ *
+ * @param status - Cache status string
+ * @returns Bootstrap variant color
+ */
 function getCacheStatusColor(status: string): 'success' | 'warning' | 'danger' | 'muted' {
   if (status === 'connected' || status === 'enabled') return 'success';
   if (status === 'disabled') return 'muted';
   return 'danger';
 }
 
+/**
+ * Get human-readable text for cache status
+ *
+ * @param status - Cache status string
+ * @returns Formatted status text with icon
+ */
 function getCacheStatusText(status: string): string {
   if (status === 'connected') return '✓ Connected';
   if (status === 'enabled') return '✓ Enabled';

@@ -9,34 +9,70 @@
 import { Card, Col, ProgressBar, Row } from 'react-bootstrap';
 import { useMetrics } from '../../hooks/useMetrics';
 
+/**
+ * Format a number with K/M suffixes for large values
+ *
+ * @param num - Number to format
+ * @returns Formatted string (e.g., "1.5K", "2.3M")
+ */
 function formatNumber(num: number): string {
   if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
   if (num >= 1000) return `${(num / 1000).toFixed(1)}K`;
   return num.toString();
 }
 
+/**
+ * Format a decimal as a percentage string
+ *
+ * @param num - Decimal number (0-1)
+ * @returns Percentage string (e.g., "45.2%")
+ */
 function formatPercentage(num: number): string {
   return `${(num * 100).toFixed(1)}%`;
 }
 
+/**
+ * Format duration in seconds to human-readable string
+ *
+ * @param seconds - Duration in seconds
+ * @returns Formatted duration (e.g., "1.234s", "45ms")
+ */
 function formatDuration(seconds: number): string {
   if (seconds < 0.001) return `${(seconds * 1000).toFixed(2)}ms`;
   if (seconds < 1) return `${(seconds * 1000).toFixed(0)}ms`;
   return `${seconds.toFixed(3)}s`;
 }
 
+/**
+ * Get Bootstrap variant color for error rate
+ *
+ * @param rate - Error rate (0-1)
+ * @returns Bootstrap variant color
+ */
 function getVariantForErrorRate(rate: number): 'success' | 'warning' | 'danger' {
   if (rate < 0.01) return 'success';
   if (rate < 0.05) return 'warning';
   return 'danger';
 }
 
+/**
+ * Get Bootstrap variant color for cache hit rate
+ *
+ * @param rate - Hit rate (0-1)
+ * @returns Bootstrap variant color
+ */
 function getVariantForHitRate(rate: number): 'success' | 'warning' | 'danger' {
   if (rate > 0.7) return 'success';
   if (rate > 0.5) return 'warning';
   return 'danger';
 }
 
+/**
+ * Get Bootstrap variant color for response duration
+ *
+ * @param seconds - Duration in seconds
+ * @returns Bootstrap variant color
+ */
 function getVariantForDuration(seconds: number): 'success' | 'warning' | 'danger' {
   if (seconds > 1) return 'danger';
   if (seconds > 0.5) return 'warning';

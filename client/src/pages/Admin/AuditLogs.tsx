@@ -34,19 +34,44 @@ const RESOURCE_ICONS: Record<string, string> = {
   other: '📄',
 };
 
+/**
+ * Format a date string to a localized date-time string
+ *
+ * @param dateString - ISO date string to format
+ * @returns Formatted date-time string
+ */
 function formatDate(dateString: string): string {
   const date = new Date(dateString);
   return date.toLocaleString();
 }
 
+/**
+ * Get Bootstrap badge color variant for an action type
+ *
+ * @param action - The action name (e.g., 'create', 'update', 'delete')
+ * @returns Bootstrap color variant string
+ */
 function getActionColor(action: string): string {
   return ACTION_COLORS[action.toLowerCase()] || 'secondary';
 }
 
+/**
+ * Get emoji icon for a resource type
+ *
+ * @param resource - The resource name (e.g., 'service', 'staff', 'user')
+ * @returns Emoji icon string
+ */
 function getResourceIcon(resource: string): string {
   return RESOURCE_ICONS[resource.toLowerCase()] || RESOURCE_ICONS.other;
 }
 
+/**
+ * Component to display state differences between previous and current state
+ *
+ * @param previous - Previous state object
+ * @param current - Current state object
+ * @returns React node displaying the state diff
+ */
 function StateDiff({
   previous,
   current,

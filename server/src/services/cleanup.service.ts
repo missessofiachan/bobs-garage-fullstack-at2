@@ -13,6 +13,12 @@ import { ROOT_UPLOAD_DIR_ABS } from '../middleware/upload.js';
 
 let timer: NodeJS.Timeout | null = null;
 
+/**
+ * Recursively list all files in a directory
+ *
+ * @param dir - Directory path to traverse
+ * @returns Promise resolving to array of absolute file paths
+ */
 async function listAllFiles(dir: string): Promise<string[]> {
   const results: string[] = [];
   async function walk(d: string) {
@@ -27,6 +33,10 @@ async function listAllFiles(dir: string): Promise<string[]> {
   return results;
 }
 
+/**
+ * Run cleanup once to remove orphaned uploaded files
+ * Compares files on disk with referenced files in database and deletes unreferenced files
+ */
 export async function runCleanupOnce() {
   const uploadsRoot = path.resolve(ROOT_UPLOAD_DIR_ABS);
   const files = await listAllFiles(uploadsRoot);
@@ -48,6 +58,11 @@ export async function runCleanupOnce() {
   }
 }
 
+/**
+ * Start periodic cleanup of orphaned files
+ *
+ * @param intervalMs - Interval in milliseconds between cleanup runs (defaults to env.CLEANUP_INTERVAL_MS or 24 hours)
+ */
 export function startCleanup(intervalMs?: number) {
   const ms = (intervalMs ?? Number(env.CLEANUP_INTERVAL_MS)) || 24 * 60 * 60 * 1000;
   if (timer) clearInterval(timer);
@@ -56,6 +71,9 @@ export function startCleanup(intervalMs?: number) {
   }, ms);
 }
 
+/**
+ * Stop the periodic cleanup timer
+ */
 export function stopCleanup() {
   if (timer) clearInterval(timer);
   timer = null;

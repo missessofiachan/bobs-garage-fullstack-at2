@@ -13,6 +13,15 @@ import type { JwtPayload } from '../types/global.d.ts';
 import { verifyToken } from '../utils/jwt.js';
 import { logger } from '../utils/logger.js';
 
+/**
+ * Middleware to require authentication for a route
+ * Verifies JWT token from Authorization header and attaches payload to req.user
+ *
+ * @param req - Express request object
+ * @param res - Express response object
+ * @param next - Express next function
+ * @returns 401 if token is missing or invalid, otherwise calls next()
+ */
 export function requireAuth(req: Request, res: Response, next: NextFunction) {
   const header = String(req.headers.authorization ?? '');
   const token = header.startsWith('Bearer ') ? header.slice(7) : null;
@@ -29,6 +38,15 @@ export function requireAuth(req: Request, res: Response, next: NextFunction) {
   }
 }
 
+/**
+ * Middleware to require admin role for a route
+ * Must be used after requireAuth middleware
+ *
+ * @param req - Express request object (must have req.user from requireAuth)
+ * @param res - Express response object
+ * @param next - Express next function
+ * @returns 401 if not authenticated, 403 if not admin, otherwise calls next()
+ */
 export function requireAdmin(req: Request, res: Response, next: NextFunction) {
   const user = req.user as JwtPayload | undefined;
   if (!user) return res.status(401).json({ message: 'Missing authentication' });

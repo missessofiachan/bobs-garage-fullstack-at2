@@ -13,6 +13,13 @@ type ToastCtx = { notify: (msg: Omit<ToastMsg, 'id'>) => void };
 
 const Ctx = createContext<ToastCtx | null>(null);
 
+/**
+ * Toast notification provider component
+ * Manages toast notifications and provides a context for displaying them
+ *
+ * @param children - Child components that can use toast notifications
+ * @returns Toast provider with notification container
+ */
 export default function ToastProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<ToastMsg[]>([]);
   const notify = useCallback((msg: Omit<ToastMsg, 'id'>) => {
@@ -67,6 +74,13 @@ export default function ToastProvider({ children }: { children: React.ReactNode 
   );
 }
 
+/**
+ * Hook to access toast notification functionality
+ * Must be used within a ToastProvider
+ *
+ * @returns Object with notify function to display toast notifications
+ * @throws Error if used outside ToastProvider
+ */
 export function useToast() {
   const ctx = useContext(Ctx);
   if (!ctx) throw new Error('ToastProvider missing');

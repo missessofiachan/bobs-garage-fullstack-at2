@@ -50,15 +50,36 @@ const BASE_URL = getBaseUrl();
 
 // In-memory access token (keep ephemeral, do not persist)
 let accessToken: string | undefined;
+
+/**
+ * Get the current access token from memory
+ *
+ * @returns The current access token or undefined if not set
+ */
 export const getAccessToken = () => accessToken;
+
+/**
+ * Set the access token in memory
+ *
+ * @param token - The access token to store, or undefined to clear
+ */
 export const setAccessToken = (token?: string) => {
   accessToken = token;
 };
+
+/**
+ * Clear the access token from memory
+ */
 export const clearAccessToken = () => {
   accessToken = undefined;
 };
 
-// Helper to check if token is expired or about to expire (within 5 minutes)
+/**
+ * Check if token is expired or about to expire (within 5 minutes)
+ *
+ * @param token - The JWT token to check
+ * @returns True if token expires within 5 minutes or is invalid
+ */
 function isTokenExpiringSoon(token: string): boolean {
   try {
     const payload = JSON.parse(atob(token.split('.')[1]));
@@ -96,6 +117,12 @@ type RetriesConfig = InternalAxiosRequestConfig & {
 // Single-flight refresh handling
 let refreshPromise: Promise<string> | null = null;
 
+/**
+ * Refresh the access token using the refresh token cookie
+ * Uses single-flight pattern to prevent multiple simultaneous refresh requests
+ *
+ * @returns Promise resolving to the new access token
+ */
 async function refreshAccessToken(): Promise<string> {
   if (!refreshPromise) {
     refreshPromise = (async () => {

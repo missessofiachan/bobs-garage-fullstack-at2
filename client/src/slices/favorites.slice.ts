@@ -5,6 +5,11 @@ const LS_KEY = 'favorites:v1';
 
 type FavoritesState = { items: number[] };
 
+/**
+ * Load favorites from localStorage
+ *
+ * @returns FavoritesState with items array, or empty state if not found/invalid
+ */
 function load(): FavoritesState {
   try {
     const raw = localStorage.getItem(LS_KEY);
@@ -15,6 +20,11 @@ function load(): FavoritesState {
   return { items: [] };
 }
 
+/**
+ * Save favorites state to localStorage
+ *
+ * @param state - The favorites state to persist
+ */
 function save(state: FavoritesState) {
   try {
     localStorage.setItem(LS_KEY, JSON.stringify(state));
