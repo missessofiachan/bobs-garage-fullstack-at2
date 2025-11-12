@@ -1,6 +1,5 @@
-Absolutely! Here is a refined, easier-to-follow version of the Bob's Garage Styling Guide, updated with the new Trans Pride-inspired colours and a cleaner layout. It keeps the same design-system philosophy (accessibility-first, type-safe, responsive) and adds a quick-start path.
 
-# 🎨 Bob's Garage Styling Guide 2.0
+# 🎨 sofia's personal stylist guide 
 
 A design system guide with a Trans Pride colour scheme, accessibility-first approach, and modern CSS-in-JS architecture. Use this guide to implement the same styling system across your projects.
 
@@ -646,12 +645,5 @@ document.documentElement.setAttribute("data-bs-theme", "dark");
 
 ---
 
-## 14) License
-
-This styling guide is part of the Bob's Garage project and can be freely used and adapted.
-
----
 
 Happy styling! 🎨✨
-
-If you’d like, I can tailor this to your exact brand (e.g., add a brand color map, adjust typography scale, or generate a ready-to-run Vite project scaffold).
