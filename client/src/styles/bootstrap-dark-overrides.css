@@ -208,7 +208,7 @@ html[data-bs-theme="light"] .text-success {
 }
 
 html[data-bs-theme="light"] .badge.bg-success,
-html[data-bs-theme="light"] .bg-success {
+html[data-bs-theme="light"] .bg-success:not(.toast) {
   background-color: #92dbb2 !important;
   color: #0f2f1e !important;
 }
@@ -575,7 +575,7 @@ html[data-bs-theme="dark"] .text-success {
 }
 
 html[data-bs-theme="dark"] .badge.bg-success,
-html[data-bs-theme="dark"] .bg-success {
+html[data-bs-theme="dark"] .bg-success:not(.toast) {
   background-color: #69cf9c !important;
   color: #0f2f1e !important;
 }
@@ -871,18 +871,24 @@ html[data-bs-theme="dark"] .navbar-brand:focus-visible {
 }
 
 /* Toast styling with Trans Pride colors */
-/* Blue (#55CDFC) for success - good messages */
+/* Pastel Blue for success - good messages */
+html[data-bs-theme="light"] .toast.bg-success,
+html[data-bs-theme="dark"] .toast.bg-success,
 .toast.bg-success {
-  background-color: #55cdfc !important;
+  background-color: #a8d8ea !important;
   color: #ffffff !important;
 }
 
+html[data-bs-theme="light"] .toast.bg-success .toast-header,
+html[data-bs-theme="dark"] .toast.bg-success .toast-header,
 .toast.bg-success .toast-header {
-  background-color: rgba(85, 205, 252, 0.9) !important;
+  background-color: rgba(168, 216, 234, 0.9) !important;
   color: #ffffff !important;
   border-bottom-color: rgba(255, 255, 255, 0.2) !important;
 }
 
+html[data-bs-theme="light"] .toast.bg-success .btn-close,
+html[data-bs-theme="dark"] .toast.bg-success .btn-close,
 .toast.bg-success .btn-close {
   filter: invert(1) grayscale(100%) brightness(200%);
 }
